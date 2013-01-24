@@ -1,0 +1,27 @@
+# common #
+*.log
+logs/
+tmp/
+temp/
+
+# nodejs #
+node_modules/
+public/gen
+
+# java #
+/plugin.xml
+web-app/WEB-INF/classes/
+.settings/
+target/
+target-eclipse/
+grails-*.zip
+*.war
+.link_to_grails_plugins/
+
+# other #
+*.swp
+.DS_Store
+/data/db
+/examples/doc/
+/doc/README.html
+jsduck.exe
