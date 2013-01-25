@@ -1,6 +1,6 @@
 # iZhihu 我爱知乎
 
-### 项目介绍
+## 项目介绍
 
 **What we do:**
 
@@ -16,17 +16,17 @@
 - 因为那由知乎自己来做效果会更好,另一方不希望本插件被滥用。
 
 
-### 安装说明
+## 安装说明
 
 - 安装Chrome插件:「[Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)」
 - 安装iZhihu脚本: http://userscripts.org/scripts/show/126619
 
-### 反馈地址
+## 反馈地址
 
 - 知乎话题: 待补
 - github: https://github.com/unogz/izhihu 
 
-### 关于我们
+## 关于我们
 
 - [@钢盅郭子](http://www.zhihu.com/people/unogzx)
 - [@刘勇](http://www.zhihu.com/people/liuyong25)
