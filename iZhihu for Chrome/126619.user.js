@@ -2,12 +2,12 @@
 // @name        iZhihu
 // @namespace   http://userscripts.org/users/57334
 // @include     http://www.zhihu.com/*
-// @version     1.9.4
-// @updateinfo  发布于 2013-1-22 <ul><li>修复回答右侧评论的显示异常</li></ul>
+// @version     1.10.6
+// @updateinfo  发布于 2013-1-27 <ul><li>修复：从首页进入问题页 iZhihu 部分功能失效的问题</li></ul>
 // ==/UserScript==
 
-var iZhihu_version = "1.9.4";
-var i_rdate = "2013-1-22";
+var iZhihu_version = "1.10.6";
+var i_rdate = "2013-1-28";
 
 if(typeof jQuery=="undefined"){
 /*! jQuery v1.8.3 jquery.com | jquery.org/license */
@@ -314,10 +314,14 @@ var pi={}
   , css=''
   , $h=$('head')
   , $s=$('<style type="text/css"></style>')
+  , ipas=_p.indexOf('/answers')
+  , ipcc=_p.indexOf('/collection')
 ;
 pi.h='/'==_p;
-pi.a=0<_p.indexOf('/answer/')
-pi.q=!pi.a&&0==_p.indexOf('/question/')
+pi.a=0<_p.indexOf('/answer/');
+pi.q=!pi.a&&0==_p.indexOf('/question/');
+pi.as=0<ipas&&_p.substr(ipas)=='/answers';
+pi.cc=0==ipcc;
 
 var css_comment={
         'position':'fixed'
@@ -551,7 +555,7 @@ function f_a($a){
 }
 
 if(izhHomeLayout){
-css+='#zh-top-inner{ width:95%!important }\n.zu-top-nav {\n    position:absolute!important;\n    right:150px;\n}\n@media screen and (min-width:1024px) {\n    .zu-top-search-form{\n        width:500px!important;\n    }\n    .zu-top-search-input{\n        width:480px!important\n    }\n}\n\n\n\n.zu-main-content-inner { padding-left:30px!important }\n\n#zh-single-question-page .zu-main-content-inner { padding-left:0!important }\n\n#zh-question-list .zm-item-vote,\n#zh-question-list .zm-votebar,\n#zh-single-list-page-wrap .zm-item-vote,\n#zh-single-list-page-wrap .zm-votebar,\n#zh-explore-list .zm-item-vote,\n#zh-explore-list .zm-votebar,\n#zh-topic-feed-list .zm-item-vote,\n#zh-topic-feed-list .zm-votebar,\n.zm-item-answer-detail,\n#zh-explore-list .zm-item-meta,\n#zh-topic-page-wrap .meta,\n#zh-single-list-page-wrap .zm-item-answer-author-wrap,\n#zh-single-list-page-wrap .zm-item-rich-text,\n#zh-single-list-page-wrap .zm-item-answer-summary,\n#zh-single-list-page-wrap .zm-item-meta:not(#zh-list-meta-wrap),\n#zh-explore-list .zm-item-answer-author-wrap,\n#zh-explore-list .zm-item-rich-text,\n#zh-explore-list .zm-item-answer-summary,\n#zh-explore-list .zm-item-meta {\n    margin-left:-30px!important\n}\n\n.feed-item .avatar{\n    display:none!important;\n}\n\n#zh-question-list .source,\n#zh-question-list h2,\n#zh-question-list .meta {\n    margin-left:-46px!important;\n}\n#zh-question-list .answer_wrap,\n#zh-question-list .zm-comment-box{\n    margin-left:-16px!important;\n}\n.zm-item-vote-info {text-align:right}\n.empty:before{ content:\"-\" }\n\n\n\n.zu-autohide,\n.zm-comment-op-link,\n.zm-side-trend-del,\n.unpin {\n    visibility:visible!important;\n    opacity:0;\n}\n.feed-item:hover .zu-autohide,\n.zm-item-answer .zu-autohide,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-nav-li:hover .unpin {\n    opacity:1;\n}\n.zm-item-vote-count:hover,.zm-votebar button:hover{\nbackground:#a6ce56!important;\ncolor:#3E5E00 !important\n}\na,a:hover,\ni,\n.zu-autohide,\n.zm-votebar button,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-trend-del,\n.zm-side-nav-li,\n.zu-main-feed-fresh-button,\n.zg-icon,\n.zm-side-nav-li:hover .zg-icon,\n.zm-side-nav-li:hover i,\n.unpin,\n.zm-side-nav-li:hover .unpin {\n    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n}\n\n\n\n\n\nh3{ line-height:25px }\n.zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}\n.zm-side-list-content{clear:both}\n.unpin{ display:inline-block!important }\n';
+css+='#zh-top-inner{ width:95%!important }\n.zu-top-nav {\n    position:absolute!important;\n    right:150px;\n}\n@media screen and (min-width:1024px) {\n    .zu-top-search-form{ width:500px!important }\n    .zu-top-search-input{ width:480px!important }\n}\n\n\n\n#zh-question-list { padding-left:30px!important }\n#zh-main-feed-fresh-button { margin-left:-30px!important }\n\n.feed-item {\n    border-bottom:1px solid #EEE!important;\n    margin-top:-1px!important\n}\n.feed-item .avatar { display:none!important }\n\n.feed-main,.feed-item.combine { margin-left:0!important }\n.feed-item-q { margin-left:-30px!important;padding-left:0!important }\n\n.feed-item-a .zm-comment-box { max-width:602px!important }\n.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }\n\n\n\n\n.zm-tag-editor,\n#zh-question-title,\n#zh-question-detail,\n#zh-question-meta-wrap,\n.zh-answers-title,\n#zh-question-filter-wrap {\n    margin-left:-32px!important\n}\n\n#zh-question-log-page-wrap .zm-tag-editor,\n#zh-question-log-page-wrap #zh-question-title {\n    margin-left:0 !important\n}\n\n.zh-answers-title,\n#zh-question-filter-wrap {\n    border-bottom:1px solid #EEE!important;\n    z-index:1000!important\n}\n\n#zh-question-meta-wrap {\n    margin-bottom:0!important;\n    padding-bottom:10px!important;\n    border-bottom:1px solid #EEE!important\n}\n\n#zh-question-answer-wrap { margin-top:-1px!important }\n\n#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }\n.zu-question-collap-title { border-top:1px solid #EEE!important }\n#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }\n\n\n\n\n.zu-autohide,\n.zm-comment-op-link,\n.zm-side-trend-del,\n.unpin {\n    visibility:visible!important;\n    opacity:0;\n}\n.feed-item:hover .zu-autohide,\n.zm-item-answer .zu-autohide,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-nav-li:hover .unpin {\n    opacity:1;\n}\n.zm-item-vote-count:hover,.zm-votebar button:hover{\n    background:#a6ce56!important;\n    color:#3E5E00 !important\n}\n\na,a:hover,\ni,\n.zu-autohide,\n.zm-votebar button,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-trend-del,\n.zm-side-nav-li,\n.zu-main-feed-fresh-button,\n.zg-icon,\n.zm-side-nav-li:hover .zg-icon,\n.zm-side-nav-li:hover i,\n.unpin,\n.zm-side-nav-li:hover .unpin {\n    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n}\n\n\n\n\n\nh3{ line-height:25px }\n.zu-footer-inner {padding:15px 0!important}\n.zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}\n.zm-side-list-content{clear:both}\n.unpin{ display:inline-block!important }\n';
 
 }
 if(pi.q&&izhAuthorList){
@@ -738,6 +742,29 @@ if(izhQuickFavo){
             });
         }
     }
+    
+    if(pi.cc){
+        $('#zh-list-meta-wrap').append('<span class="zg-bull">•</span>').append($('<a/>',{href:'javascript:;',html:'Get All Links',click:function(){
+            var s=new Array(), r=0, cancel=0, count=0
+              , $t=$('<div style="position:fixed;left:0;right:0;top:0;bottom:0;margin:auto;z-index:99;background-color:#eee;text-align:center;opacity:0.5"/>').appendTo('body').click(function(){cancel=1;s=new Array();r=0;$(this).next('textarea').remove();$(this).remove();})
+              , a=function(d){
+                    if(cancel)return;
+                    r+=d[0];
+                    $t.empty().append('Computing...').append($('<div/>',{html:d[1],style:'display:none'})).find('.answer-date-link-wrap a.answer-date-link').each(function(i,e){
+                        s.push('http://www.zhihu.com'+$(e).attr('href'));
+                        count++;
+                    });//+'/answer/'+$(e).parent().next().children().first().attr('data-atoken')
+                    if(d[0]>0){
+                        $.post(window.location,$.param({offset:r,start:d[2],_xsrf:$('[name=_xsrf]').val()}),function(r){a(r.msg);});
+                    }else{
+                        $t.empty().after($('<textarea/>',{html:s.join('\n'),style:'position:fixed;width:80%;height:80%;left:10%;right:10%;top:10%;bottom:10%;z-index:100'}));
+                        alert('共得到记录'+count+'条');
+                    }
+                }
+            ;
+            a([$('#zh-list-answer-wrap .zm-item').size(),$('#zh-list-answer-wrap').html(),$('#zh-load-more').attr('data-next')]);
+        }}));
+    }
 
     setTimeout(function(){
         _Menu();
@@ -745,4 +772,4 @@ if(izhQuickFavo){
         },1000);
 
     update(false);
-})(window.document,window.location.pathname);
+})(window.document,(window.frameElement?window.frameElement.src.replace(/https?:\/\/www.zhihu.com/,''):window.location.pathname));
