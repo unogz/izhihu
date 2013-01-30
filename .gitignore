@@ -7,8 +7,8 @@ temp/
 # nodejs #
 node_modules/
 public/gen
-sea-modules
-dist
+sea-modules/
+dist/*.js
 
 # java #
 /plugin.xml
@@ -23,7 +23,4 @@ grails-*.zip
 # other #
 *.swp
 .DS_Store
-/data/db
-/examples/doc/
-/doc/README.html
-jsduck.exe
+
