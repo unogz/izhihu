@@ -1,0 +1,85 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="717" measuredH="536" mockupW="677" mockupH="498">
+  <controls>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Image" x="40" y="38" w="-1" h="-1" measuredW="677" measuredH="498" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./assets/comment.png</src>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="__group__" x="629" y="126" w="84" h="267" measuredW="84" measuredH="267" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <controlName>tb-alert-info</controlName>
+      </controlProperties>
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::RoundButton" x="0" y="0" w="84" h="267" measuredW="32" measuredH="32" zOrder="0" locked="false" isInGroup="3">
+          <controlProperties>
+            <align>left</align>
+            <borderColor>7317724</borderColor>
+            <color>10470904</color>
+            <shape>roundRect</shape>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Paragraph" x="5" y="12" w="75" h="17" measuredW="200" measuredH="80" zOrder="1" locked="false" isInGroup="3">
+          <controlProperties>
+            <color>472931</color>
+            <size>14</size>
+            <text>*Comments*</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::HRule" x="0" y="29" w="84" h="-1" measuredW="100" measuredH="10" zOrder="2" locked="false" isInGroup="3">
+          <controlProperties>
+            <color>7317724</color>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Paragraph" x="7" y="129" w="70" h="119" measuredW="200" measuredH="80" zOrder="3" locked="false" isInGroup="3">
+          <controlProperties>
+            <text>%5B%u5F35%u7B71%u857E%5D%0A%20%0A%5B%u9648%u601D%u6770%5D%0A%20%0A%5B%u9A86%u542F%u660E%5D%0A%20%0A%5B%u9AD8%u98DE%5D</text>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::IconLabel" x="7" y="39" w="-1" h="-1" measuredW="42" measuredH="21" zOrder="4" locked="false" isInGroup="3">
+          <controlProperties>
+            <icon>AddPageIcon%7Cxsmall</icon>
+            <labelPosition>right</labelPosition>
+            <text>Add</text>
+          </controlProperties>
+        </control>
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::IconLabel" x="7" y="66" w="-1" h="-1" measuredW="41" measuredH="21" zOrder="5" locked="false" isInGroup="3">
+          <controlProperties>
+            <icon>UpArrowIcon%7Cxsmall</icon>
+            <labelPosition>right</labelPosition>
+            <text>Top</text>
+          </controlProperties>
+        </control>
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::IconLabel" x="7" y="93" w="-1" h="-1" measuredW="70" measuredH="21" zOrder="6" locked="false" isInGroup="3">
+          <controlProperties>
+            <icon>SquaredMinusIcon%7Cxsmall</icon>
+            <labelPosition>right</labelPosition>
+            <text>Collapse</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::StickyNote" x="188" y="237" w="400" h="119" measuredW="109" measuredH="123" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>*%20%u8BC4%u8BBA%u4FA7%u8FB9%u680F%2C%20scroll%20fix%2C%20%u7D27%u8D34%u5728%u8BC4%u8BBA%u53F3%u4FA7%2C%u6839%u636E%u6EDA%u52A8%u663E%u793A/%u9690%u85CF%0A*%20%u8BC4%u8BBA%u6846%u4E0A%u4E0B%u5404%u4E00%u4E2A%28%u4E0D%u8FC7%u6709%u4FA7%u8FB9%u680F%u7684add%2C%u8FD9%u4E2A%u5FC5%u8981%u6027%u4E0D%u5927%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Arrow" x="575" y="196" w="47" h="64" measuredW="150" measuredH="100" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>16750848</color>
+        <direction>bottom</direction>
+        <leftArrow>true</leftArrow>
+        <rightArrow>false</rightArrow>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Arrow" x="301" y="158" w="61" h="79" measuredW="150" measuredH="100" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>16750848</color>
+        <direction>top</direction>
+        <leftArrow>false</leftArrow>
+        <rightArrow>true</rightArrow>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
