@@ -7,6 +7,8 @@ temp/
 # nodejs #
 node_modules/
 public/gen
+sea-modules
+dist
 
 # java #
 /plugin.xml
