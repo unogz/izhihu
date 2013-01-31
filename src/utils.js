@@ -36,18 +36,3 @@ utils.setValue = function(key, value){
 utils.deleteValue = function(key){
   return delete localStorage[key];
 };
-
-/**
- * 解析路径
- */
-utils.extractPath = function(){
-  return window.location.href.match("http://www.zhihu.com/([^/]*)/(.*)");
-};
-
-/**
- * 判断路径
- */
-utils.isPath = function(path){
-  var tmp = utils.extractPath();
-  return tmp && tmp.length>=1 && tmp[1] == path;
-};
