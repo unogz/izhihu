@@ -2,12 +2,12 @@
 // @name        iZhihu
 // @namespace   http://userscripts.org/users/57334
 // @include     http://www.zhihu.com/*
-// @version     1.10.7
-// @updateinfo  发布于 2013-1-28 <ul><li>修复：从首页进入问题页 iZhihu 快速跳转功能异常</li></ul>
+// @version     1.10.8
+// @updateinfo  发布于 2013-1-31 <ul><li>改进问题页：回答者目录现移至页面左侧</li><li>改进收藏页：「Get All Links」现为「地址清单」</li></ul>
 // ==/UserScript==
 
-var iZhihu_version = "1.10.7";
-var i_rdate = "2013-1-28";
+var iZhihu_version = "1.10.8";
+var i_rdate = "2013-1-31";
 
 if(typeof jQuery=="undefined"){
 /*! jQuery v1.8.3 jquery.com | jquery.org/license */
@@ -20,7 +20,7 @@ if(typeof jQuery=="undefined"){
  * @requires jQuery v1.2.3 or later
  * Copyright (c) 2007-2008 M. Alsup
  */
-(function($){if(/1\.(0|1|2)\.(0|1|2)/.test($.fn.jquery)||/^1.1/.test($.fn.jquery)){alert('blockUI requires jQuery v1.2.3 or later!  You are using v'+$.fn.jquery);return}$.fn._fadeIn=$.fn.fadeIn;var noOp=function(){};var mode=document.documentMode||0;var setExpr=$.browser.msie&&(($.browser.version<8&&!mode)||mode<8);var ie6=$.browser.msie&&/MSIE 6.0/.test(navigator.userAgent)&&!mode;$.blockUI=function(opts){install(window,opts)};$.unblockUI=function(opts){remove(window,opts)};$.growlUI=function(title,message,timeout,onClose){var $m=$('<div class="growlUI"></div>');if(title)$m.append('<h1>'+title+'</h1>');if(message)$m.append('<h2>'+message+'</h2>');if(timeout==undefined)timeout=3000;$.blockUI({message:$m,fadeIn:700,fadeOut:1000,centerY:false,timeout:timeout,showOverlay:false,onUnblock:onClose,css:$.blockUI.defaults.growlCSS})};$.fn.block=function(opts){return this.unblock({fadeOut:0}).each(function(){if($.css(this,'position')=='static')this.style.position='relative';if($.browser.msie)this.style.zoom=1;install(this,opts)})};$.fn.unblock=function(opts){return this.each(function(){remove(this,opts)})};$.blockUI.version=2.33;$.blockUI.defaults={message:'<h1>Please wait...</h1>',title:null,draggable:true,theme:false,css:{padding:0,margin:0,width:'30%',top:'40%',left:'35%',textAlign:'center',color:'#000',border:'3px solid #aaa',backgroundColor:'#fff',cursor:'wait'},themedCSS:{width:'30%',top:'40%',left:'35%'},overlayCSS:{backgroundColor:'#000',opacity:0.6,cursor:'wait'},growlCSS:{width:'350px',top:'10px',left:'',right:'10px',border:'none',padding:'5px',opacity:0.6,cursor:'default',color:'#fff',backgroundColor:'#000','-webkit-border-radius':'10px','-moz-border-radius':'10px','border-radius':'10px'},iframeSrc:/^https/i.test(window.location.href||'')?'javascript:false':'about:blank',forceIframe:false,baseZ:1000,centerX:true,centerY:true,allowBodyStretch:true,bindEvents:true,constrainTabKey:true,fadeIn:200,fadeOut:400,timeout:0,showOverlay:true,focusInput:true,applyPlatformOpacityRules:true,onBlock:null,onUnblock:null,quirksmodeOffsetHack:4};var pageBlock=null;var pageBlockEls=[];function install(el,opts){var full=(el==window);var msg=opts&&opts.message!==undefined?opts.message:undefined;opts=$.extend({},$.blockUI.defaults,opts||{});opts.overlayCSS=$.extend({},$.blockUI.defaults.overlayCSS,opts.overlayCSS||{});var css=$.extend({},$.blockUI.defaults.css,opts.css||{});var themedCSS=$.extend({},$.blockUI.defaults.themedCSS,opts.themedCSS||{});msg=msg===undefined?opts.message:msg;if(full&&pageBlock)remove(window,{fadeOut:0});if(msg&&typeof msg!='string'&&(msg.parentNode||msg.jquery)){var node=msg.jquery?msg[0]:msg;var data={};$(el).data('blockUI.history',data);data.el=node;data.parent=node.parentNode;data.display=node.style.display;data.position=node.style.position;if(data.parent)data.parent.removeChild(node)}var z=opts.baseZ;var lyr1=($.browser.msie||opts.forceIframe)?$('<iframe class="blockUI" style="z-index:'+(z++)+';display:none;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="'+opts.iframeSrc+'"></iframe>'):$('<div class="blockUI" style="display:none"></div>');var lyr2=$('<div class="blockUI blockOverlay" style="z-index:'+(z++)+';display:none;border:none;margin:0;padding:0;width:100%;height:100%;top:0;left:0"></div>');var lyr3,s;if(opts.theme&&full){s='<div class="blockUI blockMsg blockPage ui-dialog ui-widget ui-corner-all" style="z-index:'+z+';display:none;position:fixed">'+'<div class="ui-widget-header ui-dialog-titlebar blockTitle">'+(opts.title||'&nbsp;')+'</div>'+'<div class="ui-widget-content ui-dialog-content"></div>'+'</div>'}else if(opts.theme){s='<div class="blockUI blockMsg blockElement ui-dialog ui-widget ui-corner-all" style="z-index:'+z+';display:none;position:absolute">'+'<div class="ui-widget-header ui-dialog-titlebar blockTitle">'+(opts.title||'&nbsp;')+'</div>'+'<div class="ui-widget-content ui-dialog-content"></div>'+'</div>'}else if(full){s='<div class="blockUI blockMsg blockPage" style="z-index:'+z+';display:none;position:fixed"></div>'}else{s='<div class="blockUI blockMsg blockElement" style="z-index:'+z+';display:none;position:absolute"></div>'}lyr3=$(s);if(msg){if(opts.theme){lyr3.css(themedCSS);lyr3.addClass('ui-widget-content')}else lyr3.css(css)}if(!opts.applyPlatformOpacityRules||!($.browser.mozilla&&/Linux/.test(navigator.platform)))lyr2.css(opts.overlayCSS);lyr2.css('position',full?'fixed':'absolute');if($.browser.msie||opts.forceIframe)lyr1.css('opacity',0.0);var layers=[lyr1,lyr2,lyr3],$par=full?$('body'):$(el);$.each(layers,function(){this.appendTo($par)});if(opts.theme&&opts.draggable&&$.fn.draggable){lyr3.draggable({handle:'.ui-dialog-titlebar',cancel:'li'})}var expr=setExpr&&(!$.boxModel||$('object,embed',full?null:el).length>0);if(ie6||expr){if(full&&opts.allowBodyStretch&&$.boxModel)$('html,body').css('height','100%');if((ie6||!$.boxModel)&&!full){var t=sz(el,'borderTopWidth'),l=sz(el,'borderLeftWidth');var fixT=t?'(0 - '+t+')':0;var fixL=l?'(0 - '+l+')':0}$.each([lyr1,lyr2,lyr3],function(i,o){var s=o[0].style;s.position='absolute';if(i<2){full?s.setExpression('height','Math.max(document.body.scrollHeight, document.body.offsetHeight) - (jQuery.boxModel?0:'+opts.quirksmodeOffsetHack+') + "px"'):s.setExpression('height','this.parentNode.offsetHeight + "px"');full?s.setExpression('width','jQuery.boxModel && document.documentElement.clientWidth || document.body.clientWidth + "px"'):s.setExpression('width','this.parentNode.offsetWidth + "px"');if(fixL)s.setExpression('left',fixL);if(fixT)s.setExpression('top',fixT)}else if(opts.centerY){if(full)s.setExpression('top','(document.documentElement.clientHeight || document.body.clientHeight) / 2 - (this.offsetHeight / 2) + (blah = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + "px"');s.marginTop=0}else if(!opts.centerY&&full){var top=(opts.css&&opts.css.top)?parseInt(opts.css.top):0;var expression='((document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + '+top+') + "px"';s.setExpression('top',expression)}})}if(msg){if(opts.theme)lyr3.find('.ui-widget-content').append(msg);else lyr3.append(msg);if(msg.jquery||msg.nodeType)$(msg).show()}if(($.browser.msie||opts.forceIframe)&&opts.showOverlay)lyr1.show();if(opts.fadeIn){var cb=opts.onBlock?opts.onBlock:noOp;var cb1=(opts.showOverlay&&!msg)?cb:noOp;var cb2=msg?cb:noOp;if(opts.showOverlay)lyr2._fadeIn(opts.fadeIn,cb1);if(msg)lyr3._fadeIn(opts.fadeIn,cb2)}else{if(opts.showOverlay)lyr2.show();if(msg)lyr3.show();if(opts.onBlock)opts.onBlock()}bind(1,el,opts);if(full){pageBlock=lyr3[0];pageBlockEls=$(':input:enabled:visible',pageBlock);if(opts.focusInput)setTimeout(focus,20)}else center(lyr3[0],opts.centerX,opts.centerY);if(opts.timeout){var to=setTimeout(function(){full?$.unblockUI(opts):$(el).unblock(opts)},opts.timeout);$(el).data('blockUI.timeout',to)}};function remove(el,opts){var full=(el==window);var $el=$(el);var data=$el.data('blockUI.history');var to=$el.data('blockUI.timeout');if(to){clearTimeout(to);$el.removeData('blockUI.timeout')}opts=$.extend({},$.blockUI.defaults,opts||{});bind(0,el,opts);var els;if(full)els=$('body').children().filter('.blockUI').add('body > .blockUI');else els=$('.blockUI',el);if(full)pageBlock=pageBlockEls=null;if(opts.fadeOut){els.fadeOut(opts.fadeOut);setTimeout(function(){reset(els,data,opts,el)},opts.fadeOut)}else reset(els,data,opts,el)};function reset(els,data,opts,el){els.each(function(i,o){if(this.parentNode)this.parentNode.removeChild(this)});if(data&&data.el){data.el.style.display=data.display;data.el.style.position=data.position;if(data.parent)data.parent.appendChild(data.el);$(el).removeData('blockUI.history')}if(typeof opts.onUnblock=='function')opts.onUnblock(el,opts)};function bind(b,el,opts){var full=el==window,$el=$(el);if(!b&&(full&&!pageBlock||!full&&!$el.data('blockUI.isBlocked')))return;if(!full)$el.data('blockUI.isBlocked',b);if(!opts.bindEvents||(b&&!opts.showOverlay))return;var events='mousedown mouseup keydown keypress';b?$(document).bind(events,opts,handler):$(document).unbind(events,handler)};function handler(e){if(e.keyCode&&e.keyCode==9){if(pageBlock&&e.data.constrainTabKey){var els=pageBlockEls;var fwd=!e.shiftKey&&e.target==els[els.length-1];var back=e.shiftKey&&e.target==els[0];if(fwd||back){setTimeout(function(){focus(back)},10);return false}}}if($(e.target).parents('div.blockMsg').length>0)return true;return $(e.target).parents().children().filter('div.blockUI').length==0};function focus(back){if(!pageBlockEls)return;var e=pageBlockEls[back===true?pageBlockEls.length-1:0];if(e)e.focus()};function center(el,x,y){var p=el.parentNode,s=el.style;var l=((p.offsetWidth-el.offsetWidth)/2)-sz(p,'borderLeftWidth');var t=((p.offsetHeight-el.offsetHeight)/2)-sz(p,'borderTopWidth');if(x)s.left=l>0?(l+'px'):'0';if(y)s.top=t>0?(t+'px'):'0'};function sz(el,p){return parseInt($.css(el,p))||0}})(jQuery);
+;(function($){if(/1\.(0|1|2)\.(0|1|2)/.test($.fn.jquery)||/^1.1/.test($.fn.jquery)){alert('blockUI requires jQuery v1.2.3 or later!  You are using v'+$.fn.jquery);return}$.fn._fadeIn=$.fn.fadeIn;var noOp=function(){};var mode=document.documentMode||0;var setExpr=$.browser.msie&&(($.browser.version<8&&!mode)||mode<8);var ie6=$.browser.msie&&/MSIE 6.0/.test(navigator.userAgent)&&!mode;$.blockUI=function(opts){install(window,opts)};$.unblockUI=function(opts){remove(window,opts)};$.growlUI=function(title,message,timeout,onClose){var $m=$('<div class="growlUI"></div>');if(title)$m.append('<h1>'+title+'</h1>');if(message)$m.append('<h2>'+message+'</h2>');if(timeout==undefined)timeout=3000;$.blockUI({message:$m,fadeIn:700,fadeOut:1000,centerY:false,timeout:timeout,showOverlay:false,onUnblock:onClose,css:$.blockUI.defaults.growlCSS})};$.fn.block=function(opts){return this.unblock({fadeOut:0}).each(function(){if($.css(this,'position')=='static')this.style.position='relative';if($.browser.msie)this.style.zoom=1;install(this,opts)})};$.fn.unblock=function(opts){return this.each(function(){remove(this,opts)})};$.blockUI.version=2.33;$.blockUI.defaults={message:'<h1>Please wait...</h1>',title:null,draggable:true,theme:false,css:{padding:0,margin:0,width:'30%',top:'40%',left:'35%',textAlign:'center',color:'#000',border:'3px solid #aaa',backgroundColor:'#fff',cursor:'wait'},themedCSS:{width:'30%',top:'40%',left:'35%'},overlayCSS:{backgroundColor:'#000',opacity:0.6,cursor:'wait'},growlCSS:{width:'350px',top:'10px',left:'',right:'10px',border:'none',padding:'5px',opacity:0.6,cursor:'default',color:'#fff',backgroundColor:'#000','-webkit-border-radius':'10px','-moz-border-radius':'10px','border-radius':'10px'},iframeSrc:/^https/i.test(window.location.href||'')?'javascript:false':'about:blank',forceIframe:false,baseZ:1000,centerX:true,centerY:true,allowBodyStretch:true,bindEvents:true,constrainTabKey:true,fadeIn:200,fadeOut:400,timeout:0,showOverlay:true,focusInput:true,applyPlatformOpacityRules:true,onBlock:null,onUnblock:null,quirksmodeOffsetHack:4};var pageBlock=null;var pageBlockEls=[];function install(el,opts){var full=(el==window);var msg=opts&&opts.message!==undefined?opts.message:undefined;opts=$.extend({},$.blockUI.defaults,opts||{});opts.overlayCSS=$.extend({},$.blockUI.defaults.overlayCSS,opts.overlayCSS||{});var css=$.extend({},$.blockUI.defaults.css,opts.css||{});var themedCSS=$.extend({},$.blockUI.defaults.themedCSS,opts.themedCSS||{});msg=msg===undefined?opts.message:msg;if(full&&pageBlock)remove(window,{fadeOut:0});if(msg&&typeof msg!='string'&&(msg.parentNode||msg.jquery)){var node=msg.jquery?msg[0]:msg;var data={};$(el).data('blockUI.history',data);data.el=node;data.parent=node.parentNode;data.display=node.style.display;data.position=node.style.position;if(data.parent)data.parent.removeChild(node)}var z=opts.baseZ;var lyr1=($.browser.msie||opts.forceIframe)?$('<iframe class="blockUI" style="z-index:'+(z++)+';display:none;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="'+opts.iframeSrc+'"></iframe>'):$('<div class="blockUI" style="display:none"></div>');var lyr2=$('<div class="blockUI blockOverlay" style="z-index:'+(z++)+';display:none;border:none;margin:0;padding:0;width:100%;height:100%;top:0;left:0"></div>');var lyr3,s;if(opts.theme&&full){s='<div class="blockUI blockMsg blockPage ui-dialog ui-widget ui-corner-all" style="z-index:'+z+';display:none;position:fixed">'+'<div class="ui-widget-header ui-dialog-titlebar blockTitle">'+(opts.title||'&nbsp;')+'</div>'+'<div class="ui-widget-content ui-dialog-content"></div>'+'</div>'}else if(opts.theme){s='<div class="blockUI blockMsg blockElement ui-dialog ui-widget ui-corner-all" style="z-index:'+z+';display:none;position:absolute">'+'<div class="ui-widget-header ui-dialog-titlebar blockTitle">'+(opts.title||'&nbsp;')+'</div>'+'<div class="ui-widget-content ui-dialog-content"></div>'+'</div>'}else if(full){s='<div class="blockUI blockMsg blockPage" style="z-index:'+z+';display:none;position:fixed"></div>'}else{s='<div class="blockUI blockMsg blockElement" style="z-index:'+z+';display:none;position:absolute"></div>'}lyr3=$(s);if(msg){if(opts.theme){lyr3.css(themedCSS);lyr3.addClass('ui-widget-content')}else lyr3.css(css)}if(!opts.applyPlatformOpacityRules||!($.browser.mozilla&&/Linux/.test(navigator.platform)))lyr2.css(opts.overlayCSS);lyr2.css('position',full?'fixed':'absolute');if($.browser.msie||opts.forceIframe)lyr1.css('opacity',0.0);var layers=[lyr1,lyr2,lyr3],$par=full?$('body'):$(el);$.each(layers,function(){this.appendTo($par)});if(opts.theme&&opts.draggable&&$.fn.draggable){lyr3.draggable({handle:'.ui-dialog-titlebar',cancel:'li'})}var expr=setExpr&&(!$.boxModel||$('object,embed',full?null:el).length>0);if(ie6||expr){if(full&&opts.allowBodyStretch&&$.boxModel)$('html,body').css('height','100%');if((ie6||!$.boxModel)&&!full){var t=sz(el,'borderTopWidth'),l=sz(el,'borderLeftWidth');var fixT=t?'(0 - '+t+')':0;var fixL=l?'(0 - '+l+')':0}$.each([lyr1,lyr2,lyr3],function(i,o){var s=o[0].style;s.position='absolute';if(i<2){full?s.setExpression('height','Math.max(document.body.scrollHeight, document.body.offsetHeight) - (jQuery.boxModel?0:'+opts.quirksmodeOffsetHack+') + "px"'):s.setExpression('height','this.parentNode.offsetHeight + "px"');full?s.setExpression('width','jQuery.boxModel && document.documentElement.clientWidth || document.body.clientWidth + "px"'):s.setExpression('width','this.parentNode.offsetWidth + "px"');if(fixL)s.setExpression('left',fixL);if(fixT)s.setExpression('top',fixT)}else if(opts.centerY){if(full)s.setExpression('top','(document.documentElement.clientHeight || document.body.clientHeight) / 2 - (this.offsetHeight / 2) + (blah = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + "px"');s.marginTop=0}else if(!opts.centerY&&full){var top=(opts.css&&opts.css.top)?parseInt(opts.css.top):0;var expression='((document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + '+top+') + "px"';s.setExpression('top',expression)}})}if(msg){if(opts.theme)lyr3.find('.ui-widget-content').append(msg);else lyr3.append(msg);if(msg.jquery||msg.nodeType)$(msg).show()}if(($.browser.msie||opts.forceIframe)&&opts.showOverlay)lyr1.show();if(opts.fadeIn){var cb=opts.onBlock?opts.onBlock:noOp;var cb1=(opts.showOverlay&&!msg)?cb:noOp;var cb2=msg?cb:noOp;if(opts.showOverlay)lyr2._fadeIn(opts.fadeIn,cb1);if(msg)lyr3._fadeIn(opts.fadeIn,cb2)}else{if(opts.showOverlay)lyr2.show();if(msg)lyr3.show();if(opts.onBlock)opts.onBlock()}bind(1,el,opts);if(full){pageBlock=lyr3[0];pageBlockEls=$(':input:enabled:visible',pageBlock);if(opts.focusInput)setTimeout(focus,20)}else center(lyr3[0],opts.centerX,opts.centerY);if(opts.timeout){var to=setTimeout(function(){full?$.unblockUI(opts):$(el).unblock(opts)},opts.timeout);$(el).data('blockUI.timeout',to)}};function remove(el,opts){var full=(el==window);var $el=$(el);var data=$el.data('blockUI.history');var to=$el.data('blockUI.timeout');if(to){clearTimeout(to);$el.removeData('blockUI.timeout')}opts=$.extend({},$.blockUI.defaults,opts||{});bind(0,el,opts);var els;if(full)els=$('body').children().filter('.blockUI').add('body > .blockUI');else els=$('.blockUI',el);if(full)pageBlock=pageBlockEls=null;if(opts.fadeOut){els.fadeOut(opts.fadeOut);setTimeout(function(){reset(els,data,opts,el)},opts.fadeOut)}else reset(els,data,opts,el)};function reset(els,data,opts,el){els.each(function(i,o){if(this.parentNode)this.parentNode.removeChild(this)});if(data&&data.el){data.el.style.display=data.display;data.el.style.position=data.position;if(data.parent)data.parent.appendChild(data.el);$(el).removeData('blockUI.history')}if(typeof opts.onUnblock=='function')opts.onUnblock(el,opts)};function bind(b,el,opts){var full=el==window,$el=$(el);if(!b&&(full&&!pageBlock||!full&&!$el.data('blockUI.isBlocked')))return;if(!full)$el.data('blockUI.isBlocked',b);if(!opts.bindEvents||(b&&!opts.showOverlay))return;var events='mousedown mouseup keydown keypress';b?$(document).bind(events,opts,handler):$(document).unbind(events,handler)};function handler(e){if(e.keyCode&&e.keyCode==9){if(pageBlock&&e.data.constrainTabKey){var els=pageBlockEls;var fwd=!e.shiftKey&&e.target==els[els.length-1];var back=e.shiftKey&&e.target==els[0];if(fwd||back){setTimeout(function(){focus(back)},10);return false}}}if($(e.target).parents('div.blockMsg').length>0)return true;return $(e.target).parents().children().filter('div.blockUI').length==0};function focus(back){if(!pageBlockEls)return;var e=pageBlockEls[back===true?pageBlockEls.length-1:0];if(e)e.focus()};function center(el,x,y){var p=el.parentNode,s=el.style;var l=((p.offsetWidth-el.offsetWidth)/2)-sz(p,'borderLeftWidth');var t=((p.offsetHeight-el.offsetHeight)/2)-sz(p,'borderTopWidth');if(x)s.left=l>0?(l+'px'):'0';if(y)s.top=t>0?(t+'px'):'0'};function sz(el,p){return parseInt($.css(el,p))||0}})(jQuery);
 
 /**
  * jQuery custom checkboxes
@@ -50,7 +50,7 @@ if (!this.GM_getValue || (this.GM_getValue.toString && this.GM_getValue.toString
 GM_addStyle('.t_showframe{padding:10px 10px 10px 10px;background:#f0f0f0;border:1px solid #fff;box-shadow:2px 5px 15px #333;border-radius:10px;-moz-box-shadow:2px 5px 15px #333;-moz-border-radius:10px;-webkit-box-shadow:2px 5px 15px #333;-webkit-border-radius:10px}#iZhihu_rtjddiv{width:650px;height:437px}#iZhihu_setdiv{width:600px;height2:295px}.t_setdiv{padding-bottom:10px;background:#fcfcfc;width:100%;height:100%}.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif !important;font-size:12px !important;text-shadow:none !important;border-collapse:collapse !important;margin:0 !important;width:95%;line-height:120%}.t_set_tb thead td{background:#0080c0;color:#fff;border:none !important;padding:4px 8px 4px !important;border-radius-topleft:10px;border-radius-topright:10px;-moz-border-radius-topleft:10px;-moz-border-radius-topright:10px;-webkit-border-top-left-radius:10px;-webkit-border-top-right-radius:10px}.t_set_tb th,.t_set_tb td{padding:8px;background:#e8edff;border:none !important;border-top:2px solid #fcfcfc !important;color:#669;line-height:1.1em !important}.t_set_tb td input,.t_set_tb td textarea{font-size:12px !important;padding:0 !important}.t_set_tb tbody tr:hover th,.t_set_tb tbody tr:hover td{background:#d0dafd}.t_set_tb tfoot td{border-radius-bottomleft:10px;border-radius-bottomright:10px;-moz-border-radius-bottomleft:10px;-moz-border-radius-bottomright:10px;-webkit-border-bottom-left-radius:10px;-webkit-border-bottom-right-radius:10px}.t_set_ft{font-family:Arial,sans-serif,宋体 !important;font-size:12px !important;font-weight:bold !important;text-shadow:none !important;margin-top:15px !important}.t_set_ft a{text-decoration:none;color:#000}.t_setbtn{border:1px solid black;padding:2px;cursor:pointer;background:#fff;color:#0080c0}.t_setftbtn span{padding:2px 10px 2px 10px !important}.t_rtjdbtn{background:#0080c0 !important;color:#fff !important}.t_rtjdtxtpos{padding-top:5px}.t_rtjdchk{vertical-align:middle;margin-top:-2px;margin-bottom:1px}#iZhihu_rthint{font-family:Arial,sans-serif,宋体 !important;font-size:16px !important;font-weight:bold;padding:5px 10px 5px 10px;position:fixed;top:20px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;display:inline-block;opacity:0.7}.t_rthint_n{color:#fff !important;background:#000 !important}.t_rthint_f{background:#880000 !important;color:#ffffdd !important}.t_jchkbox{display:inline;font-size:20px;line-height:15px;padding-right:4px;cursor:pointer;cursor:hand}.t_jchkbox .mark{display:inline}.t_jchkbox img{vertical-align:middle;width:45px;height:15px}.t_jchkbox img{background:transparent url("data:image/png;base64,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") no-repeat}.t_jchkbox img{background-position:0 0}.t_jchkbox-hover img{background-position:0 -15px}.t_jchkbox-checked img{background-position:0 -30px}.t_jchkbox-checked .t_jchkbox-hover img{background-position:0 -45px}.t_jchkbox-disabled img{background-position:0 -60px}.t_jchkbox-checked .t_jchkbox-disabled img{background-position:0 -75px}.t_jradbox{display:inline;font-size:16px;line-height:16px;padding-right:3px;cursor:pointer;cursor:hand}.t_jradbox .mark{display:inline}.t_jradbox img{vertical-align:middle;width:16px;height:16px}.t_jradbox img{background:transparent url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAABACAMAAABMUIWcAAAAA3NCSVQICAjb4U/gAAABoVBMVEX////7+/v5+fn4+Pj39/f29vb19fX09PTz8/Py8vPx8fHw8PDv7+/u7u7t7e3s7Ozq6uro6Ojm5ubl5eXk5OTi4uLg4ODf39+26vXb2/zb2/3a2v3c3NzZ2fbZ2fjI3vTY2NjX1/LX19fU1ebU1NTT09PQ0NDOzs6k2PCh1v+x0fHKysrIyMiqzfDGxsbCwsLAwMCWyO6lw+G9vb2Nw/i6urqZwNabv+K4uLi3t7eYu920tLSzs7ODu/SysrKEtuisrKyIstyLstJ3su6mpqZ+rNt/p890qONrquiKo8hup9+cnJxkpOVuoNJfoeRunMlindhZneGTk5ORkZpTmd9RlttVldSLi4uLi5N8jZ5yi76GhpRZjsSGhoZ9h5N/gbZMjtBgiLGCgoqBgYFXh71Gis5/f397e3t7e4I+hMpleY11dXVLea9YeJlwcHBMcJQ1csNpaWlBb5xoaG5jY2NCZIY0ZZZYWZ4rY7ZLXJ9PUphUVFRHVWQkWKwhT6VATFkbRZw0RFUWOJIiNkkWJjcXGBoTFSAUFRYOERUJDBEBAQEtwLhRAAAACXBIWXMAAAsSAAALEgHS3X78AAAAH3RFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyA4tWjSeAAAAu1JREFUSInNlGtXElEUhimssIsIhIXUigydbBRJwCDESjAvqCEqYxeQRAZR85KXMMW4mMH51Z19Zk/M4Uvap561hrXemWctDnu/jM7+F3QXEBzza8i8A245VvaQFQcTVlw6ZGAJhLVgGzKyxoR94Toi7oJw7L+HDB8zYUu8iYhbNsp+0IEE9202nc22IRgRIQfCbqAbCewyISN0IUIShC2/G/FvMEHq7kC6JRByvj7EJzMh7jQhzjgIGU8P4kkyIdqlHtIRBUFyq4d0S0yIWNQ5mCMgxIU7iBBVziAaECEOc5B8VsQnsTmIuQ0kJ4LAZ1iW4QFiUPbD5Ytss8HSzz17c9YKAql3aZ8/JvWHIDxZ/qZwTj6yB8vfFWqQqXA0+YiRIudH8PzowyBjnWUqVOaeAYM1slkBoZJ9A7ytk8MKE0qLP8rv+/tPyMliCSZZyZerX8bGyqScr7BJni6sk9rLSfLrxcIpCKX8Aam/+0xqM/kSE4pzs2ekeka+zs4VmZBNs3yYzipCYW4iViekOjExWwDhNJtYhZxIZE8VYTYc3ib1mXBYEYrpWIx+yadYLF1kws50KBSqbtOP6R0QCompqanqAf1IFJiwGurt7X1Or97QKgib416v9xW9vOObTEgN3UeGUjCH1OhTZDR1wT7Y1f23NvWh9dJ9+FfB6BtBfEa4xWcqBK3q/8IaBIHPVBgxXUEsTOAzFQIWPWL2d1L4rOvs9JiuIWYPCHymgtukvkBMAyDwmQou0y3E5AKBz1QQ228g7SIIfKaCYFQPZewBgc9U6DGov9vgBIHPcAbLVcTcB3PgM52DxeNDPBYQ+AzL0quvHL2yHy5fbt0BKWJvzlrBnMm025uztg+SHOD6wLKmD4Ic5/qg5EYfDFJG0PYBM/TB+jri1OuH5RHsA5dZH1yy1NaRkW6rfdBmpQ9RORKVxUYfNFnpw92kLEc0fdBk7IMoJ03aPjSy2oeIi+/Dn6z2oaWpDy3/Ux9+AyHcPO1jtxhjAAAAAElFTkSuQmCC") no-repeat}.t_jradbox img{background-position:0 0}.t_jradbox-hover img{background-position:-16px 0}.t_jradbox-checked img{background-position:0 -16px}.t_jradbox-checked .t_jradbox-hover img{background-position:-16px -16px}.t_jradbox-disabled img{background-position:0 -32px}.t_jradbox-checked .t_jradbox-disabled img{background-position:0 -48px}#izh_updatediv{width:400px;height:315px}.t_upbtn{background:#0080c0 !important;color:#fff !important}.t_upinfo{height:120px !important;vertical-align:text-top !important}#izh_updatediv th{border-right:2px solid #fcfcfc !important}#izh_updatediv tfoot td{border:none !important;border-top:2px solid #fcfcfc !important;font-family:Arial,sans-serif,宋体 !important;font-size:12px !important;font-style:normal !important;text-shadow:none !important}.t_txtshow{text-align:center;background:#0080c0;color:#f0f0f0;user-select:none;-moz-user-select:none}.t_frshow{font-size:1.2em;position:fixed;z-index:99999;top:45px;width:200px;opacity:0.9;cursor:pointer}.t_tbox{padding:10px;position:relative;border:1px solid #f0f0f0;line-height:20px;*height:1%;width:200px;-moz-box-shadow:2px 5px 15px #333;-moz-border-radius:7px;-webkit-box-shadow:2px 5px 15px #333;-webkit-border-radius:7px}.t_tbox s{position:absolute;top:-20px;left:160px;display:block;height:0;width:0;font-size:0;line-height:0;border-color:transparent transparent #f0f0f0 transparent;border-style:dashed dashed solid dashed;border-width:10px}.t_tbox i{position:absolute;top:-9px;left:-10px;display:block;height:0;width:0;font-size:0;line-height:0;border-color:transparent transparent #0080c0 transparent;border-style:dashed dashed solid dashed;border-width:10px}@media screen and (-webkit-min-device-pixel-ratio:0){#iZhihu_rtjddiv{height:417px}#iZhihu_setdiv{height2:295px}#izh_updatediv{height:315px}}');
 
 var cbemptyimg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII=';
-var _config_html='<div id="iZhihu_setdiv"class="t_showframe"><div class="t_setdiv"align="center"><div style="padding-top:5px;padding-bottom:5px;"><b>iZhihu 设置</b></div><table class="t_set_tb"border="0"cellspacing="0"cellpadding="0"width="90%"><thead><tr><td colspan="2"align="left"><b>功能开关</b></td></tr></thead><tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" /></td></tr><tr><td align="left"title="* 导航部分加宽\n* 首页隐藏大头像\n* 赞同票右移\n* 首页评论框拉宽\n* 过渡效果 ">改变网页样式外观（感谢 <a href="http://www.zhihu.com/people/yukirock">@罗大睿</a>）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" /></td></tr><tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" /></td></tr><tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" /></td></tr><tr><td align="left">在问题页中显示回答者目录（在页面右侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" /></td></tr><tr><td align="left">在回答右侧浮动显示回答的评论</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setShowComment" /></td></tr><tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" /></td></tr></table><div class="t_set_ft"style="width:95%"><table cellspacing="0"cellpadding="0"style="width: 100%;"><tr><td style="width: 50%;text-align:left;"><a href="http://weibo.com/u/1655416302"target="_blank"></a></td><td style="width:50%;text-align:right;"class="t_setftbtn"><span id="iZhihu_setsave"class="t_setbtn t_rtjdbtn">保存</span>　<span id="iZhihu_setcancel"class="t_setbtn">取消</span>　<span id="iZhihu_help"class="t_setbtn">帮助</span>　<span id="iZhihu_update"class="t_setbtn">检查更新</span></td></tr></table></div></div></div>';
+var _config_html='<div id="iZhihu_setdiv"class="t_showframe"><div class="t_setdiv"align="center"><div style="padding-top:5px;padding-bottom:5px;"><b>iZhihu 设置</b></div><table class="t_set_tb"border="0"cellspacing="0"cellpadding="0"width="90%"><thead><tr><td colspan="2"align="left"><b>功能开关</b></td></tr></thead><tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" /></td></tr><tr><td align="left"title="* 导航部分加宽\n* 首页隐藏大头像\n* 赞同票右移\n* 首页评论框拉宽\n* 过渡效果 ">改变网页样式外观（感谢 <a href="http://www.zhihu.com/people/yukirock">@罗大睿</a>）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" /></td></tr><tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" /></td></tr><tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" /></td></tr><tr><td align="left">在问题页中显示回答者目录（在页面左侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" /></td></tr><tr><td align="left">在回答右侧浮动显示回答的评论</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setShowComment" /></td></tr><tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" /></td></tr></table><div class="t_set_ft"style="width:95%"><table cellspacing="0"cellpadding="0"style="width: 100%;"><tr><td style="width: 50%;text-align:left;"><a href="http://weibo.com/u/1655416302"target="_blank"></a></td><td style="width:50%;text-align:right;"class="t_setftbtn"><span id="iZhihu_setsave"class="t_setbtn t_rtjdbtn">保存</span>　<span id="iZhihu_setcancel"class="t_setbtn">取消</span>　<span id="iZhihu_help"class="t_setbtn">帮助</span>　<span id="iZhihu_update"class="t_setbtn">检查更新</span></td></tr></table></div></div></div>';
 
 var firstRun = parseInt(GM_getValue('izh_fr','1'));
 var tScaleStep;
@@ -238,8 +238,23 @@ function autoUpdateFromUserscriptsDotOrg(SCRIPT) {
         onload: function(result) {
           if (!result.responseText.match(/@version\s+([\d.]+)/)) return;     // did not find a suitable version header
     
-          var theOtherVersion = parseFloat(RegExp.$1);
-          if (theOtherVersion <= parseFloat(SCRIPT.version))       
+          var theOtherVersion = RegExp.$1;
+          var verList1 = RegExp.$1.split('.');
+          var verList2 = SCRIPT.version.split('.');
+          var isOldVersion = false;
+          for(var i=0;i<verList1.length;i++){
+            if(i<verList2.length){
+              if(parseInt(verList1[i])>parseInt(verList2[i])){
+                isOldVersion = true;
+                break;
+              }else{
+                
+              }
+            }else{
+              break;
+            }
+          }
+          if (!isOldVersion)
         {
           // no updates or older version on userscripts.orge site
           if(SCRIPT.forceUpdate)
@@ -326,7 +341,7 @@ pi.cc=0==ipcc;
 var css_comment={
         'position':'fixed'
       , 'background-color':'#fff'
-      //, 'display':'none'
+      , 'outline':'none'
       , 'overflow':'auto'
       , 'z-index':'9'
       , 'right':10
@@ -414,15 +429,14 @@ function f_a($a){
       , $p=$a.find('.zm-item-answer-author-info')
       , $v=$a.find('.zu-question-answer-meta-fav');
     if($p.length){//relocatePersonInfo
-        var $f=$('<a></a>')
-              .attr('name',$a.attr('data-aid')).before($c);
+        var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
         if(izhAuthorRear){
             $p.insertBefore($c).css('textAlign','right');
         }
         $p=$p.children().first().children().eq(1);
         if($a.length){
-            var $ppla=$('<a></a>').attr('href','#'+$a.attr('data-aid')).attr('target','_self')
-              , $ppl=$('<li></li>').append($ppla).appendTo($pp);
+            var $ppla=$('<a>',{href:'#'+$a.attr('data-aid'),target:'_self'})
+              , $ppl=$('<li>').append($ppla).appendTo($pp);
             if($a.attr('data-isowner')=='1'){
                 _e=$a.get(0);
                 $ppla.append('<span class="me"></span>');
@@ -443,9 +457,10 @@ function f_a($a){
                 ppWidth=$ppl.width();
             $ppla.mouseover(function(){
                 if(_e){
-                    var $uno=$(this.parentNode.parentNode.parentNode);
-                    $uno.children().first().css('display',0>_e.offsetTop-this.parentNode.parentNode.scrollTop?'':'none');
-                    $uno.children().last().css('display',400<_e.offsetTop-this.parentNode.parentNode.scrollTop+_e.offsetHeight?'':'none');
+                    var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
+                      , $frm=$uno.children('.frame');
+                    $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
+                    $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
                 }
             });
             if(_e==$a.get(0)){
@@ -555,24 +570,25 @@ function f_a($a){
 }
 
 if(izhHomeLayout){
-css+='#zh-top-inner{ width:95%!important }\n.zu-top-nav {\n    position:absolute!important;\n    right:150px;\n}\n@media screen and (min-width:1024px) {\n    .zu-top-search-form{ width:500px!important }\n    .zu-top-search-input{ width:480px!important }\n}\n\n\n\n#zh-question-list { padding-left:30px!important }\n#zh-main-feed-fresh-button { margin-left:-30px!important }\n\n.feed-item {\n    border-bottom:1px solid #EEE!important;\n    margin-top:-1px!important\n}\n.feed-item .avatar { display:none!important }\n\n.feed-main,.feed-item.combine { margin-left:0!important }\n.feed-item-q { margin-left:-30px!important;padding-left:0!important }\n\n.feed-item-a .zm-comment-box { max-width:602px!important }\n.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }\n\n\n\n\n.zm-tag-editor,\n#zh-question-title,\n#zh-question-detail,\n#zh-question-meta-wrap,\n.zh-answers-title,\n#zh-question-filter-wrap {\n    margin-left:-32px!important\n}\n\n#zh-question-log-page-wrap .zm-tag-editor,\n#zh-question-log-page-wrap #zh-question-title {\n    margin-left:0 !important\n}\n\n.zh-answers-title,\n#zh-question-filter-wrap {\n    border-bottom:1px solid #EEE!important;\n    z-index:1000!important\n}\n\n#zh-question-meta-wrap {\n    margin-bottom:0!important;\n    padding-bottom:10px!important;\n    border-bottom:1px solid #EEE!important\n}\n\n#zh-question-answer-wrap { margin-top:-1px!important }\n\n#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }\n.zu-question-collap-title { border-top:1px solid #EEE!important }\n#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }\n\n\n\n\n.zu-autohide,\n.zm-comment-op-link,\n.zm-side-trend-del,\n.unpin {\n    visibility:visible!important;\n    opacity:0;\n}\n.feed-item:hover .zu-autohide,\n.zm-item-answer .zu-autohide,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-nav-li:hover .unpin {\n    opacity:1;\n}\n.zm-item-vote-count:hover,.zm-votebar button:hover{\n    background:#a6ce56!important;\n    color:#3E5E00 !important\n}\n\na,a:hover,\ni,\n.zu-autohide,\n.zm-votebar button,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-trend-del,\n.zm-side-nav-li,\n.zu-main-feed-fresh-button,\n.zg-icon,\n.zm-side-nav-li:hover .zg-icon,\n.zm-side-nav-li:hover i,\n.unpin,\n.zm-side-nav-li:hover .unpin {\n    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n}\n\n\n\n\n\nh3{ line-height:25px }\n.zu-footer-inner {padding:15px 0!important}\n.zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}\n.zm-side-list-content{clear:both}\n.unpin{ display:inline-block!important }\n';
+css+='#zh-question-list { padding-left:30px!important }\n#zh-main-feed-fresh-button { margin-left:-30px!important }\n\n.feed-item {\n    border-bottom:1px solid #EEE!important;\n    margin-top:-1px!important\n}\n.feed-item .avatar { display:none!important }\n\n.feed-main,.feed-item.combine { margin-left:0!important }\n.feed-item-q { margin-left:-30px!important;padding-left:0!important }\n\n.feed-item-a .zm-comment-box { max-width:602px!important }\n.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }\n\n\n\n\n.zm-tag-editor,\n#zh-question-title,\n#zh-question-detail,\n#zh-question-meta-wrap,\n.zh-answers-title,\n#zh-question-filter-wrap {\n    margin-left:-32px!important\n}\n\n#zh-question-log-page-wrap .zm-tag-editor,\n#zh-question-log-page-wrap #zh-question-title {\n    margin-left:0 !important\n}\n\n.zh-answers-title,\n#zh-question-filter-wrap {\n    border-bottom:1px solid #EEE!important;\n    z-index:1000!important\n}\n\n#zh-question-meta-wrap {\n    margin-bottom:0!important;\n    padding-bottom:10px!important;\n    border-bottom:1px solid #EEE!important\n}\n\n#zh-question-answer-wrap { margin-top:-1px!important }\n\n#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }\n.zu-question-collap-title { border-top:1px solid #EEE!important }\n#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }\n\n\n\n\n.zu-autohide,\n.zm-comment-op-link,\n.zm-side-trend-del,\n.unpin {\n    visibility:visible!important;\n    opacity:0;\n}\n.feed-item:hover .zu-autohide,\n.zm-item-answer .zu-autohide,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-nav-li:hover .unpin {\n    opacity:1;\n}\n.zm-item-vote-count:hover,.zm-votebar button:hover{\n    background:#a6ce56!important;\n    color:#3E5E00 !important\n}\n\na,a:hover,\ni,\n.zu-autohide,\n.zm-votebar button,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-trend-del,\n.zm-side-nav-li,\n.zu-main-feed-fresh-button,\n.zg-icon,\n.zm-side-nav-li:hover .zg-icon,\n.zm-side-nav-li:hover i,\n.unpin,\n.zm-side-nav-li:hover .unpin {\n    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n}\n\n\n\n\n\nh3{ line-height:25px }\n.zu-footer-inner {padding:15px 0!important}\n.zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}\n.zm-side-list-content{clear:both}\n.unpin{ display:inline-block!important }\n';
 
 }
 if(pi.q&&izhAuthorList){
-    css+='div.uno{position:absolute;right:0;border:1px solid #0771C1;}';
-    css+='div.uno span.meT,div.uno span.meB,div.uno ul.pp li span.me{position:fixed;margin-left:1px;display:block;height:1px;width:1px;line-height:1px;background-color:transparent;border-width:6px 4px;border-style:solid;border-color:transparent;}';
-    css+='div.uno span.meT{border-top-width:0px;border-bottom-color:#fff;}';
-    css+='div.uno span.meB{border-bottom-width:0px;border-top-color:#fff;margin-top:-7px;}';
-    css+='div.uno ul{background-color:#0771C1;padding:0;margin:0;overflow-x:hidden;overflow-y:auto;}';
+    css+='div.uno{position:absolute;left:0;border:1px solid #0771C1}';
+    css+='div.uno .frame{overflow-x:hidden;overflow-y:auto;direction:rtl}';
+    css+='div.uno span.meT,div.uno span.meB,div.uno ul.pp li span.me{position:absolute;right:0;display:block;height:1px;width:1px;line-height:1px;background-color:transparent;border-style:solid;border-color:transparent;}';
+    css+='div.uno span.meT{border-width:6px 4px;border-top-width:0px;border-bottom-color:#fff;}';
+    css+='div.uno span.meB{border-width:6px 4px;border-bottom-width:0px;border-top-color:#fff;margin-top:-7px;}';
+    css+='div.uno ul{background-color:#0771C1;padding:0;margin:0;direction:ltr}';
     css+='div.uno ul li{display:block;list-style-type:none;margin:0;padding:0;white-space:nowrap;}';
     css+='div.uno ul li a{display:block;}div.uno li a:hover{text-decoration:none;}';
-    css+='div.uno ul li a{padding:0 0 0 10px;}';
-    css+='div.uno ul.pp li span.me{position:static;margin:6px -8px;border-width:4px 6px;border-left-color:#fff;float:left;}';
-    css+='div.uno li a span.name{display:block;padding:0 5px;background-color:#fff;}div.uno li a:hover span.name{color:#fff;background-color:#0771C1;}';
+    css+='div.uno ul li a{padding:0 10px 0 0;}';
+    css+='div.uno ul.pp li span.me{position:static;margin:6px -8px;border-width:4px 6px;border-right-color:#fff;float:right;}';
+    css+='div.uno li a span.name{text-align:right;display:block;padding:0 5px;background-color:#fff;}div.uno li a:hover span.name{color:#fff;background-color:#0771C1;}';
     css+='div.uno li a span.name.noname{color:#000;}';
     css+='div.uno li a span.name.collapsed{color:#999999;}';
     css+='div.uno li a span.name.friend{font-style:italic;}';
-    css+='div.uno table.plus{float:left;margin:7px -9px;height:7px;border-collapse:collapse;border-style:hidden;}div.uno table.plus td{border:1px solid #fff;width:1px;height:1px;}';
+    css+='div.uno table.plus{float:right;margin:7px -9px;height:7px;border-collapse:collapse;border-style:hidden;}div.uno table.plus td{border:1px solid #fff;width:1px;height:1px;}';
     css+='div.uno a:hover table.plus{}div.uno a:hover table.plus td{}';
     css+='div.uno li a span.func{text-align:center;}\n';
 }
@@ -603,7 +619,7 @@ if(izhQuickFavo){
       , $v=$('#zh-home-list-title')//activity_caption
       , $y=$('#zh-main-feed-fresh-button')//new_activity
       , $u=$('.zu-top-nav-userinfo')//user_avater
-      , $x=$('#zh-question-answer-num')//answers_count
+      , $x=$('#zh-question-meta-wrap')//answers_count
       , $r=$('#zh-question-answer-form-wrap')//reply_form
       , $l=$('#zh-question-collapsed-link')//expand/collap
     ;
@@ -652,17 +668,19 @@ if(izhQuickFavo){
           , $w=$('#zh-single-question .zm-item-answer');
         if($w&&$w.length){
             var ppWidth=0,ppHeight=400;
-            var $uno=$('<div></div>')
-              , $ppT=$('<span></span>')
-              , $ppB=$('<span></span>')
-              , $ppI=$('<div></div>')
-              , $pp=$('<ul></ul>');
+            var $uno=$('<div>')
+              , $frm=$('<div>')
+              , $ppT=$('<span>')
+              , $ppB=$('<span>')
+              , $ppI=$('<div>')
+              , $pp=$('<ul>');
             if(izhAuthorList){
                 $uno.addClass('uno').appendTo($b)
                     .css('float','left');
                 $ppT.addClass('meT').appendTo($uno)
                     .css('display','none');
-                $pp.addClass('pp').appendTo($uno);
+                $frm.addClass('frame').appendTo($uno);
+                $pp.addClass('pp').appendTo($frm);
                 $ppB.addClass('meB').appendTo($uno)
                     .css('display','none');
                 //uno.appendChild(ppI);
@@ -675,56 +693,53 @@ if(izhQuickFavo){
             });
             if($x.length){
                 var s=new Array()
-                ,$a=$('<a></a>')
-                ,$c=$('<span></span>');
-                $c.addClass('xgv').appendTo($x);
+                  , $a=$('<a>')
+                  , $c=$('<span>',{'class':'zg-bull',html:'•'})
+                  , $p=$x.children('a.meta-item:last');
                 if(_e){
                     s.push($(_e).attr('href'));
-                    $a.html('my answer');
+                    $a.html('我的回答');
                 }else if($r.length){
                     var id='new_answer'
-                      , $b=$('<a></a>')
-                            .attr('name',id)
-                            .before($r.children().first());
+                      , $b=$('<a>',{name:id}).before($r.children().first());
                     s.push('#draft');
-                    $a.html('+ Answer');
+                    $a.html('我要回答');
                 }
+                $c.insertAfter($p);
                 $a.attr('href',s.join('')).attr('target','_self')
-                    .appendTo($x);
+                    .insertAfter($c);
             }
             if(izhAuthorList){
-                if($pp.get(0).scrollHeight>ppHeight){
-                    $pp.height(ppHeight);
+                if($frm.get(0).scrollHeight>ppHeight){
+                    $frm.height(ppHeight);
                     ppWidth+=15;
                 }
-                if($pp.get(0).scrollHeight>ppHeight&&
-                   $pp.width()==$pp.width()){//To fix ul width for chrome
+                if($frm.get(0).scrollHeight>ppHeight){//To fix ul width for chrome
                     ppWidth+=20;
                 }
                 $pp.width(ppWidth);
                 $uno.css({
                     'float':'none'
-                  , 'right':10-$pp.width()});
+                  , 'left':10-$frm.width()});
                 $uno.mouseover(function(){
-                    $(this).css('right','0');
+                    $(this).css('left','0');
                 });
                 $uno.mouseout(function(){
-                    $(this).css('right',10-$(this).width());
+                    $(this).css('left',10-$(this).width());
                 });
-                if(_e){
-                    $uno.children().first().css('display',0>_e.offsetTop-$pp.scrollTop?'':'none');
-                    $uno.children().last().css('display',400<_e.offsetTop-$pp.scrollTop+_e.offsetHeight?'':'none');
-                }
                 if($r.children('.zu-answer-form-disabled-wrap').is(':hidden')){
-                    var $ppla=$('<a></a>')
-                        .attr('href','#draft').attr('target','_self')
+                    var $ppla=$('<a>',{href:'#draft',target:'_self'})
                         .append('<table class="plus"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>')
                         .append('<span class="name func">-new-</span>')
-                      , $ppl=$('<li></li>')
+                      , $ppl=$('<li>')
                         .append($ppla)
-                      , $pp=$('<ul></ul>')
+                      , $pp=$('<ul>')
                         .append($ppl)
-                        .appendTo($uno);
+                        .appendTo($frm);
+                }
+                if(_e){
+                    $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
+                    $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
                 }
             }
         }
@@ -744,7 +759,7 @@ if(izhQuickFavo){
     }
     
     if(pi.cc){
-        $('#zh-list-meta-wrap').append('<span class="zg-bull">•</span>').append($('<a/>',{href:'javascript:;',html:'Get All Links',click:function(){
+        $('#zh-list-meta-wrap').append('<span class="zg-bull">•</span>').append($('<a/>',{href:'javascript:;',html:'地址清单',click:function(){
             var s=new Array(), r=0, cancel=0, count=0
               , $t=$('<div style="position:fixed;left:0;right:0;top:0;bottom:0;margin:auto;z-index:99;background-color:#eee;text-align:center;opacity:0.5"/>').appendTo('body').click(function(){cancel=1;s=new Array();r=0;$(this).next('textarea').remove();$(this).remove();})
               , a=function(d){
