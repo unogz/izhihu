@@ -24,7 +24,7 @@ $(function(){
             '<div class="modal-dialog-content">',
               '<div>',
                 '<div class="zg-section">',
-                  '<div id="izhihu-collection-links" class="zg-form-text-input">',
+                  '<div id="izhihu-collection-links" class="zg-form-text-input" style="height:300px; overflow-y:scroll;">',
                     //'<textarea style="width: 100%; height: 132px;" id="izhihu-collection-links" class="zu-seamless-input-origin-element"></textarea>',
                   '</div>',
                 '</div>',
@@ -60,10 +60,13 @@ $(function(){
           title: dom.parent().find('.zm-item-title a').text(),
           questionUrl: dom.parent().find('.zm-item-title a').attr('href'),
           answerUrl: dom.find('.answer-date-link-wrap a').attr('href'),
+          answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
+          summary: dom.find('.zm-item-answer-summary').children().remove().end().text(),
           content: dom.find('.zm-editable-content').html()
         };
         result.push(obj);
-        $('#izhihu-collection-links').append('<li><a href="' + obj.answerUrl + '">' + obj.answerUrl + '</a></li>');
+        var str = utils.formatStr('<li><a href="{answerUrl}" title="* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}">{answerUrl}</a></li>', obj);
+        $('#izhihu-collection-links').append(str);
         $('#izhihu-collection-info').html('努力加载中(' + result.length + ')...');
       });
     };
@@ -87,13 +90,15 @@ $(function(){
       }else{
         offset = 0;
         $('#izhihu-collection-info').html('加载完成,共' + result.length + '条.');
+        $('#zh-global-spinner').hide();
       }
     };
     
     //注册点击事件
     btn.click(function(){
       initDialog();
-      $('.modal-dialog-bg').toggle();
+      $('.modal-dialog-bg').show();
+      $('#zh-global-spinner').show();
       $('#izhihu-dialog').css({'top': btn.position().top + 60, 'left': btn.position().left}).fadeIn('slow');
       result = [];
       $('#izhihu-collection-links').empty();
