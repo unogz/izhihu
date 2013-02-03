@@ -9,8 +9,14 @@ function utils(){
  */
 utils.getCfg = function(key){
   var obj = {
-    'comment_sidebar': true,
-    'answer_orderByTime': false
+    'comment_sidebar': true
+   ,'answer_orderByTime': false
+   ,'AuthorList':true
+   ,'ShowComment':true
+   ,'HomeLayout':true
+   ,'QuickFavo':true
+   ,'AuthorRear':true
+   ,'HomeNoti':true
   };
   obj = _.extend(obj, this.getValue('izhihu'));
   return key ? obj[key] : obj;
