@@ -1,0 +1,22 @@
+#zh-single-question .zm-item-answer {
+left:0;
+right:0;
+-webkit-transition:.2s .2s;
+transition:.2s .2s;
+min-height:auto
+}
+
+#zh-single-question .zm-item-answer:hover {
+left:-250px;
+min-height: 300px
+}
+
+#zh-single-question .zm-comment-box {
+position:absolute!important;
+top:-5px;
+bottom:-5px;
+overflow:auto;
+left: 600px;
+width: 400px!important;
+z-index:9
+}
