@@ -6,7 +6,7 @@ $(function(){
     //添加按钮
     $('#zh-list-meta-wrap')
       .append('<span class="zg-bull">•</span>  ')
-      .append('<a href="javascript:;" id="getAllLinks">列出全部</a>');
+      .append('<a href="javascript:;" id="getAllLinks">地址清单</a>');
 
     var btn = $('#getAllLinks');
     var result = [];
@@ -16,7 +16,7 @@ $(function(){
       if($('#izhihu-dialog').length==0){
         var dom = [
           '<div id="izhihu-dialog-bg" class="modal-dialog-bg" style="opacity: 0.5; width: 1283px; height: 3423px; display: none;"></div>',
-          '<div id="izhihu-dialog" class="modal-dialog" tabindex="0" style="display: none;">',
+          '<div id="izhihu-dialog" class="modal-dialog" tabindex="0" style="display: none;width:500px">',
             '<div class="modal-dialog-title modal-dialog-title-draggable">',
               '<span class="modal-dialog-title-text">收藏夹链接清单</span>',
               '<span class="modal-dialog-title-close"></span>',
@@ -24,7 +24,7 @@ $(function(){
             '<div class="modal-dialog-content">',
               '<div>',
                 '<div class="zg-section">',
-                  '<div id="izhihu-collection-links" class="zg-form-text-input">',
+                  '<div id="izhihu-collection-links" class="zg-form-text-input" style="height:300px; overflow-y:scroll;">',
                     //'<textarea style="width: 100%; height: 132px;" id="izhihu-collection-links" class="zu-seamless-input-origin-element"></textarea>',
                   '</div>',
                 '</div>',
@@ -49,6 +49,7 @@ $(function(){
 
         //拖动
         $('#izhihu-dialog').drags({handler:'.modal-dialog-title-draggable'});
+
       }
     };
 
@@ -59,11 +60,14 @@ $(function(){
         var obj = {
           title: dom.parent().find('.zm-item-title a').text(),
           questionUrl: dom.parent().find('.zm-item-title a').attr('href'),
-          answerUrl: dom.find('.answer-date-link-wrap a').attr('href'),
+          answerUrl: url.data.attr['base']+dom.find('.answer-date-link-wrap a').attr('href'),
+          answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
+          summary: dom.find('.zm-item-answer-summary').children().remove().end().text(),
           content: dom.find('.zm-editable-content').html()
         };
         result.push(obj);
-        $('#izhihu-collection-links').append('<li><a href="' + obj.answerUrl + '">' + obj.answerUrl + '</a></li>');
+        var str = utils.formatStr('<li style="list-style-type:none"><a href="{answerUrl}" title="* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}">{answerUrl}</a></li>', obj);
+        $('#izhihu-collection-links').append(str);
         $('#izhihu-collection-info').html('努力加载中(' + result.length + ')...');
       });
     };
@@ -87,14 +91,16 @@ $(function(){
       }else{
         offset = 0;
         $('#izhihu-collection-info').html('加载完成,共' + result.length + '条.');
+        $('#zh-global-spinner').hide();
       }
     };
     
     //注册点击事件
     btn.click(function(){
       initDialog();
-      $('.modal-dialog-bg').toggle();
-      $('#izhihu-dialog').css({'top': btn.position().top + 60, 'left': btn.position().left}).fadeIn('slow');
+      $('.modal-dialog-bg').show();
+      $('#zh-global-spinner').show();
+      $('#izhihu-dialog').css({'top': btn.position().top + 60, 'left': (window.innerWidth - $('#izhihu-dialog').width()) / 2}).fadeIn('slow');
       result = [];
       $('#izhihu-collection-links').empty();
       handler([$('#zh-list-answer-wrap .zm-item').size(), $('#zh-list-answer-wrap').html(), $('#zh-load-more').attr('data-next')]);
