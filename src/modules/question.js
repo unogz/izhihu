@@ -3,15 +3,29 @@
  */
 
 $(function(){
-  if(page =='question'){
+  if(pageIs.Question){
 
-var ppWidth=0,ppHeight=400;
-var $uno=$('<div>',{'class':'uno',style:'float:left'})
-  , $ppT=$('<span>',{'class':'meT',style:'display:none'})
-  , $frm=$('<div>',{'class':'frame'})
-  , $ppB=$('<span>',{'class':'meB',style:'display:none'})
-  , $pp=$('<ul>',{'class':'pp'})
-  , $ppI=$('<div>');
+var $lblAnswerCount=$('#zh-question-meta-wrap')//answers_count
+  , $reply=$('#zh-question-answer-form-wrap')//reply_form
+  , ppWidth=0,ppHeight=400
+  , $uno=$('<div>',{'class':'uno',style:'float:left'})//izh_AuthorsList
+  , $ppT=$('<span>',{'class':'meT',style:'display:none'})//izh_AuthorsList_TopSelfIndicator
+  , $frm=$('<div>',{'class':'frame'})//izh_AuthorsList_frame
+  , $ppB=$('<span>',{'class':'meB',style:'display:none'})//izh_AuthorsList_BottomSelfIndicator
+  , $pp=$('<ul>',{'class':'pp'})//izh_AuthorsList_UL
+  , $ppI=$('<div>')
+  , css_comment={
+        'position':'fixed'
+      , 'background-color':'#fff'
+      , 'outline':'none'
+    //, 'overflow':'auto'
+      , 'z-index':'9'
+      , 'right':10
+      , 'border-radius':0
+      , 'border':'1px solid #999999'
+      , 'padding':'5px 5px 5px 10px'
+    }
+  ;
 
 function showComment($ac,$cm){
     $('.zm-item-answer').not('[data-aid='+$ac.attr('data-aid')+']')
@@ -19,8 +33,8 @@ function showComment($ac,$cm){
             $(e).parent().children('[name=addcomment]')[0].click();
         });
     var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
-      , t=$ac.offset().top-$m.offset().top
-      , b=$ac.offset().top-$m.offset().top
+      , t=$ac.offset().top-$main.offset().top
+      , b=$ac.offset().top-$main.offset().top
       , w=$ac.width()
       , h=$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'));
     if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
@@ -38,16 +52,18 @@ function showComment($ac,$cm){
               , 'background-color':'#fff'
             }).show();
             var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($(document.body)).show();
+                //.children('.zm-comment-list').css({'position':'static'});
             $cm.css({'left':$ac.offset().left+$ac.width()-1}).attr('tabindex','-1').focus();//.show();
-            if($t.height()<window.innerHeight-$m.offset().top){
+            var th=$t.children('.zm-comment-list').height()+100;
+            if(th<window.innerHeight-$main.offset().top){
                 var top=$ac.offset().top-$(document).scrollTop();
-                if(top+$t.height()>window.innerHeight){
-                    $cm.css({'top':'','bottom':0});
+                if(top+th>window.innerHeight){
+                    $cm.css({'top':0,'bottom':0});
                 }else{
-                    $cm.css({'top':top>$m.offset().top?top:$m.offset().top,'bottom':''});
+                    $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'height':th});
                 }
             }else{
-                $cm.css({'top':$m.offset().top,'bottom':0});
+                $cm.css({'top':$main.offset().top,'bottom':0});
             }
             $t.remove();
             $t=null;
@@ -85,7 +101,7 @@ function hideComment($ac,$cm){
     $('.zh-backtotop').css('visibility','visible');
 }
 
-function f_a($a){
+function processAnswer($a){
     if(!$a||!$a.length)return;
     if($a.attr('izh_processed')=='1')return;
     var $c=$a.children().last()
@@ -206,17 +222,42 @@ function f_a($a){
                     }
                 });
                 showComment($cm.parents('.zm-item-answer'),$cm);
+                $('i.zm-comment-bubble',$cm).hide();
+                $('.zm-comment-list',$cm).css({
+                    'position':'absolute'
+                  , 'top':100
+                  , 'bottom':0
+                  , 'left':0
+                  , 'right':0
+                  , 'overflow':'auto'
+                });
+                $('.zm-comment-form.zm-comment-box-ft',$cm).css({
+                    'position':'absolute'
+                  , 'top':0
+                  , 'left':0
+                  , 'right':0
+                });
             }
             if(!$cm.hasClass('empty')&&$cm.children('a.zu-question-answer-meta-comment').length<=0){
-                $('<a class="zu-question-answer-meta-comment"><i class="z-icon-fold"></i>收起</a>').css({
-                    'float':'right'
-                  , 'cursor':'pointer'
-                  , 'margin-right':5
-                }).appendTo($cm).click(function(){
-                    var $a=$(this).parents('.zm-item-answer');
-                    hideComment($a);
-                    $a.find('[name=addcomment]')[0].click();
-                });
+                var $btnCC=$('<a class="zu-question-answer-meta-comment"><i class="z-icon-fold"></i>收起</a>')
+                    .click(function(){
+                        var $a=$(this).parents('.zm-item-answer');
+                        hideComment($a);
+                        $a.find('[name=addcomment]')[0].click();
+                    });
+                if(izhShowComment){
+                    $btnCC.css({
+                        'cursor':'pointer'
+                      , 'position':'relative'
+                      , 'top':70
+                    }).insertBefore($cm.children(':first'));
+                }else{
+                    $btnCC.css({
+                        'float':'right'
+                      , 'cursor':'pointer'
+                      , 'margin-right':5
+                    }).appendTo($cm);
+                }
             }
         }
     });
@@ -232,39 +273,40 @@ function f_a($a){
     $a.attr('izh_processed','1');
 }
 
-	//答案按时间排序
+//答案按时间排序
     if(utils.getCfg('answer_orderByTime')){
       client.click('.zh-answers-filter-popup div[data-key=added_time]');
     }
     
     //process each answer
-    var _e=null//top_banner
-      , $b=$(document.body).children().first()
-      , $m=$('[role=main]')//main
-      , $w=$('#zh-single-question .zm-item-answer');
-    if($w&&$w.length){
+    var _e=null
+      , $listAnswers=$('#zh-single-question .zm-item-answer');
+    if($listAnswers&&$listAnswers.length){
         if(izhAuthorList){
-            $uno.append($ppT).append($frm).append($ppB).appendTo($b);
+            $uno.appendTo($banner);
+            $ppT.appendTo($uno);
+            $frm.appendTo($uno);
             $pp.appendTo($frm);
+            $ppB.appendTo($uno);
             //uno.appendChild(ppI);
         }
         if(izhShowComment){
             $('#zh-question-collapsed-wrap').show();
         }
-        $w.each(function(i,e){
-            f_a($(e));
+        $listAnswers.each(function(i,e){
+            processAnswer($(e));
         });
-        if($x.length){
+        if($lblAnswerCount.length){
             var s=new Array()
               , $a=$('<a>')
               , $c=$('<span>',{'class':'zg-bull',html:'•'})
-              , $p=$x.children('a.meta-item:last');
+              , $p=$lblAnswerCount.children('a.meta-item:last');
             if(_e){
                 s.push($(_e).attr('href'));
                 $a.html('我的回答');
-            }else if($r.length){
+            }else if($reply.length){
                 var id='new_answer'
-                  , $b=$('<a>',{name:id}).before($r.children().first());
+                  , $b=$('<a>',{name:id}).before($reply.children().first());
                 s.push('#draft');
                 $a.html('我要回答');
             }
@@ -290,7 +332,7 @@ function f_a($a){
             $uno.mouseout(function(){
                 $(this).css('left',10-$(this).width());
             });
-            if($r.children('.zu-answer-form-disabled-wrap').is(':hidden')){
+            if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
                 var $ppla=$('<a>',{href:'#draft',target:'_self'})
                     .append('<table class="plus"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>')
                     .append('<span class="name func">-new-</span>')
@@ -315,7 +357,7 @@ function f_a($a){
         $('#zh-question-collapsed-wrap').show().bind('DOMNodeInserted',function(event){
             var $a=$(event.target);
             if($a.is('.zm-item-answer')){
-                f_a($a);
+            	processAnswer($a);
             }
         });
     }
