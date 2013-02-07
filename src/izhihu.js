@@ -20,49 +20,35 @@ var izhHomeLayout = utils.getCfg('HomeLayout')
   , izhAuthorRear = utils.getCfg('AuthorRear')
   , izhHomeNoti = utils.getCfg('HomeNoti');
 
-var pi={}
-  , _d=window.document
-  , _p=url.data.attr['path']
+var pageIs={}
+  , _doc=window.document
+  , _path=url.data.attr['path']
   , css=''
   , $h=$('head')
   , $s=$('<style type="text/css"></style>')
-  , ipas=_p.indexOf('/answers')
-  , ipcc=_p.indexOf('/collection')
+  , iPathAnswers=_path.indexOf('/answers')
+  , iPathCollection=_path.indexOf('/collection')
 ;
-pi.h='/'==_p;
-pi.a=0<_p.indexOf('/answer/');
-pi.q=!pi.a&&0==_p.indexOf('/question/');
-pi.as=0<ipas&&_p.substr(ipas)=='/answers';
-pi.cc=0==ipcc;
+pageIs.Home='/'==_path;
+pageIs.Answer=0<_path.indexOf('/answer/');
+pageIs.Question=!pageIs.Answer&&0==_path.indexOf('/question/');
+pageIs.Answers=0<iPathAnswers&&_path.substr(iPathAnswers)=='/answers';
+pageIs.Collection=0==iPathCollection;
 
 var i=0
   , z=''
-  , $v=$('#zh-home-list-title')//activity_caption
-  , $y=$('#zh-main-feed-fresh-button')//new_activity
-  , $u=$('.zu-top-nav-userinfo')//user_avater
-  , $x=$('#zh-question-meta-wrap')//answers_count
-  , $r=$('#zh-question-answer-form-wrap')//reply_form
-  , $l=$('#zh-question-collapsed-link')//expand/collap
+  , $user=$('.zu-top-nav-userinfo')//user_avater
+  , $banner=$(document.body).children().first()
+  , $main=$('[role=main]')//main
 ;
-
-var css_comment={
-    'position':'fixed'
-  , 'background-color':'#fff'
-  , 'outline':'none'
-  , 'overflow':'auto'
-  , 'z-index':'9'
-  , 'right':10
-  , 'border-radius':0
-  , 'border':'1px solid #999999'
-  , 'padding-left':5
-  , 'padding-bottom':5
-};
+if($user.length){
+    z=$user.attr('href');
+}
 
 if(izhHomeLayout){
 css+='#zh-question-list { padding-left:30px!important }\n#zh-main-feed-fresh-button { margin-left:-30px!important }\n\n.feed-item {\n    border-bottom:1px solid #EEE!important;\n    margin-top:-1px!important\n}\n.feed-item .avatar { display:none!important }\n\n.feed-main,.feed-item.combine { margin-left:0!important }\n.feed-item-q { margin-left:-30px!important;padding-left:0!important }\n\n.feed-item-a .zm-comment-box { max-width:602px!important }\n.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }\n\n\n\n\n.zm-tag-editor,\n#zh-question-title,\n#zh-question-detail,\n#zh-question-meta-wrap,\n.zh-answers-title,\n#zh-question-filter-wrap {\n    margin-left:-32px!important\n}\n\n#zh-question-log-page-wrap .zm-tag-editor,\n#zh-question-log-page-wrap #zh-question-title {\n    margin-left:0 !important\n}\n\n.zh-answers-title,\n#zh-question-filter-wrap {\n    border-bottom:1px solid #EEE!important;\n    z-index:1000!important\n}\n\n#zh-question-meta-wrap {\n    margin-bottom:0!important;\n    padding-bottom:10px!important;\n    border-bottom:1px solid #EEE!important\n}\n\n#zh-question-answer-wrap { margin-top:-1px!important }\n\n#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }\n.zu-question-collap-title { border-top:1px solid #EEE!important }\n#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }\n\n\n\n\n.zu-autohide,\n.zm-comment-op-link,\n.zm-side-trend-del,\n.unpin {\n    visibility:visible!important;\n    opacity:0;\n}\n.feed-item:hover .zu-autohide,\n.zm-item-answer .zu-autohide,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-nav-li:hover .unpin {\n    opacity:1;\n}\n.zm-item-vote-count:hover,.zm-votebar button:hover{\n    background:#a6ce56!important;\n    color:#3E5E00 !important\n}\n\na,a:hover,\ni,\n.zu-autohide,\n.zm-votebar button,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-trend-del,\n.zm-side-nav-li,\n.zu-main-feed-fresh-button,\n.zg-icon,\n.zm-side-nav-li:hover .zg-icon,\n.zm-side-nav-li:hover i,\n.unpin,\n.zm-side-nav-li:hover .unpin {\n    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n}\n\n\n\n\n\nh3{ line-height:25px }\n.zu-footer-inner {padding:15px 0!important}\n.zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}\n.zm-side-list-content{clear:both}\n.unpin{ display:inline-block!important }\n';
-
 }
-if(pi.q&&izhAuthorList){
+if(pageIs.Question&&izhAuthorList){
     css+='div.uno{position:absolute;left:0;border:1px solid #0771C1}';
     css+='div.uno .frame{overflow-x:hidden;overflow-y:auto;direction:rtl}';
     css+='div.uno span.meT,div.uno span.meB,div.uno ul.pp li span.me{position:absolute;right:0;display:block;height:1px;width:1px;line-height:1px;background-color:transparent;border-style:solid;border-color:transparent;}';
@@ -94,11 +80,11 @@ if (typeof GM_addStyle != "undefined") {
 } else if (typeof addStyle != "undefined") {
     addStyle(css);
 } else {
-    var heads = document.getElementsByTagName("head");
+    var heads = _doc.getElementsByTagName("head");
     if (heads.length > 0) {
-        var node = document.createElement("style");
+        var node = _doc.createElement("style");
         node.type = "text/css";
-        node.appendChild(document.createTextNode(css));
+        node.appendChild(_doc.createTextNode(css));
         heads[0].appendChild(node); 
     }
 }

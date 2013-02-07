@@ -2,7 +2,7 @@
  * 收藏页
  */
 $(function(){
-  if(page == 'collection'){
+  if(pageIs.Collection){
     //添加按钮
     $('#zh-list-meta-wrap')
       .append('<span class="zg-bull">•</span>  ')
