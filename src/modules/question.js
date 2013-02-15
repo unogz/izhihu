@@ -23,7 +23,7 @@ var $lblAnswerCount=$('#zh-question-meta-wrap')//answers_count
       , 'right':10
       , 'border-radius':0
       , 'border':'1px solid #999999'
-      , 'padding':'5px 5px 5px 10px'
+      , 'padding':'100px 0px 0px 10px'
     }
   ;
 
@@ -52,15 +52,14 @@ function showComment($ac,$cm){
               , 'background-color':'#fff'
             }).show();
             var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($(document.body)).show();
-                //.children('.zm-comment-list').css({'position':'static'});
             $cm.css({'left':$ac.offset().left+$ac.width()-1}).attr('tabindex','-1').focus();//.show();
-            var th=$t.children('.zm-comment-list').height()+100;
+            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
             if(th<window.innerHeight-$main.offset().top){
                 var top=$ac.offset().top-$(document).scrollTop();
                 if(top+th>window.innerHeight){
                     $cm.css({'top':0,'bottom':0});
                 }else{
-                    $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'height':th});
+                    $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
                 }
             }else{
                 $cm.css({'top':$main.offset().top,'bottom':0});
@@ -224,12 +223,28 @@ function processAnswer($a){
                 showComment($cm.parents('.zm-item-answer'),$cm);
                 $('i.zm-comment-bubble',$cm).hide();
                 $('.zm-comment-list',$cm).css({
-                    'position':'absolute'
-                  , 'top':100
-                  , 'bottom':0
-                  , 'left':0
-                  , 'right':0
+                    'height':'100%'
                   , 'overflow':'auto'
+                }).bind('DOMNodeInserted',function(event){
+                    var $cm=$(this).parent();
+                    if($cm.is(':visible')){
+                        var $a=$cm.parents('.zm-item-answer');
+                        showComment($a,$cm);
+                        var $icm=$(event.target);
+                        $icm.bind('DOMNodeRemoved',function(event){
+                            var $cm=$(this).parent().parent();
+                            if($cm.is(':visible')){
+                                var $a=$cm.parents('.zm-item-answer');
+                                showComment($a,$cm);
+                            }
+                        });
+                    }
+                }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
+                    var $cm=$(this).parent().parent();
+                    if($cm.is(':visible')){
+                        var $a=$cm.parents('.zm-item-answer');
+                        showComment($a,$cm);
+                    }
                 });
                 $('.zm-comment-form.zm-comment-box-ft',$cm).css({
                     'position':'absolute'
@@ -248,7 +263,7 @@ function processAnswer($a){
                 if(izhShowComment){
                     $btnCC.css({
                         'cursor':'pointer'
-                      , 'position':'relative'
+                      , 'position':'absolute'
                       , 'top':70
                     }).insertBefore($cm.children(':first'));
                 }else{

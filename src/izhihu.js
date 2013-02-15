@@ -22,7 +22,7 @@ var izhHomeLayout = utils.getCfg('HomeLayout')
 
 var pageIs={}
   , _doc=window.document
-  , _path=url.data.attr['path']
+  , _path=window.frameElement?window.frameElement.src.replace(/https?:\/\/www.zhihu.com/,''):url.data.attr['path']
   , css=''
   , $h=$('head')
   , $s=$('<style type="text/css"></style>')
