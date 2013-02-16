@@ -55,9 +55,9 @@ function showComment($ac,$cm){
             $cm.css({'left':$ac.offset().left+$ac.width()-1}).attr('tabindex','-1').focus();//.show();
             var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
             if(th<window.innerHeight-$main.offset().top){
-                var top=$ac.offset().top-$(document).scrollTop();
+                var top=$cm.parent().offset().top-$(document).scrollTop();
                 if(top+th>window.innerHeight){
-                    $cm.css({'top':0,'bottom':0});
+                    $cm.css({'top':'','bottom':0});
                 }else{
                     $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
                 }
