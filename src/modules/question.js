@@ -41,33 +41,34 @@ function showComment($ac,$cm){
         $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
     if(!$cm)$cm=$ac.find('.zm-comment-box');
     if($cm.length){
-        //if($cm.is(':hidden')){
-            $ac.find('.izh_tape_a').css({
-                'position':'absolute'
-              , 'width':1
-              , 'height':h//$cm.height()
-              , 'top':0//$cm.offset().top
-              , 'left':w-1//$cm.offset().left-1
-              , 'z-index':'10'
-              , 'background-color':'#fff'
-            }).show();
-            var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($(document.body)).show();
-            $cm.css({'left':$ac.offset().left+$ac.width()-1}).attr('tabindex','-1').focus();//.show();
-            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
-            if(th<window.innerHeight-$main.offset().top){
-                var top=$cm.parent().offset().top-$(document).scrollTop();
-                if(top+th>window.innerHeight){
-                    $cm.css({'top':'','bottom':0});
-                }else{
-                    $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
-                }
+        if(!$cm.attr('tabindex')){
+            $cm.attr('tabindex','-1').focus();//.show();
+        }
+        $ac.find('.izh_tape_a').css({
+            'position':'absolute'
+          , 'width':1
+          , 'height':h//$cm.height()
+          , 'top':0//$cm.offset().top
+          , 'left':w-1//$cm.offset().left-1
+          , 'z-index':'10'
+          , 'background-color':'#fff'
+        }).show();
+        var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($(document.body)).show();
+        $cm.css({'left':$ac.offset().left+$ac.width()-1});
+        var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
+        if(th<window.innerHeight-$main.offset().top){
+            var top=$cm.parent().offset().top-$(document).scrollTop();
+            if(top+th>window.innerHeight){
+                $cm.css({'top':'','bottom':0});
             }else{
-                $cm.css({'top':$main.offset().top,'bottom':0});
+                $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
             }
-            $t.remove();
-            $t=null;
-            $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
-        //}
+        }else{
+            $cm.css({'top':$main.offset().top,'bottom':0});
+        }
+        $t.remove();
+        $t=null;
+        $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
     }else{
         $ac.find('.zu-question-answer-meta-comment')[0].click();
     }
@@ -226,22 +227,22 @@ function processAnswer($a){
                     'height':'100%'
                   , 'overflow':'auto'
                 }).bind('DOMNodeInserted',function(event){
-                    var $cm=$(this).parent();
-                    if($cm.is(':visible')){
+                    var $cm=$(this).parent('.zm-comment-box:visible');
+                    if($cm.length){
                         var $a=$cm.parents('.zm-item-answer');
                         showComment($a,$cm);
                         var $icm=$(event.target);
                         $icm.bind('DOMNodeRemoved',function(event){
-                            var $cm=$(this).parent().parent();
-                            if($cm.is(':visible')){
+                            var $cm=$(this).parent().parent('.zm-comment-box:visible');
+                            if($cm.length){
                                 var $a=$cm.parents('.zm-item-answer');
                                 showComment($a,$cm);
                             }
                         });
                     }
                 }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
-                    var $cm=$(this).parent().parent();
-                    if($cm.is(':visible')){
+                    var $cm=$(this).parent().parent('.zm-comment-box:visible');
+                    if($cm.length){
                         var $a=$cm.parents('.zm-item-answer');
                         showComment($a,$cm);
                     }
