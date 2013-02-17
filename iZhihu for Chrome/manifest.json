@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2
+  , "content_scripts": [ {
+        "exclude_globs":    [  ]
+      , "include_globs":    [ "*" ]
+      , "js":               [ "126619.user.js" ]
+      , "matches":          [   "http://www.zhihu.com/*"
+                            ]
+      , "run_at": "document_end"
+    } ]
+  , "converted_from_user_script": true
+  , "description":  ""
+  , "name":         "iZhihu"
+  , "version":      "1.10"
+  , "permissions": [
+        "http://*.zhihu.com/"
+        ]
+}
