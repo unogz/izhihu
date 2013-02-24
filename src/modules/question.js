@@ -5,7 +5,8 @@
 $(function(){
   if(pageIs.Question){
 
-var $lblAnswerCount=$('#zh-question-meta-wrap')//answers_count
+var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
+  , $lblAnswersCount=$('#zh-question-answer-num')//answers_count
   , $reply=$('#zh-question-answer-form-wrap')//reply_form
   , ppWidth=0,ppHeight=400
   , $uno=$('<div>',{'class':'uno',style:'float:left'})//izh_AuthorsList
@@ -312,11 +313,11 @@ function processAnswer($a){
         $listAnswers.each(function(i,e){
             processAnswer($(e));
         });
-        if($lblAnswerCount.length){
+        if($lblQuestionMeta.length){
             var s=new Array()
               , $a=$('<a>')
               , $c=$('<span>',{'class':'zg-bull',html:'•'})
-              , $p=$lblAnswerCount.children('a.meta-item:last');
+              , $p=$lblQuestionMeta.children('a.meta-item:last');
             if(_e){
                 s.push($(_e).attr('href'));
                 $a.html('我的回答');
@@ -361,6 +362,32 @@ function processAnswer($a){
             if(_e){
                 $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                 $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
+            }
+
+            if($lblAnswersCount.length){
+                // Sliding Answers List
+            	$('#zh-question-answer-wrap').attr('authorList','');
+            	var $btnAnswersCount=$('<a>',{
+                		href:'javascript:void(0);'
+                	  , click:function(){
+                    		var $answers=$('#zh-question-answer-wrap');
+                    		if($answers.attr('authorList')==''){
+                    			$answers.attr('authorList','0')
+                    				.css({'position':'relative','z-index':'9','background-color':'#eee'})
+                    				.animate({'left':150},1000,function(){
+                    					$('#zh-question-answer-wrap').attr('authorList','1');
+                    				});
+                    		}else if($answers.attr('authorList')=='1'){
+                    			$answers.attr('authorList','0')
+                				.animate({'left':0},1000,function(){
+                					$('#zh-question-answer-wrap').attr('authorList','')
+                						.css({'position':'','background-color':''})
+                				});
+                    		}
+                		}
+                	})
+                ;
+            	$lblAnswersCount.wrapInner($btnAnswersCount);
             }
         }
     }
