@@ -332,22 +332,39 @@ function processAnswer($a){
                 .insertAfter($c);
         }
         if(izhAuthorList){
-            if($frm.get(0).scrollHeight>ppHeight){
-                $frm.height(ppHeight);
-                ppWidth+=15;
-            }
-            if($frm.get(0).scrollHeight>ppHeight){//To fix ul width for chrome
-                ppWidth+=20;
-            }
-            $pp.width(ppWidth);
-            $uno.css({
-                'float':'none'
-              , 'left':10-$frm.width()});
+        	var resizeAuthorList=function($f){
+        		// Resize AuthorList's size and locate its position
+        		var frm=$f.get(0);
+        		if(!frm)return;
+        		var width=ppWidth
+        		  , height=$(unsafeWindow).innerHeight()-$main.offset().top-3-$f.position().top;
+                if(frm.scrollHeight>height){
+                    $f.height(height);
+                    width+=20;
+                }else{
+                	$f.height('');
+                }
+                $f.width(width);
+                $uno.css({
+                    'float':'none'
+                  , 'left':10-width
+                });
+        	};
+        	resizeAuthorList($frm);
+        	$('<div>').css({'text-align':'right','padding-right':10}).append(
+        		$('<a>',{
+        			href:'javascript:void(0);'
+        		  , html:'<<'
+        		  , click:function(){
+                      $uno.css('left',10-$uno.width());
+        		  }
+        		})
+        	).insertBefore($frm);
             $uno.mouseover(function(){
+                resizeAuthorList($('.frame',this));
                 $(this).css('left','0');
             });
             $uno.mouseout(function(){
-                $(this).css('left',10-$(this).width());
             });
             if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
                 var $ppla=$('<a>',{href:'#draft',target:'_self'})
@@ -362,32 +379,6 @@ function processAnswer($a){
             if(_e){
                 $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                 $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
-            }
-
-            if($lblAnswersCount.length){
-                // Sliding Answers List
-            	$('#zh-question-answer-wrap').attr('authorList','');
-            	var $btnAnswersCount=$('<a>',{
-                		href:'javascript:void(0);'
-                	  , click:function(){
-                    		var $answers=$('#zh-question-answer-wrap');
-                    		if($answers.attr('authorList')==''){
-                    			$answers.attr('authorList','0')
-                    				.css({'position':'relative','z-index':'9','background-color':'#eee'})
-                    				.animate({'left':150},1000,function(){
-                    					$('#zh-question-answer-wrap').attr('authorList','1');
-                    				});
-                    		}else if($answers.attr('authorList')=='1'){
-                    			$answers.attr('authorList','0')
-                				.animate({'left':0},1000,function(){
-                					$('#zh-question-answer-wrap').attr('authorList','')
-                						.css({'position':'','background-color':''})
-                				});
-                    		}
-                		}
-                	})
-                ;
-            	$lblAnswersCount.wrapInner($btnAnswersCount);
             }
         }
     }
