@@ -13,14 +13,11 @@ $(function(){
         
     //注册点击事件
     btn.click(function(){
-      var allLinksCollection=new allLinks('collections','#zh-list-answer-wrap','收藏夹');
+      var allLinksCollection=new allLinks('Collections','#zh-list-answer-wrap','收藏夹');
 	  if(!allLinksCollection.initDialog())return;
       $('.modal-dialog-bg').show();
-      $('#zh-global-spinner').show();
       allLinksCollection.$dlg.css({'top': btn.position().top + 60, 'left': (window.innerWidth - allLinksCollection.$dlg.width()) / 2}).fadeIn('slow');
-      if(!$('.izhihu-collection-links',allLinksCollection.$dlg).children().length){
-        $('.reload',allLinksCollection.$dlg)[0].click();
-      }
+      allLinksCollection.start();
     });
   }
   if(pageIs.Answers){
@@ -34,14 +31,11 @@ $(function(){
         
     //注册点击事件
     btn.click(function(){
-      var allLinksAnswers=new allLinks('collections','#zh-profile-answer-list .zh-general-list','用户回答');
+      var allLinksAnswers=new allLinks('Answers','#zh-profile-answer-list .zh-general-list','用户回答');
 	  if(!allLinksAnswers.initDialog())return;
       $('.modal-dialog-bg').show();
-      $('#zh-global-spinner').show();
       allLinksAnswers.$dlg.css({'top': btn.position().top + 60, 'left': (window.innerWidth - allLinksAnswers.$dlg.width()) / 2}).fadeIn('slow');
-      if(!$('.izhihu-collection-links',allLinksAnswers.$dlg).children().length){
-        $('.reload',allLinksAnswers.$dlg)[0].click();
-      }
+      allLinksAnswers.start();
     });
   }
 })
