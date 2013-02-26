@@ -115,7 +115,7 @@ function processAnswer($a){
         }
         $p=$p.children().first().children().eq(1);
         if($a.length){
-            var $ppla=$('<a>',{href:'#'+$a.attr('data-aid'),target:'_self'})
+            var $ppla=$('<a>',{href:'#'+$a.attr('data-aid'),target:'_self',style:css_AuthorListItemA})
               , $ppl=$('<li>').append($ppla).appendTo($pp);
             if($a.attr('data-isowner')=='1'){
                 _e=$a.get(0);
@@ -131,8 +131,11 @@ function processAnswer($a){
             if(!$p.length){
                 nameCSS+=' noname';
             }
-            $('<span class="'+nameCSS+'"></span>').appendTo($ppla)
-                .html(!$p.length?'匿名用户':$p.html());
+            $('<span>',{
+                'class':nameCSS
+              , html:!$p.length?'匿名用户':$p.html()
+              , style:css_AuthorListItemA_name
+            }).appendTo($ppla);
             if ($ppl.width()>ppWidth)
                 ppWidth=$ppl.width();
             $ppla.mouseover(function(){
@@ -297,7 +300,7 @@ function processAnswer($a){
     
     //process each answer
     var _e=null
-      , $listAnswers=$('#zh-single-question .zm-item-answer');
+      , $listAnswers=$('.zm-item-answer','#zh-single-question');
     if($listAnswers&&$listAnswers.length){
         if(izhAuthorList){
             $uno.appendTo($banner);
@@ -313,31 +316,55 @@ function processAnswer($a){
         $listAnswers.each(function(i,e){
             processAnswer($(e));
         });
-        if($lblQuestionMeta.length){
-            var s=new Array()
-              , $a=$('<a>')
-              , $c=$('<span>',{'class':'zg-bull',html:'•'})
-              , $p=$lblQuestionMeta.children('a.meta-item:last');
-            if(_e){
-                s.push($(_e).attr('href'));
-                $a.html('我的回答');
-            }else if($reply.length){
-                var id='new_answer'
-                  , $b=$('<a>',{name:id}).before($reply.children().first());
-                s.push('#draft');
-                $a.html('我要回答');
-            }
-            $c.insertAfter($p);
-            $a.attr('href',s.join('')).attr('target','_self')
-                .insertAfter($c);
+        if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
+            var $ppla=$('<a>',{href:'#draft',target:'_self'})
+                .append('<table class="plus"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>')
+                .append('<span class="name func">-new-</span>')
+              , $ppl=$('<li>')
+                .append($ppla)
+                .appendTo($pp)
+            ;
         }
+    }
+    if($lblQuestionMeta.length){
+        var s=new Array()
+          , $a=$('<a>')
+          , $c=$('<span>',{'class':'zg-bull',html:'•'})
+          , $p=$lblQuestionMeta.children('a.meta-item:last');
+        if(_e){
+            s.push($(_e).attr('href'));
+            $a.html('我的回答');
+        }else if($reply.length){
+            var id='new_answer'
+              , $b=$('<a>',{name:id}).before($reply.children().first());
+            s.push('#draft');
+            $a.html('我要回答');
+        }
+        $c.insertAfter($p);
+        $a.attr('href',s.join('')).attr('target','_self')
+            .insertAfter($c);
+    }
+    var b_s=$('#zh-question-collapsed-switcher')
+      , cn=!b_s.length||b_s.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text());
+    if(isNaN(cn))cn=0;
+    if(b_s.length)
+        b_s[0].click();
+    if(cn>0){
+        $('#zh-question-collapsed-wrap').show().bind('DOMNodeInserted',function(event){
+            var $a=$(event.target);
+            if($a.is('.zm-item-answer')){
+                processAnswer($a);
+            }
+        });
+    }
+    if($listAnswers.length||cn){
         if(izhAuthorList){
             var resizeAuthorList=function($f){
-                // Resize AuthorList's size and locate its position
+                // Adjust AuthorList's size and locate its position
+                if(!$f||!$f.length)return;
                 var frm=$f.get(0);
-                if(!frm)return;
                 var width=ppWidth
-                  , height=$(unsafeWindow).innerHeight()-$main.offset().top-3-$f.position().top;
+                  , height=$(unsafeWindow).height()-$main.offset().top-3-$f.position().top;
                 if(frm.scrollHeight>height){
                     $f.height(height);
                     width+=20;
@@ -377,34 +404,11 @@ function processAnswer($a){
             });
             $uno.mouseout(function(){
             });
-            if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
-                var $ppla=$('<a>',{href:'#draft',target:'_self'})
-                    .append('<table class="plus"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>')
-                    .append('<span class="name func">-new-</span>')
-                  , $ppl=$('<li>')
-                    .append($ppla)
-                  , $pp=$('<ul>')
-                    .append($ppl)
-                    .appendTo($frm);
-            }
             if(_e){
                 $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                 $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
             }
         }
-    }
-    var b_s=$('#zh-question-collapsed-switcher')
-      , cn=!b_s.length||b_s.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text());
-    if(isNaN(cn))cn=0;
-    if(b_s.length)
-        b_s[0].click();
-    if(cn>0){
-        $('#zh-question-collapsed-wrap').show().bind('DOMNodeInserted',function(event){
-            var $a=$(event.target);
-            if($a.is('.zm-item-answer')){
-                processAnswer($a);
-            }
-        });
     }
   }
 })

@@ -48,6 +48,9 @@ if($user.length){
 if(izhHomeLayout){
 css+='#zh-question-list { padding-left:30px!important }\n#zh-main-feed-fresh-button { margin-left:-30px!important }\n\n.feed-item {\n    border-bottom:1px solid #EEE!important;\n    margin-top:-1px!important\n}\n.feed-item .avatar { display:none!important }\n\n.feed-main,.feed-item.combine { margin-left:0!important }\n.feed-item-q { margin-left:-30px!important;padding-left:0!important }\n\n.feed-item-a .zm-comment-box { max-width:602px!important }\n.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }\n\n\n\n\n.zm-tag-editor,\n#zh-question-title,\n#zh-question-detail,\n#zh-question-meta-wrap,\n.zh-answers-title,\n#zh-question-filter-wrap {\n    margin-left:-32px!important\n}\n\n#zh-question-log-page-wrap .zm-tag-editor,\n#zh-question-log-page-wrap #zh-question-title {\n    margin-left:0 !important\n}\n\n.zh-answers-title,\n#zh-question-filter-wrap {\n    border-bottom:1px solid #EEE!important;\n    z-index:1000!important\n}\n\n#zh-question-meta-wrap {\n    margin-bottom:0!important;\n    padding-bottom:10px!important;\n    border-bottom:1px solid #EEE!important\n}\n\n#zh-question-answer-wrap { margin-top:-1px!important }\n\n#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }\n.zu-question-collap-title { border-top:1px solid #EEE!important }\n#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }\n\n\n\n\n.zu-autohide,\n.zm-comment-op-link,\n.zm-side-trend-del,\n.unpin {\n    visibility:visible!important;\n    opacity:0;\n}\n.feed-item:hover .zu-autohide,\n.zm-item-answer .zu-autohide,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-nav-li:hover .unpin {\n    opacity:1;\n}\n.zm-item-vote-count:hover,.zm-votebar button:hover{\n    background:#a6ce56!important;\n    color:#3E5E00 !important\n}\n\na,a:hover,\ni,\n.zu-autohide,\n.zm-votebar button,\n.zm-item-comment:hover .zm-comment-op-link,\n.zm-comment-op-link,\n.zm-side-trend-row:hover .zm-side-trend-del,\n.zm-side-trend-del,\n.zm-side-nav-li,\n.zu-main-feed-fresh-button,\n.zg-icon,\n.zm-side-nav-li:hover .zg-icon,\n.zm-side-nav-li:hover i,\n.unpin,\n.zm-side-nav-li:hover .unpin {\n    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;\n}\n\n\n\n\n\nh3{ line-height:25px }\n.zu-footer-inner {padding:15px 0!important}\n.zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}\n.zm-side-list-content{clear:both}\n.unpin{ display:inline-block!important }\n';
 }
+var css_AuthorListItemA='padding:0 10px 0 0;'
+  , css_AuthorListItemA_name='padding:0 5px;'
+;
 if(pageIs.Question&&izhAuthorList){
     css+='div.uno{position:absolute;left:0;border:1px solid #0771C1;border-top-right-radius:6px}';
     css+='div.uno .frame{overflow-x:hidden;overflow-y:auto;direction:rtl}';
@@ -57,9 +60,9 @@ if(pageIs.Question&&izhAuthorList){
     css+='div.uno ul{background-color:#0771C1;padding:0;margin:0;direction:ltr}';
     css+='div.uno ul li{display:block;list-style-type:none;margin:0;padding:0;white-space:nowrap;}';
     css+='div.uno ul li a{display:block;}div.uno li a:hover{text-decoration:none;}';
-    css+='div.uno ul li a{padding:0 10px 0 0;}';
+    css+='div.uno ul li a{'+css_AuthorListItemA+'}';
     css+='div.uno ul.pp li span.me{position:static;margin:6px -8px;border-width:4px 6px;border-right-color:#fff;float:right;}';
-    css+='div.uno li a span.name{text-align:right;display:block;padding:0 5px;background-color:#fff;}div.uno li a:hover span.name{color:#fff;background-color:#0771C1;}';
+    css+='div.uno li a span.name{text-align:right;display:block;'+css_AuthorListItemA_name+'background-color:#fff;}div.uno li a:hover span.name{color:#fff;background-color:#0771C1;}';
     css+='div.uno li a span.name.noname{color:#000;}';
     css+='div.uno li a span.name.collapsed{color:#999999;}';
     css+='div.uno li a span.name.friend{font-style:italic;}';
