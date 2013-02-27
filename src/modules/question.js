@@ -109,17 +109,13 @@ function processAnswer($a){
       , $p=$a.find('.zm-item-answer-author-info')
       , $v=$a.find('.zu-question-answer-meta-fav');
     if($p.length){//relocatePersonInfo
-        //var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
+        var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
         if(izhAuthorRear){
             $p.insertBefore($c).css('textAlign','right');
         }
         $p=$p.children().first().children().eq(1);
         if($a.length){
-            var $ppla=$('<a>',{
-                	href:'#'+$a.attr('data-aid')
-                  , target:'_self'
-                  , style:css_AuthorListItemA
-                }).attr('data-resourceid',$('.zm-item-rich-text',$a).attr('data-resourceid'))
+            var $ppla=$('<a>',{href:'#'+$a.attr('data-aid'),target:'_self',style:css_AuthorListItemA})
               , $ppl=$('<li>').append($ppla).appendTo($pp);
             if($a.attr('data-isowner')=='1'){
                 _e=$a.get(0);
@@ -143,45 +139,12 @@ function processAnswer($a){
             if ($ppl.width()>ppWidth)
                 ppWidth=$ppl.width();
             $ppla.mouseover(function(){
-                var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
-                  , $frm=$uno.children('.frame');
                 if(_e){
+                    var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
+                      , $frm=$uno.children('.frame');
                     $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                     $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
                 }
-                var aid=$(this).attr('href').slice(1)
-                  , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text > .zm-editable-content'
-                  , ctx=$('span',this).is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
-                  , div=$(sel,ctx)
-                  , old=$uno.next('.izh-answer-preview')
-                ;
-                if(old.length){
-                    if(old.attr('data-aid')==aid){
-                        old.show();
-                    }else{
-                    	old.remove();
-                    	old = null;
-                    }
-                }else{
-                    old = null;
-                }
-                if(!old){
-                    var width = div.width();
-                    div.clone().css({
-                        'position':'fixed'
-                      , 'left':$uno.width()+parseInt($uno.css('border-left-width'))+parseInt($uno.css('border-right-width'))
-                      , 'top':$(this).position().top+$uno.position().top-10
-                      , 'padding':'10px'
-                      , 'background-color':'#fff'
-                      , 'width':width
-                    }).addClass('izh-answer-preview').attr('data-aid',aid)
-                    .mouseover(function(){$(this).show();})
-                    .mouseout(function(){$(this).hide();}).insertAfter($uno);
-                }
-            }).mouseout(function(){
-                var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
-                ;
-                $uno.next().hide();
             });
             if(_e==$a.get(0)){
                 _e=$ppla.get(0);
