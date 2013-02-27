@@ -52,7 +52,7 @@ var css_AuthorListItemA='padding:0 10px 0 0;'
   , css_AuthorListItemA_name='padding:0 5px;'
 ;
 if(pageIs.Question&&izhAuthorList){
-    css+='div.uno{position:absolute;left:0;border:1px solid #0771C1;border-top-right-radius:6px}';
+    css+='div.uno{position:absolute;left:0;border:1px solid #0771C1;border-right-width:0;border-top-right-radius:6px}';
     css+='div.uno .frame{overflow-x:hidden;overflow-y:auto;direction:rtl}';
     css+='div.uno span.meT,div.uno span.meB,div.uno ul.pp li span.me{position:absolute;right:0;display:block;height:1px;width:1px;line-height:1px;background-color:transparent;border-style:solid;border-color:transparent;}';
     css+='div.uno span.meT{border-width:6px 4px;border-top-width:0px;border-bottom-color:#fff;}';
