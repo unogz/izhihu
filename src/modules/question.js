@@ -153,14 +153,15 @@ function processAnswer($a){
                 var aid=$(this).attr('href').slice(1)
                   , prv=$uno.next('.izh-answer-preview')
                   , top=$(this).position().top+$uno.position().top
-                  , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text > .zm-editable-content'
+                  , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
                   , ctx=$('span',this).is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
                   , div=$(sel,ctx)
+                  , htm=div.html()+$('a.zm-item-link-avatar',div.parent()).html()
                 ;
                 if(!prv.length){
                     prv=$('<div>',{
                             'class':div.class
-                          , html:div.html()
+                          , html:htm
                         }).attr('data-aid',aid)
                         .addClass('izh-answer-preview').width(div.width())
                         .mouseover(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
@@ -169,7 +170,7 @@ function processAnswer($a){
                         .insertAfter($uno).find('a').attr('onclick','return false;')
                     ;
                 }else if(prv.attr('data-aid')!=aid){
-                    prv.html(div.html()).attr('data-aid',aid).find('a').attr('onclick','return false;');
+                    prv.html(htm).attr('data-aid',aid).find('a').attr('onclick','return false;');
                 }
                 var th=div.height()+33
                   , maxTop=$main.offset().top+3;

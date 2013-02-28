@@ -69,7 +69,9 @@ if(pageIs.Question&&izhAuthorList){
     css+='div.uno table.plus{float:right;margin:7px -9px;height:7px;border-collapse:collapse;border-style:hidden;}div.uno table.plus td{border:1px solid #fff;width:1px;height:1px;}';
     css+='div.uno a.sel table.plus{}div.uno a.sel table.plus td{}';
     css+='div.uno li a span.func{text-align:center;}';
-    css+='div.izh-answer-preview{overflow-y:auto;position:fixed;padding:10px;margin-top:1px;background-color:#fff;border:1px solid #0771C1;border-top-width:22px;border-top-right-radius:6px;box-shadow:5px 5px 5px #777;}\n';
+    css+='div.izh-answer-preview{position:fixed;margin-top:1px;background-color:#fff;border:1px solid #0771C1;border-top-width:22px;border-top-right-radius:6px;box-shadow:5px 5px 5px #777;}';
+    css+='div.izh-answer-preview .zm-editable-content{overflow-y:auto;padding:10px;}';
+    css+='div.izh-answer-preview img.zm-list-avatar{position:absolute;right:10px;top:-30px;}\n';
 }
 if(izhQuickFavo){
     css+='div.izh_fav{padding:5px;display:none;position:absolute;z-index:10;border:1px solid #999999;background-color:#fff}';
