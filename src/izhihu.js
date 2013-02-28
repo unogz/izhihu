@@ -1,6 +1,6 @@
 var $ = unsafeWindow.$;
 var _ = this._;
-var purl = window.purl;
+var purl = window.purl||$.url;
 
 //使用CasperJS的模拟用户操作： http://casperjs.org/api.html#client-utils
 var client = window.create();
