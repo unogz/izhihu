@@ -116,10 +116,10 @@ function processAnswer($a){
         $p=$p.children().first().children().eq(1);
         if($a.length){
             var $ppla=$('<a>',{
-                	href:'#'+$a.attr('data-aid')
-                  , target:'_self'
-                  , style:css_AuthorListItemA
-                }).attr('data-resourceid',$('.zm-item-rich-text',$a).attr('data-resourceid'))
+                        href:'#'+$a.attr('data-aid')
+                      , target:'_self'
+                      , style:css_AuthorListItemA
+                    })
               , $ppl=$('<li>').append($ppla).appendTo($pp);
             if($a.attr('data-isowner')=='1'){
                 _e=$a.get(0);
@@ -143,6 +143,7 @@ function processAnswer($a){
             if ($ppl.width()>ppWidth)
                 ppWidth=$ppl.width();
             $ppla.mouseover(function(){
+                $(this).addClass('sel');
                 var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
                   , $frm=$uno.children('.frame');
                 if(_e){
@@ -153,36 +154,40 @@ function processAnswer($a){
                   , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text > .zm-editable-content'
                   , ctx=$('span',this).is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
                   , div=$(sel,ctx)
-                  , old=$uno.next('.izh-answer-preview')
+                  , prv=$uno.next('.izh-answer-preview')
+                  , top=$(this).position().top+$uno.position().top
                 ;
-                if(old.length){
-                    if(old.attr('data-aid')==aid){
-                        old.show();
+                if(!prv.length){
+                    prv=$('<div>',{
+                            'class':div.class
+                          , html:div.html()
+                        }).attr('data-aid',aid)
+                        .addClass('izh-answer-preview').width(div.width())
+                        .mouseover(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
+                        .mouseout(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
+                        .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
+                        .insertAfter($uno).find('a').attr('onclick','return false;')
+                    ;
+                }else if(prv.attr('data-aid')!=aid){
+                    prv.html(div.html()).attr('data-aid',aid).find('a').attr('onclick','return false;');
+                }
+                var th=div.height();
+                if(th<$(unsafeWindow).height()-$main.offset().top){
+                    if(top+th>$(unsafeWindow).height()){
+                        prv.css({'top':'','bottom':0});
                     }else{
-                    	old.remove();
-                    	old = null;
+                        prv.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
                     }
                 }else{
-                    old = null;
+                    prv.css({'top':$main.offset().top,'bottom':0});
                 }
-                if(!old){
-                    var width = div.width();
-                    div.clone().css({
-                        'position':'fixed'
-                      , 'left':$uno.width()+parseInt($uno.css('border-left-width'))+parseInt($uno.css('border-right-width'))
-                      , 'top':$(this).position().top+$uno.position().top-10
-                      , 'padding':'10px'
-                      , 'background-color':'#fff'
-                      , 'width':width
-                    }).addClass('izh-answer-preview').attr('data-aid',aid)
-                    .mouseover(function(){$(this).show();})
-                    .mouseout(function(){$(this).hide();}).insertAfter($uno);
-                }
+                prv.css({'left':$uno.width()}).show();
             }).mouseout(function(){
+                $(this).removeClass('sel');
                 var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
                 ;
                 $uno.next().hide();
-            });
+            }).click(function(){$(this).mouseout();$uno.css('left',10-$uno.width());});
             if(_e==$a.get(0)){
                 _e=$ppla.get(0);
             }
@@ -381,40 +386,31 @@ function processAnswer($a){
         $a.attr('href',s.join('')).attr('target','_self')
             .insertAfter($c);
     }
-    var b_s=$('#zh-question-collapsed-switcher')
-      , cn=!b_s.length||b_s.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text());
-    if(isNaN(cn))cn=0;
-    if(b_s.length)
-        b_s[0].click();
-    if(cn>0){
-        $('#zh-question-collapsed-wrap').show().bind('DOMNodeInserted',function(event){
-            var $a=$(event.target);
-            if($a.is('.zm-item-answer')){
-                processAnswer($a);
-            }
+    var resizeAuthorList=function($f){
+        // Adjust AuthorList's size and locate its position
+        if(!$f||!$f.length)return;
+        var frm=$f.get(0);
+        var width=ppWidth
+          , height=$(unsafeWindow).height()-$main.offset().top-3-$f.position().top;
+        if(frm.scrollHeight>height){
+            $f.height(height);
+            width+=20;
+        }else{
+            $f.height('');
+        }
+        $f.width(width);
+        $uno.css({
+            'float':'none'
+          , 'left':10-width
         });
-    }
-    if($listAnswers.length||cn){
+    };
+    var $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
+      , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text());
+    if(isNaN(numCollapsedCount))numCollapsedCount=0;
+    if($listAnswers.length||numCollapsedCount){
         if(izhAuthorList){
-            var resizeAuthorList=function($f){
-                // Adjust AuthorList's size and locate its position
-                if(!$f||!$f.length)return;
-                var frm=$f.get(0);
-                var width=ppWidth
-                  , height=$(unsafeWindow).height()-$main.offset().top-3-$f.position().top;
-                if(frm.scrollHeight>height){
-                    $f.height(height);
-                    width+=20;
-                }else{
-                    $f.height('');
-                }
-                $f.width(width);
-                $uno.css({
-                    'float':'none'
-                  , 'left':10-width
-                });
-            };
-            resizeAuthorList($frm);
+            if(!$btnCollapsedSwitcher.length&&!numCollapsedCount)
+                resizeAuthorList($frm);
             $('<div>',{'class':'modal-dialog-title'}).append(
                 $('<a>',{
                     'class':'icon'
@@ -445,6 +441,21 @@ function processAnswer($a){
                 $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                 $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
             }
+        }
+        if($btnCollapsedSwitcher.length){
+            if(numCollapsedCount>0){
+                $('#zh-question-collapsed-wrap').show().bind('DOMNodeInserted',function(event){
+                    var $a=$(event.target);
+                    if($a.is('.zm-item-answer')){
+                        processAnswer($a);
+                        var count = $('.zm-item-answer[izh_processed=1]','#zh-question-collapsed-wrap').length;
+                        if(count==numCollapsedCount){
+                            resizeAuthorList($frm);
+                        }
+                    }
+                });
+            }
+            $btnCollapsedSwitcher[0].click();
         }
     }
   }

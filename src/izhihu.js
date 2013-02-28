@@ -59,16 +59,17 @@ if(pageIs.Question&&izhAuthorList){
     css+='div.uno span.meB{border-width:6px 4px;border-bottom-width:0px;border-top-color:#fff;margin-top:-7px;}';
     css+='div.uno ul{background-color:#0771C1;padding:0;margin:0;direction:ltr}';
     css+='div.uno ul li{display:block;list-style-type:none;margin:0;padding:0;white-space:nowrap;}';
-    css+='div.uno ul li a{display:block;}div.uno li a:hover{text-decoration:none;}';
+    css+='div.uno ul li a{display:block;}div.uno li a.sel{text-decoration:none;}';
     css+='div.uno ul li a{'+css_AuthorListItemA+'}';
     css+='div.uno ul.pp li span.me{position:static;margin:6px -8px;border-width:4px 6px;border-right-color:#fff;float:right;}';
-    css+='div.uno li a span.name{text-align:right;display:block;'+css_AuthorListItemA_name+'background-color:#fff;}div.uno li a:hover span.name{color:#fff;background-color:#0771C1;}';
+    css+='div.uno li a span.name{text-align:right;display:block;'+css_AuthorListItemA_name+'background-color:#fff;}div.uno li a.sel span.name{color:#fff;background-color:#0771C1;}';
     css+='div.uno li a span.name.noname{color:#000;}';
     css+='div.uno li a span.name.collapsed{color:#999999;}';
     css+='div.uno li a span.name.friend{font-style:italic;}';
     css+='div.uno table.plus{float:right;margin:7px -9px;height:7px;border-collapse:collapse;border-style:hidden;}div.uno table.plus td{border:1px solid #fff;width:1px;height:1px;}';
-    css+='div.uno a:hover table.plus{}div.uno a:hover table.plus td{}';
-    css+='div.uno li a span.func{text-align:center;}\n';
+    css+='div.uno a.sel table.plus{}div.uno a.sel table.plus td{}';
+    css+='div.uno li a span.func{text-align:center;}';
+    css+='div.izh-answer-preview{overflow-y:auto;position:fixed;padding:10px;margin-top:1px;margin-left:1px;background-color:#fff;border:1px solid #0771C1;border-top-right-radius:6px;border-left-width:0;box-shadow:5px 5px 5px #777;}\n';
 }
 if(izhQuickFavo){
     css+='div.izh_fav{padding:5px;display:none;position:absolute;z-index:10;border:1px solid #999999;background-color:#fff}';
