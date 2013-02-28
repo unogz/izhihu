@@ -13,10 +13,10 @@ utils.getCfg = function(key){
    ,'answer_orderByTime': false
    ,'AuthorList':true
    ,'ShowComment':true
-   ,'HomeLayout':true
+   ,'HomeLayout':false
    ,'QuickFavo':true
-   ,'AuthorRear':true
-   ,'HomeNoti':true
+   ,'AuthorRear':false
+   ,'HomeNoti':false
   };
   obj = _.extend(obj, this.getValue('izhihu'));
   return key ? obj[key] : obj;
