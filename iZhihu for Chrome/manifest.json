@@ -3,16 +3,34 @@
   , "content_scripts": [ {
         "exclude_globs":    [  ]
       , "include_globs":    [ "*" ]
+<<<<<<< HEAD
       , "js":               [ "126619.user.js" ]
+=======
+      , "js":               [ "jquery-1.9.1.min.js","126619.user.js" ]
+>>>>>>> For CRX
       , "matches":          [   "http://www.zhihu.com/*"
                             ]
       , "run_at": "document_end"
     } ]
   , "converted_from_user_script": true
   , "description":  ""
+<<<<<<< HEAD
   , "name":         "iZhihu"
   , "version":      "1.10"
   , "permissions": [
         "http://*.zhihu.com/"
         ]
 }
+=======
+<<<<<<< HEAD
+  , "name":         "iZhihu for Chrome"
+  , "version":      "2.0"
+=======
+  , "name":         "iZhihu"
+  , "version":      "1.10"
+>>>>>>> branch 'master' of https://github.com/unogz/izhihu.git
+  , "permissions": [
+        "http://*.zhihu.com/"
+        ]
+}
+>>>>>>> For CRX
