@@ -143,19 +143,19 @@ function processAnswer($a){
             if ($ppl.width()>ppWidth)
                 ppWidth=$ppl.width();
             $ppla.mouseover(function(){
+                var $frm=$(this.parentNode.parentNode.parentNode)
+                  , $uno=$frm.parent().mouseover();
                 $(this).addClass('sel');
-                var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
-                  , $frm=$uno.children('.frame');
                 if(_e){
                     $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                     $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
                 }
                 var aid=$(this).attr('href').slice(1)
+                  , prv=$uno.next('.izh-answer-preview')
+                  , top=$(this).position().top+$uno.position().top
                   , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text > .zm-editable-content'
                   , ctx=$('span',this).is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
                   , div=$(sel,ctx)
-                  , prv=$uno.next('.izh-answer-preview')
-                  , top=$(this).position().top+$uno.position().top
                 ;
                 if(!prv.length){
                     prv=$('<div>',{
@@ -171,15 +171,16 @@ function processAnswer($a){
                 }else if(prv.attr('data-aid')!=aid){
                     prv.html(div.html()).attr('data-aid',aid).find('a').attr('onclick','return false;');
                 }
-                var th=div.height();
-                if(th<$(unsafeWindow).height()-$main.offset().top){
-                    if(top+th>$(unsafeWindow).height()){
-                        prv.css({'top':'','bottom':0});
+                var th=div.height()+33
+                  , maxTop=$main.offset().top+3;
+                if(maxTop+th<$(unsafeWindow).height()){
+                    if(top+th+3<$(unsafeWindow).height()){
+                        prv.css({'top':top+3>maxTop?top:maxTop,'bottom':''});
                     }else{
-                        prv.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
+                        prv.css({'top':'','bottom':0});
                     }
                 }else{
-                    prv.css({'top':$main.offset().top,'bottom':0});
+                    prv.css({'top':maxTop,'bottom':0});
                 }
                 prv.css({'left':$uno.width()}).show();
             }).mouseout(function(){
@@ -399,16 +400,16 @@ function processAnswer($a){
             $f.height('');
         }
         $f.width(width);
-        $uno.css({
-            'float':'none'
-          , 'left':10-width
-        });
     };
     var $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
       , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text());
     if(isNaN(numCollapsedCount))numCollapsedCount=0;
     if($listAnswers.length||numCollapsedCount){
         if(izhAuthorList){
+            $uno.css({
+                'float':'none'
+              , 'left':10-$uno.width()
+            });
             if(!$btnCollapsedSwitcher.length&&!numCollapsedCount)
                 resizeAuthorList($frm);
             $('<div>',{'class':'modal-dialog-title'}).append(
@@ -434,8 +435,6 @@ function processAnswer($a){
             $uno.mouseover(function(){
                 resizeAuthorList($('.frame',this));
                 $(this).css('left','0');
-            });
-            $uno.mouseout(function(){
             });
             if(_e){
                 $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
