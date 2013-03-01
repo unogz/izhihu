@@ -5633,7 +5633,7 @@ if (pageIs.Question && izhAuthorList) {
     css += "div.uno li a span.name.noname{color:#000;}";
     css += "div.uno li a span.name.collapsed{color:#999999;}";
     css += "div.uno li a span.name.friend{font-style:italic;}";
-    css += "div.uno li span.hp{background-color:#C3412F;position:absolute;right:10px;margin-top:-2px;line-height:2px;height:2px;}";
+    css += "div.uno li span.hp{background-color:#C3412F;position:relative;float:right;margin-top:-2px;line-height:2px;height:2px;}";
     css += "div.uno table.plus{float:right;margin:7px -9px;height:7px;border-collapse:collapse;border-style:hidden;}div.uno table.plus td{border:1px solid #fff;width:1px;height:1px;}";
     css += "div.uno a.sel table.plus{}div.uno a.sel table.plus td{}";
     css += "div.uno li a span.func{text-align:center;}";
@@ -5878,7 +5878,10 @@ $(function() {
                     var nHP = Math.ceil($(".zm-editable-content", $a).text().length / 100);
                     $("<span>", {
                         "class": "hp"
-                    }).width(nHP * 10).appendTo($ppla);
+                    }).css({
+                        width: nHP * 10,
+                        "margin-left": -nHP * 10
+                    }).appendTo($ppla);
                     $ppla.mouseover(function() {
                         var $frm = $(this.parentNode.parentNode.parentNode), $uno = $frm.parent().mouseover();
                         $(this).addClass("sel");
