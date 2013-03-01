@@ -287,14 +287,27 @@ function processAnswer($a){
                 });
                 var $u=$('.zm-comment-hd',$cm);
                 $u.each(function(i,e){
-                    $('<a>',{'class':'zg-icon',html:'',href:'javascript:void(0);'}).css({
+                    $('<a>',{'class':'zg-icon izh-block',html:'',href:'javascript:void(0);'}).css({
                         'background-position':'-146px -202px'
                       , 'float':'right'
                       , 'width':16
                       , 'height':16
                     }).appendTo(e).click(function(){
                         $.post('http://www.zhihu.com'+$(this).prev().attr('href')+'/block',$.param({action:'add'}),function(r){console.log(r);if(!r.r)alert('Done!');});
-                    });
+                    }).hide();
+                });
+                $('<a>',{'class':'',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+                    'position':'absolute'
+                  , 'right':10, 'top':70
+                }).prependTo($cm).click(function(){
+                    if(this.getAttribute('on')=='1'){
+                    	$('.zm-comment-hd .izh-block').hide();
+                    	this.setAttribute('on','0');
+                    }
+                    else{
+                    	$('.zm-comment-hd .izh-block').show();
+                    	this.setAttribute('on','1');
+                    }
                 });
                 showComment($cm.parents('.zm-item-answer'),$cm);
                 $('i.zm-comment-bubble',$cm).hide();
@@ -330,8 +343,10 @@ function processAnswer($a){
                 });
             }
             if(!$cm.hasClass('empty')&&$cm.children('a.zu-question-answer-meta-comment').length<=0){
-                var $btnCC=$('<a class="zu-question-answer-meta-comment"><i class="z-icon-fold"></i>收起</a>')
-                    .click(function(){
+                var $btnCC=$('<a>',{
+                    	'class':'zu-question-answer-meta-comment'
+                      , html:'收起'
+                   	}).click(function(){
                         var $a=$(this).parents('.zm-item-answer');
                         hideComment($a);
                         $a.find('[name=addcomment]')[0].click();
@@ -341,13 +356,15 @@ function processAnswer($a){
                         'cursor':'pointer'
                       , 'position':'absolute'
                       , 'top':70
-                    }).insertBefore($cm.children(':first'));
+                    }).insertBefore($cm.children(':first'))
+                    .prepend('<i class="zg-icon"style="background-position:-176px -112px;width:15px;height:15px;"></i>');
                 }else{
                     $btnCC.css({
                         'float':'right'
                       , 'cursor':'pointer'
                       , 'margin-right':5
-                    }).appendTo($cm);
+                    }).appendTo($cm)
+                    .prepend('<i class="z-icon-fold"></i>');
                 }
             }
         }
