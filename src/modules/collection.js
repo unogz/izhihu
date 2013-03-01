@@ -16,7 +16,10 @@ $(function(){
       var allLinksCollection=new allLinks('Collections','#zh-list-answer-wrap','收藏夹');
 	  if(!allLinksCollection.initDialog())return;
       $('.modal-dialog-bg').show();
-      allLinksCollection.$dlg.css({'top': btn.position().top + 60, 'left': (window.innerWidth - allLinksCollection.$dlg.width()) / 2}).fadeIn('slow');
+      var y = ($(unsafeWindow).height() - allLinksCollection.$dlg.width()) / 2
+        , x = ($(unsafeWindow).width() - allLinksCollection.$dlg.width()) / 2
+      ;
+      allLinksCollection.$dlg.css({'top': y, 'left': x}).fadeIn('slow');
       allLinksCollection.start();
     });
   }
@@ -34,7 +37,10 @@ $(function(){
       var allLinksAnswers=new allLinks('Answers','#zh-profile-answer-list .zh-general-list','用户回答');
 	  if(!allLinksAnswers.initDialog())return;
       $('.modal-dialog-bg').show();
-      allLinksAnswers.$dlg.css({'top': btn.position().top + 60, 'left': (window.innerWidth - allLinksAnswers.$dlg.width()) / 2}).fadeIn('slow');
+      var y = ($(unsafeWindow).height() - allLinksAnswers.$dlg.width()) / 2
+        , x = ($(unsafeWindow).width() - allLinksAnswers.$dlg.width()) / 2
+      ;
+      allLinksAnswers.$dlg.css({'top': y, 'left': x}).fadeIn('slow');
       allLinksAnswers.start();
     });
   }

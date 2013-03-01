@@ -123,6 +123,7 @@ var handlerCollections=function(msg,$dlg){
     $.post(window.location, $.param({
         offset: 0
       , start: next
+      , _xsrf: $('input[name=_xsrf]').val()
     }),function(r){
       handler(r.msg,$('.modal-dialog.allLinks'));
     });
@@ -142,6 +143,7 @@ var handlerAnswers=function(msg,$dlg){
         $.post(s, $.param({
             method:'next'
           , params:JSON.stringify(param.params)
+          , _xsrf: $('input[name=_xsrf]').val()
         }),function(r){
           handler([r.msg.length,r.msg.join(''),r.msg.length?String(r.msg.length):'-1'],$('.modal-dialog.allLinks'));
         });
