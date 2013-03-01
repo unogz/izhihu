@@ -145,7 +145,7 @@ function processAnswer($a){
             var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
             $('<span>',{
                 'class':'hp'
-            }).width(nHP*10).appendTo($ppla);
+            }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
             $ppla.mouseover(function(){
                 var $frm=$(this.parentNode.parentNode.parentNode)
                   , $uno=$frm.parent().mouseover();
