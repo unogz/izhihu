@@ -285,6 +285,17 @@ function processAnswer($a){
                         }
                     }
                 });
+                var $u=$('.zm-comment-hd',$cm);
+                $u.each(function(i,e){
+                    $('<a>',{'class':'zg-icon',html:'',href:'javascript:void(0);'}).css({
+                        'background-position':'-146px -202px'
+                      , 'float':'right'
+                      , 'width':16
+                      , 'height':16
+                    }).appendTo(e).click(function(){
+                        $.post('http://www.zhihu.com'+$(this).prev().attr('href')+'/block',$.param({action:'add'}),function(r){console.log(r);if(!r.r)alert('Done!');});
+                    });
+                });
                 showComment($cm.parents('.zm-item-answer'),$cm);
                 $('i.zm-comment-bubble',$cm).hide();
                 $('.zm-comment-list',$cm).css({
