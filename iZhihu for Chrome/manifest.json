@@ -3,7 +3,7 @@
   , "content_scripts": [ {
         "exclude_globs":    [  ]
       , "include_globs":    [ "*" ]
-      , "js":               [ "jquery-1.9.1.min.js","126619.user.js" ]
+      , "js":               [ "jquery.min.js","126619.user.js" ]
       , "matches":          [   "http://www.zhihu.com/*"
                             ]
       , "run_at": "document_end"
