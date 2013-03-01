@@ -15,6 +15,7 @@
   , "converted_from_user_script": true
   , "description":  ""
 <<<<<<< HEAD
+<<<<<<< HEAD
   , "name":         "iZhihu"
   , "version":      "1.10"
   , "permissions": [
@@ -26,9 +27,10 @@
   , "name":         "iZhihu for Chrome"
   , "version":      "2.0"
 =======
+=======
+>>>>>>> For CRX
   , "name":         "iZhihu"
-  , "version":      "1.10"
->>>>>>> branch 'master' of https://github.com/unogz/izhihu.git
+  , "version":      "2.0"
   , "permissions": [
         "http://*.zhihu.com/"
         ]
