@@ -142,6 +142,10 @@ function processAnswer($a){
             }).appendTo($ppla);
             if ($ppl.width()>ppWidth)
                 ppWidth=$ppl.width();
+            var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
+            $('<span>',{
+                'class':'hp'
+            }).width(nHP*10).appendTo($ppla);
             $ppla.mouseover(function(){
                 var $frm=$(this.parentNode.parentNode.parentNode)
                   , $uno=$frm.parent().mouseover();
@@ -150,40 +154,52 @@ function processAnswer($a){
                     $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                     $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
                 }
+                var nam=$('span.name',this);
+                if(!nam.length)return;
                 var aid=$(this).attr('href').slice(1)
                   , prv=$uno.next('.izh-answer-preview')
                   , top=$(this).position().top+$uno.position().top
                   , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
-                  , ctx=$('span',this).is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
+                  , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
                   , div=$(sel,ctx)
-                  , htm=div.html()+$('a.zm-item-link-avatar',div.parent()).html()
+                  , htm=div.html()
+                  , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
                 ;
                 if(!prv.length){
                     prv=$('<div>',{
                             'class':div.class
-                          , html:htm
-                        }).attr('data-aid',aid)
-                        .addClass('izh-answer-preview').width(div.width())
+                        })
+                        .addClass('izh-answer-preview').width(div.width()+22)
                         .mouseover(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
                         .mouseout(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
                         .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
-                        .insertAfter($uno).find('a').attr('onclick','return false;')
+                        .insertAfter($uno)
                     ;
-                }else if(prv.attr('data-aid')!=aid){
-                    prv.html(htm).attr('data-aid',aid).find('a').attr('onclick','return false;');
+                }
+                if(prv.attr('data-aid')!=aid){
+                    prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
+                    if($('span.me',this).length)
+                        prv.find('a.zu-edit-button').remove();
+                    if(!nam.hasClass('noname'))
+                        $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
+                    var t=cmt.text(),i=t.indexOf('条评论');
+                    if(cmt.length&&i>0)
+                        $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
                 }
                 var th=div.height()+33
-                  , maxTop=$main.offset().top+3;
+                  , maxTop=$uno.position().top+12
+                  , contentPosition='';
                 if(maxTop+th<$(unsafeWindow).height()){
-                    if(top+th+3<$(unsafeWindow).height()){
-                        prv.css({'top':top+3>maxTop?top:maxTop,'bottom':''});
+                    if(top+th<$(unsafeWindow).height()){
+                        prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
                     }else{
                         prv.css({'top':'','bottom':0});
                     }
                 }else{
                     prv.css({'top':maxTop,'bottom':0});
+                    contentPosition='absolute';
                 }
-                prv.css({'left':$uno.width()}).show();
+                prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
             }).mouseout(function(){
                 $(this).removeClass('sel');
                 var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
