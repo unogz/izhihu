@@ -4,10 +4,14 @@
         "exclude_globs":    [  ]
       , "include_globs":    [ "*" ]
 <<<<<<< HEAD
+<<<<<<< HEAD
       , "js":               [ "126619.user.js" ]
 =======
       , "js":               [ "jquery-1.9.1.min.js","126619.user.js" ]
 >>>>>>> For CRX
+=======
+      , "js":               [ "jquery.min.js","126619.user.js" ]
+>>>>>>> Fixed
       , "matches":          [   "http://www.zhihu.com/*"
                             ]
       , "run_at": "document_end"
