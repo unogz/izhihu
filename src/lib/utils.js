@@ -8,6 +8,7 @@ function utils(){
  * 读取配置
  */
 utils.getCfg = function(key){
+  if(!key)return false;
   var obj = {
     'comment_sidebar': true
    ,'answer_orderByTime': false
@@ -17,9 +18,28 @@ utils.getCfg = function(key){
    ,'QuickFavo':true
    ,'AuthorRear':false
    ,'HomeNoti':false
+   ,'QuickBlock':false
   };
-  obj = _.extend(obj, this.getValue('izhihu'));
+  obj = _.extend(obj, this.getValue('izhihu',obj[key]));
   return key ? obj[key] : obj;
+};
+
+utils.setCfg = function(key,value){
+  if(!key)return;
+  var obj = {
+    'comment_sidebar': true
+   ,'answer_orderByTime': false
+   ,'AuthorList':true
+   ,'ShowComment':true
+   ,'HomeLayout':false
+   ,'QuickFavo':true
+   ,'AuthorRear':false
+   ,'HomeNoti':false
+   ,'QuickBlock':false
+  };
+  obj = _.extend(obj, this.getValue('izhihu',obj[key]));
+  obj[key]=value;
+  this.setValue('izhihu',obj);
 };
 
 /**
