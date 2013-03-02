@@ -26,7 +26,71 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
       , 'border':'1px solid #999999'
       , 'padding':'100px 0px 0px 10px'
     }
-  ;
+  , css_QuickBlock={
+        'background-position':'-146px -202px'
+      , 'width':16
+      , 'height':16
+  	}
+  , quickBlock=function($e){
+        $.post('http://www.zhihu.com'+$e.attr('href')+'/block',$.param({action:'add'}),function(r){
+            var u=this.url.replace(/http:\/\/www.zhihu.com/g,'').replace(/\/block/g,'');
+            $('a[href="'+u+'"]').css('text-decoration','line-through');
+        });
+  	}
+  , addQuickBlock=function($vi){
+      if($vi.is('.zm-item-vote-info')){
+          var $u=$('.voters a[href^="/people/"]',$vi);
+          $u.each(function(i,e){
+              $('<input>',{'class':'izh-quick-block-sel',type:'checkbox'}).css({
+              }).insertBefore(e).hide();
+          });
+          var width=$vi.closest('.zm-item-answer').width()
+            , $btnQuickBlock=$('<a>',{'class':'izh-quick-block',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+                  'position':'absolute'
+                , 'left':width
+                , 'width':'4em'
+              }).click(function(){
+                  if(this.getAttribute('on')=='1'){
+                  	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
+                  	$(this).nextAll('[class^=izh-quick-block]').hide();
+                  	this.setAttribute('on','0');
+                  }
+                  else{
+                  	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
+                  	$(this).nextAll('[class^=izh-quick-block]').show();
+                  	this.setAttribute('on','1');
+                  }
+              }).insertBefore($vi);
+          $('<a>',{'class':'izh-quick-block-do zg-icon',href:'javascript:void(0);'})
+          	.css($.extend(css_QuickBlock,{
+          	    'position':'absolute'
+          	  , 'left':width
+          	  , 'margin-top':'2.5em'
+          	  , 'margin-left':'2.5em'
+          	})).click(function(){
+          	    $('.zm-item-vote-info input.izh-quick-block-sel:checked',this.parentNode).each(function(i,e){
+          	        quickBlock($(e).next());
+          	    });
+          	}).insertAfter($btnQuickBlock).hide();
+          $('<a>',{'class':'izh-quick-block-selAll',html:'不选',href:'javascript:void(0);'}).css({
+              'position':'absolute'
+            , 'left':width
+            , 'width':'2em'
+            , 'margin-top':'3em'
+          }).click(function(){
+          	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).removeAttr('checked');
+          }).insertAfter($btnQuickBlock).hide();
+          $('<a>',{'class':'izh-quick-block-notAll',html:'全选',href:'javascript:void(0);'}).css({
+              'position':'absolute'
+            , 'left':width
+            , 'width':'2em'
+            , 'margin-top':'1.5em'
+          }).click(function(){
+          	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).attr('checked','checked');
+          }).insertAfter($btnQuickBlock).hide();
+      }
+  }
+;
 
 function showComment($ac,$cm){
     $('.zm-item-answer').not('[data-aid='+$ac.attr('data-aid')+']')
@@ -115,6 +179,15 @@ function processAnswer($a){
         }
         $p=$p.children().first().children().eq(1);
         if($a.length){
+            // Region: 快速屏蔽
+            var $answerHead=$('.answer-head',$a);
+            if($('[name=more]',$answerHead).length){
+                $answerHead.bind('DOMNodeInserted',function(event){
+                    addQuickBlock($(event.target));
+                });
+            }
+            // Region end
+            // Region: 回答目录项
             var $ppla=$('<a>',{
                         href:'#'+$a.attr('data-aid')
                       , target:'_self'
@@ -142,10 +215,13 @@ function processAnswer($a){
             }).appendTo($ppla);
             if ($ppl.width()>ppWidth)
                 ppWidth=$ppl.width();
+            // Region end
+            // Region: 回答篇幅指示
             var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
             $('<span>',{
                 'class':'hp'
             }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
+            // Region end
             $ppla.mouseover(function(){
                 var $frm=$(this.parentNode.parentNode.parentNode)
                   , $uno=$frm.parent().mouseover();
@@ -154,6 +230,7 @@ function processAnswer($a){
                     $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
                     $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
                 }
+                // Region: 回答预览
                 var nam=$('span.name',this);
                 if(!nam.length)return;
                 var aid=$(this).attr('href').slice(1)
@@ -200,12 +277,13 @@ function processAnswer($a){
                     contentPosition='absolute';
                 }
                 prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
+                // Region end
             }).mouseout(function(){
                 $(this).removeClass('sel');
-                var $uno=$(this.parentNode.parentNode.parentNode.parentNode)
-                ;
+                var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
                 $uno.next().hide();
             }).click(function(){$(this).mouseout();$uno.css('left',10-$uno.width());});
+
             if(_e==$a.get(0)){
                 _e=$ppla.get(0);
             }
@@ -285,30 +363,27 @@ function processAnswer($a){
                         }
                     }
                 });
+                // Region: 快速屏蔽
                 var $u=$('.zm-comment-hd',$cm);
                 $u.each(function(i,e){
-                    $('<a>',{'class':'zg-icon izh-block',html:'',href:'javascript:void(0);'}).css({
-                        'background-position':'-146px -202px'
-                      , 'float':'right'
-                      , 'width':16
-                      , 'height':16
-                    }).appendTo(e).click(function(){
-                        $.post('http://www.zhihu.com'+$(this).prev().attr('href')+'/block',$.param({action:'add'}),function(r){console.log(r);if(!r.r)alert('Done!');});
-                    }).hide();
+                    $('<a>',{'class':'zg-icon izh-quick-block-do',html:'',href:'javascript:void(0);'})
+                    	.css($.extend(css_QuickBlock,{'float':'right'}))
+                    	.click(function(){quickBlock($(this).next());}).prependTo(e).hide();
                 });
                 $('<a>',{'class':'',html:'快速屏蔽',href:'javascript:void(0);'}).css({
                     'position':'absolute'
                   , 'right':10, 'top':70
                 }).prependTo($cm).click(function(){
                     if(this.getAttribute('on')=='1'){
-                    	$('.zm-comment-hd .izh-block').hide();
+                    	$('.zm-comment-hd .izh-quick-block-do').hide();
                     	this.setAttribute('on','0');
                     }
                     else{
-                    	$('.zm-comment-hd .izh-block').show();
+                    	$('.zm-comment-hd .izh-quick-block-do').show();
                     	this.setAttribute('on','1');
                     }
                 });
+                // Region end
                 showComment($cm.parents('.zm-item-answer'),$cm);
                 $('i.zm-comment-bubble',$cm).hide();
                 $('.zm-comment-list',$cm).css({

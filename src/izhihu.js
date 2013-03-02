@@ -18,7 +18,9 @@ var izhHomeLayout = utils.getCfg('HomeLayout')
   , izhShowComment = utils.getCfg('ShowComment')
   , izhQuickFavo = utils.getCfg('QuickFavo')
   , izhAuthorRear = utils.getCfg('AuthorRear')
-  , izhHomeNoti = utils.getCfg('HomeNoti');
+  , izhHomeNoti = utils.getCfg('HomeNoti')
+  , izhQuickBlock = utils.getCfg('QuickBlock')
+;
 
 var pageIs={}
   , _doc=window.document
