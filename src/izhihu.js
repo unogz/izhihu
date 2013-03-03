@@ -22,6 +22,8 @@ var izhHomeLayout = utils.getCfg('HomeLayout')
   , izhQuickBlock = utils.getCfg('QuickBlock')
 ;
 
+utils.transferOldCfg();
+
 var pageIs={}
   , _doc=window.document
   , _path=window.frameElement?window.frameElement.src.replace(/https?:\/\/www.zhihu.com/,''):url.data.attr['path']

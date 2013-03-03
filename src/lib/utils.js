@@ -57,6 +57,47 @@ utils.deleteValue = function(key){
   return delete localStorage[key];
 };
 
+utils.transferOldCfg=function(){
+    var oldHomeLayout = localStorage['izh_HomeLayout']
+      , oldAuthorList = localStorage['izh_AuthorList']
+      , oldShowComment = localStorage['izh_ShowComment']
+      , oldQuickFavo = localStorage['izh_QuickFavo']
+      , oldAuthorRear = localStorage['izh_AuthorRear']
+      , oldHomeNoti = localStorage['izh_HomeNoti']
+    ;
+    if(oldHomeLayout){
+        izhHomeLayout=oldHomeLayout;
+        localStorage.removeItem('izh_HomeLayout');
+        this.setCfg('HomeLayout',izhHomeLayout);
+    }
+    if(oldAuthorList){
+        izhAuthorList=oldAuthorList;
+        localStorage.removeItem('izh_AuthorList');
+        this.setCfg('AuthorList',izhAuthorList);
+    }
+    if(oldShowComment){
+        izhShowComment=oldShowComment;
+        localStorage.removeItem('izh_ShowComment');
+        this.setCfg('ShowComment',izhShowComment);
+    }
+    if(oldQuickFavo){
+        izhQuickFavo=oldQuickFavo;
+        localStorage.removeItem('izh_QuickFavo');
+        this.setCfg('QuickFavo',izhQuickFavo);
+    }
+    if(oldAuthorRear){
+        izhAuthorRear=oldAuthorRear;
+        localStorage.removeItem('izh_AuthorRear');
+        this.setCfg('AuthorRear',izhAuthorRear);
+    }
+    if(oldHomeNoti){
+        izhHomeNoti=oldHomeNoti;
+        localStorage.removeItem('izh_HomeNoti');
+        this.setCfg('HomeNoti',izhHomeNoti);
+    }
+
+}
+
 
 /**
  * @method formatStr
