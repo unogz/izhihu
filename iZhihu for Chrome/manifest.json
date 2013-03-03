@@ -20,6 +20,7 @@
   , "description":  ""
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   , "name":         "iZhihu"
   , "version":      "1.10"
   , "permissions": [
@@ -34,6 +35,9 @@
 =======
 >>>>>>> For CRX
   , "name":         "iZhihu"
+=======
+  , "name":         "iZhihu 测试版"
+>>>>>>> For 2.0
   , "version":      "2.0"
   , "permissions": [
         "http://*.zhihu.com/"
