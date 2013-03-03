@@ -4,56 +4,50 @@
 function utils(){
 };
 
+var cfgDefault = {
+    'comment_sidebar': true
+  , 'answer_orderByTime': false
+  , 'AuthorList':false
+  , 'ShowComment':true
+  , 'HomeLayout':false
+  , 'QuickFavo':true
+  , 'AuthorRear':false
+  , 'HomeNoti':false
+  , 'QuickBlock':false
+};
+  
 /**
  * 读取配置
  */
 utils.getCfg = function(key){
   if(!key)return false;
-  var obj = {
-    'comment_sidebar': true
-   ,'answer_orderByTime': false
-   ,'AuthorList':true
-   ,'ShowComment':true
-   ,'HomeLayout':false
-   ,'QuickFavo':true
-   ,'AuthorRear':false
-   ,'HomeNoti':false
-   ,'QuickBlock':false
-  };
-  obj = _.extend(obj, this.getValue('izhihu',obj[key]));
-  return key ? obj[key] : obj;
+  var cfg = _.extend(cfgDefault, this.getValue('izhihu',cfgDefault));
+  return key ? cfg[key] : cfg;
 };
 
 utils.setCfg = function(key,value){
   if(!key)return;
-  var obj = {
-    'comment_sidebar': true
-   ,'answer_orderByTime': false
-   ,'AuthorList':true
-   ,'ShowComment':true
-   ,'HomeLayout':false
-   ,'QuickFavo':true
-   ,'AuthorRear':false
-   ,'HomeNoti':false
-   ,'QuickBlock':false
-  };
-  obj = _.extend(obj, this.getValue('izhihu',obj[key]));
-  obj[key]=value;
-  this.setValue('izhihu',obj);
+  var cfg = _.extend(cfgDefault, this.getValue('izhihu',cfgDefault));
+  cfg[key]=value;
+  this.setValue('izhihu',cfg);
 };
 
 /**
  * 读取存储
  */
 utils.getValue = function(key, defaultValue){
-  return localStorage[key] || defaultValue;
+    var v=localStorage[key];
+    if(v)
+        return JSON.parse(v);
+    else
+        return defaultValue;
 };
 
 /**
  * 写入存储
  */
 utils.setValue = function(key, value){
-  return localStorage[key] = value;
+  localStorage[key] = JSON.stringify(value);
 };
 
 /**
