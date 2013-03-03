@@ -4384,36 +4384,47 @@ var selectText = function(element) {
  */
 function utils() {}
 
+var cfgDefault = {
+    comment_sidebar: true,
+    answer_orderByTime: false,
+    AuthorList: false,
+    ShowComment: true,
+    HomeLayout: false,
+    QuickFavo: true,
+    AuthorRear: false,
+    HomeNoti: false,
+    QuickBlock: false
+};
+
 /**
  * 读取配置
  */
 utils.getCfg = function(key) {
-    var obj = {
-        comment_sidebar: true,
-        answer_orderByTime: false,
-        AuthorList: true,
-        ShowComment: true,
-        HomeLayout: false,
-        QuickFavo: true,
-        AuthorRear: false,
-        HomeNoti: false
-    };
-    obj = _.extend(obj, this.getValue("izhihu"));
-    return key ? obj[key] : obj;
+    if (!key) return false;
+    var cfg = _.extend(cfgDefault, this.getValue("izhihu", cfgDefault));
+    return key ? cfg[key] : cfg;
+};
+
+utils.setCfg = function(key, value) {
+    if (!key) return;
+    var cfg = _.extend(cfgDefault, this.getValue("izhihu", cfgDefault));
+    cfg[key] = value;
+    this.setValue("izhihu", cfg);
 };
 
 /**
  * 读取存储
  */
 utils.getValue = function(key, defaultValue) {
-    return localStorage[key] || defaultValue;
+    var v = localStorage[key];
+    if (v) return JSON.parse(v); else return defaultValue;
 };
 
 /**
  * 写入存储
  */
 utils.setValue = function(key, value) {
-    return localStorage[key] = value;
+    localStorage[key] = JSON.stringify(value);
 };
 
 /**
@@ -4421,6 +4432,40 @@ utils.setValue = function(key, value) {
  */
 utils.deleteValue = function(key) {
     return delete localStorage[key];
+};
+
+utils.transferOldCfg = function() {
+    var oldHomeLayout = localStorage["izh_HomeLayout"], oldAuthorList = localStorage["izh_AuthorList"], oldShowComment = localStorage["izh_ShowComment"], oldQuickFavo = localStorage["izh_QuickFavo"], oldAuthorRear = localStorage["izh_AuthorRear"], oldHomeNoti = localStorage["izh_HomeNoti"];
+    if (oldHomeLayout) {
+        izhHomeLayout = oldHomeLayout;
+        localStorage.removeItem("izh_HomeLayout");
+        this.setCfg("HomeLayout", izhHomeLayout);
+    }
+    if (oldAuthorList) {
+        izhAuthorList = oldAuthorList;
+        localStorage.removeItem("izh_AuthorList");
+        this.setCfg("AuthorList", izhAuthorList);
+    }
+    if (oldShowComment) {
+        izhShowComment = oldShowComment;
+        localStorage.removeItem("izh_ShowComment");
+        this.setCfg("ShowComment", izhShowComment);
+    }
+    if (oldQuickFavo) {
+        izhQuickFavo = oldQuickFavo;
+        localStorage.removeItem("izh_QuickFavo");
+        this.setCfg("QuickFavo", izhQuickFavo);
+    }
+    if (oldAuthorRear) {
+        izhAuthorRear = oldAuthorRear;
+        localStorage.removeItem("izh_AuthorRear");
+        this.setCfg("AuthorRear", izhAuthorRear);
+    }
+    if (oldHomeNoti) {
+        izhHomeNoti = oldHomeNoti;
+        localStorage.removeItem("izh_HomeNoti");
+        this.setCfg("HomeNoti", izhHomeNoti);
+    }
 };
 
 /**
@@ -4465,7 +4510,9 @@ $(function main() {
     console.log("izhihu started.");
 });
 
-var izhHomeLayout = utils.getCfg("HomeLayout"), izhAuthorList = utils.getCfg("AuthorList"), izhShowComment = utils.getCfg("ShowComment"), izhQuickFavo = utils.getCfg("QuickFavo"), izhAuthorRear = utils.getCfg("AuthorRear"), izhHomeNoti = utils.getCfg("HomeNoti");
+var izhHomeLayout = utils.getCfg("HomeLayout"), izhAuthorList = utils.getCfg("AuthorList"), izhShowComment = utils.getCfg("ShowComment"), izhQuickFavo = utils.getCfg("QuickFavo"), izhAuthorRear = utils.getCfg("AuthorRear"), izhHomeNoti = utils.getCfg("HomeNoti"), izhQuickBlock = utils.getCfg("QuickBlock");
+
+utils.transferOldCfg();
 
 var pageIs = {}, _doc = window.document, _path = window.frameElement ? window.frameElement.src.replace(/https?:\/\/www.zhihu.com/, "") : url.data.attr["path"], css = "", $h = $("head"), $s = $('<style type="text/css"></style>'), iPathAnswers = _path.indexOf("/answers"), iPathCollection = _path.indexOf("/collection");
 
@@ -4627,6 +4674,83 @@ $(function() {
             "border-radius": 0,
             border: "1px solid #999999",
             padding: "100px 0px 0px 10px"
+        }, css_QuickBlock = {
+            "background-position": "-146px -202px",
+            width: 16,
+            height: 16
+        }, quickBlock = function($e) {
+            $.post("http://www.zhihu.com" + $e.attr("href") + "/block", $.param({
+                action: "add"
+            }), function(r) {
+                var u = this.url.replace(/http:\/\/www.zhihu.com/g, "").replace(/\/block/g, "");
+                $('a[href="' + u + '"]').css("text-decoration", "line-through");
+            });
+        }, addQuickBlock = function($vi) {
+            if ($vi.is(".zm-item-vote-info")) {
+                var $u = $('.voters a[href^="/people/"]', $vi);
+                $u.each(function(i, e) {
+                    $("<input>", {
+                        "class": "izh-quick-block-sel",
+                        type: "checkbox"
+                    }).css({}).insertBefore(e).hide();
+                });
+                var width = $vi.closest(".zm-item-answer").width(), $btnQuickBlock = $("<a>", {
+                    "class": "izh-quick-block",
+                    html: "快速屏蔽",
+                    href: "javascript:void(0);"
+                }).css({
+                    position: "absolute",
+                    left: width,
+                    width: "4em"
+                }).click(function() {
+                    if (this.getAttribute("on") == "1") {
+                        $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).hide();
+                        $(this).nextAll("[class^=izh-quick-block]").hide();
+                        this.setAttribute("on", "0");
+                    } else {
+                        $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).show();
+                        $(this).nextAll("[class^=izh-quick-block]").show();
+                        this.setAttribute("on", "1");
+                    }
+                }).insertBefore($vi);
+                $("<a>", {
+                    "class": "izh-quick-block-do zg-icon",
+                    href: "javascript:void(0);"
+                }).css($.extend(css_QuickBlock, {
+                    position: "absolute",
+                    left: width,
+                    "margin-top": "2.5em",
+                    "margin-left": "2.5em"
+                })).click(function() {
+                    $(".zm-item-vote-info input.izh-quick-block-sel:checked", this.parentNode).each(function(i, e) {
+                        quickBlock($(e).next());
+                    });
+                }).insertAfter($btnQuickBlock).hide();
+                $("<a>", {
+                    "class": "izh-quick-block-selAll",
+                    html: "不选",
+                    href: "javascript:void(0);"
+                }).css({
+                    position: "absolute",
+                    left: width,
+                    width: "2em",
+                    "margin-top": "3em"
+                }).click(function() {
+                    $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).removeAttr("checked");
+                }).insertAfter($btnQuickBlock).hide();
+                $("<a>", {
+                    "class": "izh-quick-block-notAll",
+                    html: "全选",
+                    href: "javascript:void(0);"
+                }).css({
+                    position: "absolute",
+                    left: width,
+                    width: "2em",
+                    "margin-top": "1.5em"
+                }).click(function() {
+                    $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).attr("checked", "checked");
+                }).insertAfter($btnQuickBlock).hide();
+            }
         };
         function showComment($ac, $cm) {
             $(".zm-item-answer").not("[data-aid=" + $ac.attr("data-aid") + "]").find(".zm-comment-box:visible").each(function(i, e) {
@@ -4725,102 +4849,118 @@ $(function() {
                 }
                 $p = $p.children().first().children().eq(1);
                 if ($a.length) {
-                    var $ppla = $("<a>", {
-                        href: "#" + $a.attr("data-aid"),
-                        target: "_self",
-                        style: css_AuthorListItemA
-                    }), $ppl = $("<li>").append($ppla).appendTo($pp);
-                    if ($a.attr("data-isowner") == "1") {
-                        _e = $a.get(0);
-                        $ppla.append('<span class="me"></span>');
-                    }
-                    var nameCSS = "name";
-                    if ($a.attr("data-isfriend") == "1") {
-                        nameCSS += " friend";
-                    }
-                    if ($a.attr("data-collapsed") == "1") {
-                        nameCSS += " collapsed";
-                    }
-                    if (!$p.length) {
-                        nameCSS += " noname";
-                    }
-                    $("<span>", {
-                        "class": nameCSS,
-                        html: !$p.length ? "匿名用户" : $p.html(),
-                        style: css_AuthorListItemA_name
-                    }).appendTo($ppla);
-                    if ($ppl.width() > ppWidth) ppWidth = $ppl.width();
-                    var nHP = Math.ceil($(".zm-editable-content", $a).text().length / 100);
-                    $("<span>", {
-                        "class": "hp"
-                    }).css({
-                        width: nHP * 10,
-                        "margin-left": -nHP * 10
-                    }).appendTo($ppla);
-                    $ppla.mouseover(function() {
-                        var $frm = $(this.parentNode.parentNode.parentNode), $uno = $frm.parent().mouseover();
-                        $(this).addClass("sel");
-                        if (_e) {
-                            $uno.children(".meT").css("display", 0 > _e.offsetTop - $frm.scrollTop() ? "" : "none");
-                            $uno.children(".meB").css("display", $frm.height() < _e.offsetTop - $frm.scrollTop() + _e.offsetHeight ? "" : "none");
+                    if (izhQuickBlock) {
+                        // Region: 快速屏蔽
+                        var $answerHead = $(".answer-head", $a);
+                        if ($("[name=more]", $answerHead).length) {
+                            $answerHead.bind("DOMNodeInserted", function(event) {
+                                addQuickBlock($(event.target));
+                            });
                         }
-                        var nam = $("span.name", this);
-                        if (!nam.length) return;
-                        var aid = $(this).attr("href").slice(1), prv = $uno.next(".izh-answer-preview"), top = $(this).position().top + $uno.position().top, sel = ".zm-item-answer[data-aid=" + aid + "] > .zm-item-rich-text", ctx = nam.is(".collapsed") ? "#zh-question-collapsed-wrap" : "#zh-question-answer-wrap", div = $(sel, ctx), htm = div.html(), cmt = $(".zm-item-meta > .zu-question-answer-meta-comment", div.parent());
-                        if (!prv.length) {
-                            prv = $("<div>", {
-                                "class": div.class
-                            }).addClass("izh-answer-preview").width(div.width() + 22).mouseover(function() {
-                                $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).addClass("sel");
-                                $(this).show();
-                            }).mouseout(function() {
-                                $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).removeClass("sel");
-                                $(this).hide();
-                            }).click(function() {
-                                $("li a[href=#" + $(this).attr("data-aid") + "]", $uno)[0].click();
-                            }).insertAfter($uno);
+                    }
+                    if (izhAuthorList) {
+                        // Region: 回答目录项
+                        var $ppla = $("<a>", {
+                            href: "#" + $a.attr("data-aid"),
+                            target: "_self",
+                            style: css_AuthorListItemA
+                        }), $ppl = $("<li>").append($ppla).appendTo($pp);
+                        if ($a.attr("data-isowner") == "1") {
+                            _e = $a.get(0);
+                            $ppla.append('<span class="me"></span>');
                         }
-                        if (prv.attr("data-aid") != aid) {
-                            prv.attr("data-aid", aid).html(htm).find("a").attr("onclick", "return false;");
-                            if ($("span.me", this).length) prv.find("a.zu-edit-button").remove();
-                            if (!nam.hasClass("noname")) $("img.zm-list-avatar", div.parent()).clone().appendTo(prv);
-                            var t = cmt.text(), i = t.indexOf("条评论");
-                            if (cmt.length && i > 0) $("<span>", {
-                                "class": "comment",
-                                html: t.substring(0, i)
-                            }).prepend(cmt.children("i").clone()).appendTo(prv);
+                        var nameCSS = "name";
+                        if ($a.attr("data-isfriend") == "1") {
+                            nameCSS += " friend";
                         }
-                        var th = div.height() + 33, maxTop = $uno.position().top + 12, contentPosition = "";
-                        if (maxTop + th < $(unsafeWindow).height()) {
-                            if (top + th < $(unsafeWindow).height()) {
-                                prv.css({
-                                    top: top > maxTop ? top : maxTop,
-                                    bottom: ""
-                                });
+                        if ($a.attr("data-collapsed") == "1") {
+                            nameCSS += " collapsed";
+                        }
+                        if (!$p.length) {
+                            nameCSS += " noname";
+                        }
+                        $("<span>", {
+                            "class": nameCSS,
+                            html: !$p.length ? "匿名用户" : $p.html(),
+                            style: css_AuthorListItemA_name
+                        }).appendTo($ppla);
+                        if ($ppl.width() > ppWidth) ppWidth = $ppl.width();
+                        // Region end
+                        // Region: 回答篇幅指示
+                        var nHP = Math.ceil($(".zm-editable-content", $a).text().length / 100);
+                        $("<span>", {
+                            "class": "hp"
+                        }).css({
+                            width: nHP * 10,
+                            "margin-left": -nHP * 10
+                        }).appendTo($ppla);
+                        // Region end
+                        $ppla.mouseover(function() {
+                            var $frm = $(this.parentNode.parentNode.parentNode), $uno = $frm.parent().mouseover();
+                            $(this).addClass("sel");
+                            if (_e) {
+                                $uno.children(".meT").css("display", 0 > _e.offsetTop - $frm.scrollTop() ? "" : "none");
+                                $uno.children(".meB").css("display", $frm.height() < _e.offsetTop - $frm.scrollTop() + _e.offsetHeight ? "" : "none");
+                            }
+                            // Region: 回答预览
+                            var nam = $("span.name", this);
+                            if (!nam.length) return;
+                            var aid = $(this).attr("href").slice(1), prv = $uno.next(".izh-answer-preview"), top = $(this).position().top + $uno.position().top, sel = ".zm-item-answer[data-aid=" + aid + "] > .zm-item-rich-text", ctx = nam.is(".collapsed") ? "#zh-question-collapsed-wrap" : "#zh-question-answer-wrap", div = $(sel, ctx), htm = div.html(), cmt = $(".zm-item-meta > .zu-question-answer-meta-comment", div.parent());
+                            if (!prv.length) {
+                                prv = $("<div>", {
+                                    "class": div.class
+                                }).addClass("izh-answer-preview").width(div.width() + 22).mouseover(function() {
+                                    $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).addClass("sel");
+                                    $(this).show();
+                                }).mouseout(function() {
+                                    $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).removeClass("sel");
+                                    $(this).hide();
+                                }).click(function() {
+                                    $("li a[href=#" + $(this).attr("data-aid") + "]", $uno)[0].click();
+                                }).insertAfter($uno);
+                            }
+                            if (prv.attr("data-aid") != aid) {
+                                prv.attr("data-aid", aid).html(htm).find("a").attr("onclick", "return false;");
+                                if ($("span.me", this).length) prv.find("a.zu-edit-button").remove();
+                                if (!nam.hasClass("noname")) $("img.zm-list-avatar", div.parent()).clone().appendTo(prv);
+                                var t = cmt.text(), i = t.indexOf("条评论");
+                                if (cmt.length && i > 0) $("<span>", {
+                                    "class": "comment",
+                                    html: t.substring(0, i)
+                                }).prepend(cmt.children("i").clone()).appendTo(prv);
+                            }
+                            var th = div.height() + 33, maxTop = $uno.position().top + 12, contentPosition = "";
+                            if (maxTop + th < $(unsafeWindow).height()) {
+                                if (top + th < $(unsafeWindow).height()) {
+                                    prv.css({
+                                        top: top > maxTop ? top : maxTop,
+                                        bottom: ""
+                                    });
+                                } else {
+                                    prv.css({
+                                        top: "",
+                                        bottom: 0
+                                    });
+                                }
                             } else {
                                 prv.css({
-                                    top: "",
+                                    top: maxTop,
                                     bottom: 0
                                 });
+                                contentPosition = "absolute";
                             }
-                        } else {
                             prv.css({
-                                top: maxTop,
-                                bottom: 0
-                            });
-                            contentPosition = "absolute";
-                        }
-                        prv.css({
-                            left: $uno.width()
-                        }).show().children().first().css("position", contentPosition);
-                    }).mouseout(function() {
-                        $(this).removeClass("sel");
-                        var $uno = $(this.parentNode.parentNode.parentNode.parentNode);
-                        $uno.next().hide();
-                    }).click(function() {
-                        $(this).mouseout();
-                        $uno.css("left", 10 - $uno.width());
-                    });
+                                left: $uno.width()
+                            }).show().children().first().css("position", contentPosition);
+                        }).mouseout(function() {
+                            $(this).removeClass("sel");
+                            var $uno = $(this.parentNode.parentNode.parentNode.parentNode);
+                            $uno.next().hide();
+                        }).click(function() {
+                            $(this).mouseout();
+                            $uno.css("left", 10 - $uno.width());
+                        });
+                    }
                     if (_e == $a.get(0)) {
                         _e = $ppla.get(0);
                     }
@@ -4900,43 +5040,38 @@ $(function() {
                                 }
                             }
                         });
-                        var $u = $(".zm-comment-hd", $cm);
-                        $u.each(function(i, e) {
+                        if (izhQuickBlock) {
+                            // Region: 快速屏蔽
+                            var $u = $(".zm-comment-hd", $cm);
+                            $u.each(function(i, e) {
+                                $("<a>", {
+                                    "class": "zg-icon izh-quick-block-do",
+                                    html: "",
+                                    href: "javascript:void(0);"
+                                }).css($.extend(css_QuickBlock, {
+                                    "float": "right"
+                                })).click(function() {
+                                    quickBlock($(this).next());
+                                }).prependTo(e).hide();
+                            });
                             $("<a>", {
-                                "class": "zg-icon izh-block",
-                                html: "",
+                                "class": "",
+                                html: "快速屏蔽",
                                 href: "javascript:void(0);"
                             }).css({
-                                "background-position": "-146px -202px",
-                                "float": "right",
-                                width: 16,
-                                height: 16
-                            }).appendTo(e).click(function() {
-                                $.post("http://www.zhihu.com" + $(this).prev().attr("href") + "/block", $.param({
-                                    action: "add"
-                                }), function(r) {
-                                    console.log(r);
-                                    if (!r.r) alert("Done!");
-                                });
-                            }).hide();
-                        });
-                        $("<a>", {
-                            "class": "",
-                            html: "快速屏蔽",
-                            href: "javascript:void(0);"
-                        }).css({
-                            position: "absolute",
-                            right: 10,
-                            top: 70
-                        }).prependTo($cm).click(function() {
-                            if (this.getAttribute("on") == "1") {
-                                $(".zm-comment-hd .izh-block").hide();
-                                this.setAttribute("on", "0");
-                            } else {
-                                $(".zm-comment-hd .izh-block").show();
-                                this.setAttribute("on", "1");
-                            }
-                        });
+                                position: "absolute",
+                                right: 10,
+                                top: 70
+                            }).prependTo($cm).click(function() {
+                                if (this.getAttribute("on") == "1") {
+                                    $(".zm-comment-hd .izh-quick-block-do").hide();
+                                    this.setAttribute("on", "0");
+                                } else {
+                                    $(".zm-comment-hd .izh-quick-block-do").show();
+                                    this.setAttribute("on", "1");
+                                }
+                            });
+                        }
                         showComment($cm.parents(".zm-item-answer"), $cm);
                         $("i.zm-comment-bubble", $cm).hide();
                         $(".zm-comment-list", $cm).css({
@@ -5137,25 +5272,40 @@ $(function() {
 $(function() {
     var domBtnSettings = [ "<li>", '<a href="javascript:void(0);" tabindex="-1">', '<i class="zg-icon zg-icon-dd-settings izhihu-settings"></i>', "iZhihu", "</a>", "</li>" ].join("");
     var cbemptyimg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII=";
-    var domDlgSettings = [ '<div id="izh-dlg-settings" class="modal-dialog" tabindex="0" style="display:none;width:500px">', '<div class="modal-dialog-title modal-dialog-title-draggable">', '<span class="modal-dialog-title-text">配置选项</span>', '<span class="modal-dialog-title-close"></span>', "</div>", '<div class="modal-dialog-content">', "<div>", '<div class="zg-section">', '<table class="t_set_tb"border="0"cellspacing="0"cellpadding="5"width="100%">', "<thead>", '<tr><td colspan="2"align="left"><b>功能开关</b></td></tr>', "</thead>", "<tbody>", '<tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" /></td></tr>', '<tr><td align="left"title="* 导航部分加宽\n* 首页隐藏大头像\n* 赞同票右移\n* 首页评论框拉宽\n* 过渡效果 ">改变网页样式外观（感谢 <a href="http://www.zhihu.com/people/yukirock">@罗大睿</a>）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" /></td></tr>', '<tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" /></td></tr>', '<tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" /></td></tr>', '<tr><td align="left">在问题页中显示回答者目录（在页面左侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" /></td></tr>', '<tr><td align="left">在回答右侧浮动显示回答的评论</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setShowComment" /></td></tr>', '<tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" /></td></tr>', "</tbody>", "</table>", "</div>", '<div class="zm-command">', '<div class="zg-left">', "</div>", '<a id="Refresh" class="zg-btn-blue" href="javascript:;">刷新网页</a>', "</div>", "</div>", "</div>", "</div>" ].join("");
+    var domDlgSettings = [ '<div id="izh-dlg-settings" class="modal-dialog" tabindex="0" style="display:none;width:500px">', '<div class="modal-dialog-title modal-dialog-title-draggable">', '<span class="modal-dialog-title-text">配置选项</span>', '<span class="modal-dialog-title-close"></span>', "</div>", '<div class="modal-dialog-content">', "<div>", '<div class="zg-section">', '<table class="t_set_tb"border="0"cellspacing="0"cellpadding="5"width="100%">', "<thead>", '<tr><td colspan="2"align="left"><b>功能开关</b>（更改后设置将立刻保存，但只有当页面再次打开时才会生效)</td></tr>', "</thead>", "<tbody>", '<tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" /></td></tr>', '<tr><td align="left"title="* 导航部分加宽\n* 首页隐藏大头像\n* 赞同票右移\n* 首页评论框拉宽\n* 过渡效果 ">改变网页样式外观（感谢 <a href="http://www.zhihu.com/people/yukirock">@罗大睿</a>）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>', '<tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>', '<tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" name="AuthorRear" /></td></tr>', '<tr><td align="left">在问题页中显示回答者目录（在页面左侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" name="AuthorList" /></td></tr>', '<tr><td align="left">在回答右侧浮动显示回答的评论</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setShowComment" name="ShowComment" /></td></tr>', '<tr><td align="left">为赞同列表、评论列表开启「快速黑名单」功能</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickBlock" name="QuickBlock" /></td></tr>', '<tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" name="QuickFavo" /></td></tr>', "</tbody>", "</table>", "</div>", '<div class="zm-command">', '<div class="zg-left">', "</div>", '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>', "</div>", "</div>", "</div>", "</div>" ].join("");
     var d = '<div id="izh-dlg-settings" title="配置选项"><p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the x icon.</p></div>';
     $(domBtnSettings).insertBefore($("ul#top-nav-profile-dropdown li:last")).click(function() {
         console.log(this);
         $(".modal-dialog-bg").show();
+        $(".t_set_tb .t_rtjdchk:checkbox", $dlg).each(function(i, e) {
+            if (utils.getCfg($(e).attr("name"))) $(e).attr("checked", "checked");
+        });
         $("#izh-dlg-settings").css({
-            top: (window.innerHeight - $("#izh-dlg-settings").height()) / 2,
-            left: (window.innerWidth - $("#izh-dlg-settings").width()) / 2
+            position: "fixed",
+            top: ($(unsafeWindow).height() - $("#izh-dlg-settings").height()) / 2,
+            left: ($(unsafeWindow).width() - $("#izh-dlg-settings").width()) / 2
         }).fadeIn("slow");
         $("input:checkbox", "#izh-dlg-settings").checkbox({
             cls: "t_jchkbox",
             empty: cbemptyimg
         });
     });
-    $(domDlgSettings).appendTo(_doc.body).drags({
+    var $dlg = $(domDlgSettings).appendTo(_doc.body);
+    $dlg.drags({
         handler: ".modal-dialog-title-draggable"
-    }).find(".modal-dialog-title-close").click(function() {
+    });
+    $(".modal-dialog-title-close", $dlg).click(function() {
         $(".modal-dialog-bg").hide();
         $("#izh-dlg-settings").first().hide();
+    });
+<<<<<<< HEAD
+});
+>>>>>>> For CRX
+=======
+    $(".t_set_tb .t_rtjdchk:checkbox", $dlg).click(function() {
+        var key = $(this).attr("name"), value = !this.checked;
+        console.log(key + " = " + value);
+        utils.setCfg(key, value);
     });
 });
 >>>>>>> For CRX
