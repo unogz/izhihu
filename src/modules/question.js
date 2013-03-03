@@ -179,111 +179,114 @@ function processAnswer($a){
         }
         $p=$p.children().first().children().eq(1);
         if($a.length){
-            // Region: 快速屏蔽
-            var $answerHead=$('.answer-head',$a);
-            if($('[name=more]',$answerHead).length){
-                $answerHead.bind('DOMNodeInserted',function(event){
-                    addQuickBlock($(event.target));
-                });
-            }
-            // Region end
-            // Region: 回答目录项
-            var $ppla=$('<a>',{
-                        href:'#'+$a.attr('data-aid')
-                      , target:'_self'
-                      , style:css_AuthorListItemA
-                    })
-              , $ppl=$('<li>').append($ppla).appendTo($pp);
-            if($a.attr('data-isowner')=='1'){
-                _e=$a.get(0);
-                $ppla.append('<span class="me"></span>');
-            }
-            var nameCSS='name';
-            if($a.attr('data-isfriend')=='1'){
-                nameCSS+=' friend';
-            }
-            if($a.attr('data-collapsed')=='1'){
-                nameCSS+=' collapsed'
-            }
-            if(!$p.length){
-                nameCSS+=' noname';
-            }
-            $('<span>',{
-                'class':nameCSS
-              , html:!$p.length?'匿名用户':$p.html()
-              , style:css_AuthorListItemA_name
-            }).appendTo($ppla);
-            if ($ppl.width()>ppWidth)
-                ppWidth=$ppl.width();
-            // Region end
-            // Region: 回答篇幅指示
-            var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
-            $('<span>',{
-                'class':'hp'
-            }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
-            // Region end
-            $ppla.mouseover(function(){
-                var $frm=$(this.parentNode.parentNode.parentNode)
-                  , $uno=$frm.parent().mouseover();
-                $(this).addClass('sel');
-                if(_e){
-                    $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
-                    $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
+            if(izhQuickBlock){
+                // Region: 快速屏蔽
+                var $answerHead=$('.answer-head',$a);
+                if($('[name=more]',$answerHead).length){
+                    $answerHead.bind('DOMNodeInserted',function(event){
+                        addQuickBlock($(event.target));
+                    });
                 }
-                // Region: 回答预览
-                var nam=$('span.name',this);
-                if(!nam.length)return;
-                var aid=$(this).attr('href').slice(1)
-                  , prv=$uno.next('.izh-answer-preview')
-                  , top=$(this).position().top+$uno.position().top
-                  , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
-                  , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
-                  , div=$(sel,ctx)
-                  , htm=div.html()
-                  , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
-                ;
-                if(!prv.length){
-                    prv=$('<div>',{
-                            'class':div.class
-                        })
-                        .addClass('izh-answer-preview').width(div.width()+22)
-                        .mouseover(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
-                        .mouseout(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
-                        .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
-                        .insertAfter($uno)
-                    ;
-                }
-                if(prv.attr('data-aid')!=aid){
-                    prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
-                    if($('span.me',this).length)
-                        prv.find('a.zu-edit-button').remove();
-                    if(!nam.hasClass('noname'))
-                        $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
-                    var t=cmt.text(),i=t.indexOf('条评论');
-                    if(cmt.length&&i>0)
-                        $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
-                }
-                var th=div.height()+33
-                  , maxTop=$uno.position().top+12
-                  , contentPosition='';
-                if(maxTop+th<$(unsafeWindow).height()){
-                    if(top+th<$(unsafeWindow).height()){
-                        prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
-                    }else{
-                        prv.css({'top':'','bottom':0});
-                    }
-                }else{
-                    prv.css({'top':maxTop,'bottom':0});
-                    contentPosition='absolute';
-                }
-                prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
                 // Region end
-            }).mouseout(function(){
-                $(this).removeClass('sel');
-                var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
-                $uno.next().hide();
-            }).click(function(){$(this).mouseout();$uno.css('left',10-$uno.width());});
-
+            }
+            if(izhAuthorList){
+                // Region: 回答目录项
+                var $ppla=$('<a>',{
+                            href:'#'+$a.attr('data-aid')
+                          , target:'_self'
+                          , style:css_AuthorListItemA
+                        })
+                  , $ppl=$('<li>').append($ppla).appendTo($pp);
+                if($a.attr('data-isowner')=='1'){
+                    _e=$a.get(0);
+                    $ppla.append('<span class="me"></span>');
+                }
+                var nameCSS='name';
+                if($a.attr('data-isfriend')=='1'){
+                    nameCSS+=' friend';
+                }
+                if($a.attr('data-collapsed')=='1'){
+                    nameCSS+=' collapsed'
+                }
+                if(!$p.length){
+                    nameCSS+=' noname';
+                }
+                $('<span>',{
+                    'class':nameCSS
+                  , html:!$p.length?'匿名用户':$p.html()
+                  , style:css_AuthorListItemA_name
+                }).appendTo($ppla);
+                if ($ppl.width()>ppWidth)
+                    ppWidth=$ppl.width();
+                // Region end
+                // Region: 回答篇幅指示
+                var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
+                $('<span>',{
+                    'class':'hp'
+                }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
+                // Region end
+                $ppla.mouseover(function(){
+                    var $frm=$(this.parentNode.parentNode.parentNode)
+                      , $uno=$frm.parent().mouseover();
+                    $(this).addClass('sel');
+                    if(_e){
+                        $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
+                        $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
+                    }
+                    // Region: 回答预览
+                    var nam=$('span.name',this);
+                    if(!nam.length)return;
+                    var aid=$(this).attr('href').slice(1)
+                      , prv=$uno.next('.izh-answer-preview')
+                      , top=$(this).position().top+$uno.position().top
+                      , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
+                      , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
+                      , div=$(sel,ctx)
+                      , htm=div.html()
+                      , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
+                    ;
+                    if(!prv.length){
+                        prv=$('<div>',{
+                                'class':div.class
+                            })
+                            .addClass('izh-answer-preview').width(div.width()+22)
+                            .mouseover(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
+                            .mouseout(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
+                            .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
+                            .insertAfter($uno)
+                        ;
+                    }
+                    if(prv.attr('data-aid')!=aid){
+                        prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
+                        if($('span.me',this).length)
+                            prv.find('a.zu-edit-button').remove();
+                        if(!nam.hasClass('noname'))
+                            $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
+                        var t=cmt.text(),i=t.indexOf('条评论');
+                        if(cmt.length&&i>0)
+                            $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
+                    }
+                    var th=div.height()+33
+                      , maxTop=$uno.position().top+12
+                      , contentPosition='';
+                    if(maxTop+th<$(unsafeWindow).height()){
+                        if(top+th<$(unsafeWindow).height()){
+                            prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
+                        }else{
+                            prv.css({'top':'','bottom':0});
+                        }
+                    }else{
+                        prv.css({'top':maxTop,'bottom':0});
+                        contentPosition='absolute';
+                    }
+                    prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
+                    // Region end
+                }).mouseout(function(){
+                    $(this).removeClass('sel');
+                    var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
+                    $uno.next().hide();
+                }).click(function(){$(this).mouseout();$uno.css('left',10-$uno.width());});
+            }
             if(_e==$a.get(0)){
                 _e=$ppla.get(0);
             }
@@ -363,27 +366,29 @@ function processAnswer($a){
                         }
                     }
                 });
-                // Region: 快速屏蔽
-                var $u=$('.zm-comment-hd',$cm);
-                $u.each(function(i,e){
-                    $('<a>',{'class':'zg-icon izh-quick-block-do',html:'',href:'javascript:void(0);'})
-                    	.css($.extend(css_QuickBlock,{'float':'right'}))
-                    	.click(function(){quickBlock($(this).next());}).prependTo(e).hide();
-                });
-                $('<a>',{'class':'',html:'快速屏蔽',href:'javascript:void(0);'}).css({
-                    'position':'absolute'
-                  , 'right':10, 'top':70
-                }).prependTo($cm).click(function(){
-                    if(this.getAttribute('on')=='1'){
-                    	$('.zm-comment-hd .izh-quick-block-do').hide();
-                    	this.setAttribute('on','0');
-                    }
-                    else{
-                    	$('.zm-comment-hd .izh-quick-block-do').show();
-                    	this.setAttribute('on','1');
-                    }
-                });
-                // Region end
+                if(izhQuickBlock){
+                    // Region: 快速屏蔽
+                    var $u=$('.zm-comment-hd',$cm);
+                    $u.each(function(i,e){
+                        $('<a>',{'class':'zg-icon izh-quick-block-do',html:'',href:'javascript:void(0);'})
+                        	.css($.extend(css_QuickBlock,{'float':'right'}))
+                        	.click(function(){quickBlock($(this).next());}).prependTo(e).hide();
+                    });
+                    $('<a>',{'class':'',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+                        'position':'absolute'
+                      , 'right':10, 'top':70
+                    }).prependTo($cm).click(function(){
+                        if(this.getAttribute('on')=='1'){
+                        	$('.zm-comment-hd .izh-quick-block-do').hide();
+                        	this.setAttribute('on','0');
+                        }
+                        else{
+                        	$('.zm-comment-hd .izh-quick-block-do').show();
+                        	this.setAttribute('on','1');
+                        }
+                    });
+                    // Region end
+                }
                 showComment($cm.parents('.zm-item-answer'),$cm);
                 $('i.zm-comment-bubble',$cm).hide();
                 $('.zm-comment-list',$cm).css({
