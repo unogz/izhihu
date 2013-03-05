@@ -288,7 +288,7 @@ function processAnswer($a){
                     $(this).removeClass('sel');
                     var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
                     $uno.next().hide();
-                }).click(function(){$(this).mouseout();$uno.css('left',10-$uno.width());});
+                }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
             }
             if(_e==$a.get(0)){
                 _e=$ppla.get(0);
@@ -448,14 +448,14 @@ function processAnswer($a){
                   , 'position':'absolute'
                   , 'top':70
                 }).insertBefore($cm.children(':first'))
-                .prepend('<i class="zg-icon"style="background-position:-176px -112px;width:15px;height:15px;"></i>');
+                .prepend('<i class="z-icon-izh-fold"></i>');
             }else{
                 $btnCC.css({
                     'float':'right'
                   , 'cursor':'pointer'
                   , 'margin-right':5
                 }).appendTo($cm)
-                .prepend('<i class="z-icon-fold"></i>');
+                .prepend('<i class="z-icon-fold"/>');
             }
         }
     }
@@ -541,29 +541,26 @@ function processAnswer($a){
         if(izhAuthorList){
             $uno.css({
                 'float':'none'
-              , 'left':10-$uno.width()
+              , 'left':9-$uno.width()
             });
             if(!$btnCollapsedSwitcher.length&&!numCollapsedCount)
                 resizeAuthorList($frm);
             $('<div>',{'class':'modal-dialog-title'}).append(
                 $('<a>',{
-                    'class':'icon'
+                    'class':'z-icon'
                   , href:'javascript:void(0);'
+                  , html:'<i class="z-icon-izh-fold"/>'
                   , click:function(){
-                      $uno.css('left',10-$uno.width());
+                      $uno.css('left',9-$uno.width());
                   }
                 })
             ).insertBefore($ppT).css({
                   'border-top-left-radius':0
             })
-            .children('a.icon').css({
-            	'background-position':'-175px -112px'
-              , 'width':15
-              , 'height':15
-              , 'position':'absolute'
-              , 'right':8
-              , 'top':'50%'
-              , 'margin-top':-5
+            .children('a.z-icon').css({
+                  'position':'absolute'
+                , 'right':4
+                , 'margin-top':-10
             });
             $uno.mouseover(function(){
                 resizeAuthorList($('.frame',this));
