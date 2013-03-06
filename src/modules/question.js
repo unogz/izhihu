@@ -41,57 +41,62 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         });
   	}
   , addQuickBlock=function($vi){
-      if($vi.is('.zm-item-vote-info')){
-          var $u=$('.voters a[href^="/people/"]',$vi);
-          $u.each(function(i,e){
-              $('<input>',{'class':'izh-quick-block-sel',type:'checkbox'}).css({
-              }).insertBefore(e).hide();
-          });
-          var width=$vi.closest('.zm-item-answer').width()
-            , $btnQuickBlock=$('<a>',{'class':'izh-quick-block',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+        if($vi.is('.zm-item-vote-info') && !$vi.children('a[name=more]').length){
+            if($vi.attr('izh-QuickBlock')!='1'){
+                var $u=$('.voters a[href^="/people/"]',$vi);
+                $u.each(function(i,e){
+                    $('<input>',{'class':'izh-quick-block-sel',type:'checkbox'}).css({
+                    }).insertBefore(e).hide();
+                });
+                $vi.attr('izh-QuickBlock','1');
+            }
+            if($vi.parent().children('a.izh-quick-block').length)
+                return;
+            var width=$vi.closest('.zm-item-answer').width()
+              , $btnQuickBlock=$('<a>',{'class':'izh-quick-block',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+                    'position':'absolute'
+                  , 'left':width
+                  , 'width':'4em'
+                }).click(function(){
+                    if(this.getAttribute('on')=='1'){
+                      $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
+                      $(this).nextAll('[class^=izh-quick-block]').hide();
+                      this.setAttribute('on','0');
+                    }
+                    else{
+                      $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
+                      $(this).nextAll('[class^=izh-quick-block]').show();
+                      this.setAttribute('on','1');
+                    }
+                }).insertBefore($vi);
+            $('<a>',{'class':'izh-quick-block-do zg-icon',href:'javascript:void(0);'})
+              .css($.extend(css_QuickBlock,{
                   'position':'absolute'
                 , 'left':width
-                , 'width':'4em'
-              }).click(function(){
-                  if(this.getAttribute('on')=='1'){
-                  	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
-                  	$(this).nextAll('[class^=izh-quick-block]').hide();
-                  	this.setAttribute('on','0');
-                  }
-                  else{
-                  	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
-                  	$(this).nextAll('[class^=izh-quick-block]').show();
-                  	this.setAttribute('on','1');
-                  }
-              }).insertBefore($vi);
-          $('<a>',{'class':'izh-quick-block-do zg-icon',href:'javascript:void(0);'})
-          	.css($.extend(css_QuickBlock,{
-          	    'position':'absolute'
-          	  , 'left':width
-          	  , 'margin-top':'2.5em'
-          	  , 'margin-left':'2.5em'
-          	})).click(function(){
-          	    $('.zm-item-vote-info input.izh-quick-block-sel:checked',this.parentNode).each(function(i,e){
-          	        quickBlock($(e).next());
-          	    });
-          	}).insertAfter($btnQuickBlock).hide();
-          $('<a>',{'class':'izh-quick-block-selAll',html:'不选',href:'javascript:void(0);'}).css({
-              'position':'absolute'
-            , 'left':width
-            , 'width':'2em'
-            , 'margin-top':'3em'
-          }).click(function(){
-          	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).removeAttr('checked');
-          }).insertAfter($btnQuickBlock).hide();
-          $('<a>',{'class':'izh-quick-block-notAll',html:'全选',href:'javascript:void(0);'}).css({
-              'position':'absolute'
-            , 'left':width
-            , 'width':'2em'
-            , 'margin-top':'1.5em'
-          }).click(function(){
-          	$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).attr('checked','checked');
-          }).insertAfter($btnQuickBlock).hide();
-      }
+                , 'margin-top':'2.5em'
+                , 'margin-left':'2.5em'
+              })).click(function(){
+                  $('.zm-item-vote-info input.izh-quick-block-sel:checked',this.parentNode).each(function(i,e){
+                      quickBlock($(e).next());
+                  });
+              }).insertAfter($btnQuickBlock).hide();
+            $('<a>',{'class':'izh-quick-block-selAll',html:'不选',href:'javascript:void(0);'}).css({
+                'position':'absolute'
+              , 'left':width
+              , 'width':'2em'
+              , 'margin-top':'3em'
+            }).click(function(){
+              $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).removeAttr('checked');
+            }).insertAfter($btnQuickBlock).hide();
+            $('<a>',{'class':'izh-quick-block-notAll',html:'全选',href:'javascript:void(0);'}).css({
+                'position':'absolute'
+              , 'left':width
+              , 'width':'2em'
+              , 'margin-top':'1.5em'
+            }).click(function(){
+              $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).attr('checked','checked');
+            }).insertAfter($btnQuickBlock).hide();
+        }
   }
 ;
 
@@ -253,8 +258,8 @@ function processAnswer($a){
                                 'class':div.class
                             })
                             .addClass('izh-answer-preview').width(div.width()+22)
-                            .mouseover(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
-                            .mouseout(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
+                            .mouseover(function(){$uno.mouseover();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
+                            .mouseout(function(){$uno.mouseout();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
                             .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
                             .insertAfter($uno)
                         ;
@@ -545,26 +550,14 @@ function processAnswer($a){
             });
             if(!$btnCollapsedSwitcher.length&&!numCollapsedCount)
                 resizeAuthorList($frm);
-            $('<div>',{'class':'modal-dialog-title'}).append(
-                $('<a>',{
-                    'class':'z-icon'
-                  , href:'javascript:void(0);'
-                  , html:'<i class="z-icon-izh-fold"/>'
-                  , click:function(){
-                      $uno.css('left',9-$uno.width());
-                  }
-                })
-            ).insertBefore($ppT).css({
+            $('<div>',{'class':'modal-dialog-title'}).css({
                   'border-top-left-radius':0
-            })
-            .children('a.z-icon').css({
-                  'position':'absolute'
-                , 'right':4
-                , 'margin-top':-10
-            });
+            }).insertBefore($ppT);
             $uno.mouseover(function(){
                 resizeAuthorList($('.frame',this));
                 $(this).css('left','0');
+            }).mouseout(function(){
+                $(this).css('left',9-$(this).width());
             });
             if(_e){
                 $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
