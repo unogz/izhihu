@@ -1,5 +1,5 @@
-var version='2.0';
-var updateDate='2013-3-7';
+var version='2.0.1.308';
+var updateDate='2013-3-8';
 
 var $ = unsafeWindow.$;
 var _ = this._;
