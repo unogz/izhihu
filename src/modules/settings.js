@@ -58,12 +58,11 @@ $(function(){
   .click(function(){
     console.log(this);
     $('.modal-dialog-bg').show();
-    $('.t_set_tb .t_rtjdchk:checkbox',$dlg).each(function(i,e){
+    $('input.t_rtjdchk','#izh-dlg-settings').each(function(i,e){
         if(utils.getCfg($(e).attr('name')))
             $(e).attr('checked','checked');
     });
-    $('#izh-dlg-settings').css({'position':'fixed','top': ($(unsafeWindow).height() - $('#izh-dlg-settings').height()) / 2, 'left': ($(unsafeWindow).width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
-    $('input:checkbox','#izh-dlg-settings').checkbox({cls:'t_jchkbox',empty:cbemptyimg});
+    $('#izh-dlg-settings').css({'z-index':'123','position':'fixed','top': ($(unsafeWindow).height() - $('#izh-dlg-settings').height()) / 2, 'left': ($(unsafeWindow).width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
   });
   var $dlg=$(domDlgSettings).appendTo(_doc.body);
   $dlg.drags({handler:'.modal-dialog-title-draggable'});
@@ -71,7 +70,8 @@ $(function(){
       $('.modal-dialog-bg').hide();
       $('#izh-dlg-settings').first().hide();
   });
-  $('.t_set_tb .t_rtjdchk:checkbox',$dlg).click(function(){
+  $('input.t_rtjdchk',$dlg).checkbox({cls:'t_jchkbox',empty:cbemptyimg});
+  $('input.t_rtjdchk',$dlg).click(function(){
       var key=$(this).attr('name')
         , value=!this.checked;
       console.log(key+' = '+value);
