@@ -10,8 +10,8 @@
     } ]
   , "converted_from_user_script": true
   , "description":  ""
-  , "name":         "iZhihu 测试版"
-  , "version":      "2.0"
+  , "name":         "iZhihu"
+  , "version":      "2.0.1.308"
   , "permissions": [
         "http://*.zhihu.com/"
         ]
