@@ -98,6 +98,80 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             }).insertAfter($btnQuickBlock).hide();
         }
   }
+  , showComment=function($ac,$cm){
+        $('.zm-comment-box:visible')
+        	.each(function(i,e){
+            	if(!$cm.length||e!=$cm.get(0))
+            		$(e).closest('.zm-item-meta').children('[name=addcomment]')[0].click();
+            });
+        var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
+          , t=$ac.offset().top-$main.offset().top
+          , b=$ac.offset().top-$main.offset().top
+          , w=$ac.width()
+          , h=$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'));
+        if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
+            $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
+        if(!$cm)$cm=$ac.find('.zm-comment-box');
+        if($cm.length){
+            if(!$cm.attr('tabindex')){
+                $cm.attr('tabindex','-1').focus();//.show();
+            }
+            $ac.find('.izh_tape_a').css({
+                'position':'absolute'
+              , 'width':1
+              , 'height':h//$cm.height()
+              , 'top':0//$cm.offset().top
+              , 'left':w-1//$cm.offset().left-1
+              , 'z-index':'10'
+              , 'background-color':'#fff'
+            }).show();
+            var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($(document.body)).show();
+            $cm.css({'left':$ac.offset().left+$ac.width()-1});
+            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
+            if(th<window.innerHeight-$main.offset().top){
+                var top=$cm.parent().offset().top-$(document).scrollTop();
+                if(top+th>window.innerHeight){
+                    $cm.css({'top':'','bottom':0});
+                }else{
+                    $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
+                }
+            }else{
+                $cm.css({'top':$main.offset().top,'bottom':0});
+            }
+            $t.remove();
+            $t=null;
+            $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
+        }else{
+            $ac.find('.zu-question-answer-meta-comment')[0].click();
+        }
+        $ac.find('.izh_tape_b').css({
+            'position':'absolute'
+          , 'width':1
+          , 'height':h
+          , 'top':0
+          , 'left':w
+          , 'z-index':'8'
+          , 'background-color':'#999999'
+        }).show();
+        $ac.css('border-color','#999999');
+        $n.css('border-color','#999999');
+        $('.zh-backtotop').css('visibility','hidden');
+        $(document.body).scrollTop(t);
+    }
+  , hideComment=function($ac,$cm){
+        var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next();
+        if(!$cm)$cm=$ac.find('.zm-comment-box');
+        if($cm.length)
+            //if($cm.is(':visible')){
+                //$cm.hide();
+                $ac.find('.izh_tape_a').hide();
+            //}
+        $ac.find('.izh_tape_b').hide();
+        $ac.css('border-color','#DDDDDD');
+        $n.css('border-color','#DDDDDD');
+        $('.izh_tape_a:visible,.izh_tape_b:visible').hide();
+        $('.zh-backtotop').css('visibility','visible');
+    }
   , processComment=function($cm){
         if($cm.is('.zm-comment-box')){
             if(izhShowComment){
@@ -205,275 +279,202 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             }
         }
     }
-;
-
-function showComment($ac,$cm){
-    $('.zm-comment-box:visible').each(function(i,e){
-            $(e).closest('.zm-item-meta').children('[name=addcomment]')[0].click();
-        });
-    var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
-      , t=$ac.offset().top-$main.offset().top
-      , b=$ac.offset().top-$main.offset().top
-      , w=$ac.width()
-      , h=$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'));
-    if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
-        $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
-    if(!$cm)$cm=$ac.find('.zm-comment-box');
-    if($cm.length){
-        if(!$cm.attr('tabindex')){
-            $cm.attr('tabindex','-1').focus();//.show();
-        }
-        $ac.find('.izh_tape_a').css({
-            'position':'absolute'
-          , 'width':1
-          , 'height':h//$cm.height()
-          , 'top':0//$cm.offset().top
-          , 'left':w-1//$cm.offset().left-1
-          , 'z-index':'10'
-          , 'background-color':'#fff'
-        }).show();
-        var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($(document.body)).show();
-        $cm.css({'left':$ac.offset().left+$ac.width()-1});
-        var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
-        if(th<window.innerHeight-$main.offset().top){
-            var top=$cm.parent().offset().top-$(document).scrollTop();
-            if(top+th>window.innerHeight){
-                $cm.css({'top':'','bottom':0});
-            }else{
-                $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
+  , processAnswer=function($a){
+        if(!$a||!$a.length)return;
+        if($a.attr('izh_processed')=='1')return;
+        var $c=$a.children().last()
+          , $p=$a.find('.zm-item-answer-author-info')
+          , $v=$a.find('.zu-question-answer-meta-fav');
+        if($p.length){//relocatePersonInfo
+            //var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
+            if(izhAuthorRear){
+                $p.insertBefore($c).css('textAlign','right');
             }
-        }else{
-            $cm.css({'top':$main.offset().top,'bottom':0});
-        }
-        $t.remove();
-        $t=null;
-        $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
-    }else{
-        $ac.find('.zu-question-answer-meta-comment')[0].click();
-    }
-    $ac.find('.izh_tape_b').css({
-        'position':'absolute'
-      , 'width':1
-      , 'height':h
-      , 'top':0
-      , 'left':w
-      , 'z-index':'8'
-      , 'background-color':'#999999'
-    }).show();
-    $ac.css('border-color','#999999');
-    $n.css('border-color','#999999');
-    $('.zh-backtotop').css('visibility','hidden');
-    $(document.body).scrollTop(t);
-}
-function hideComment($ac,$cm){
-    var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next();
-    if(!$cm)$cm=$ac.find('.zm-comment-box');
-    if($cm.length)
-        //if($cm.is(':visible')){
-            //$cm.hide();
-            $ac.find('.izh_tape_a').hide();
-        //}
-    $ac.find('.izh_tape_b').hide();
-    $ac.css('border-color','#DDDDDD');
-    $n.css('border-color','#DDDDDD');
-    $('.izh_tape_a:visible,.izh_tape_b:visible').hide();
-    $('.zh-backtotop').css('visibility','visible');
-}
-
-function processAnswer($a){
-    if(!$a||!$a.length)return;
-    if($a.attr('izh_processed')=='1')return;
-    var $c=$a.children().last()
-      , $p=$a.find('.zm-item-answer-author-info')
-      , $v=$a.find('.zu-question-answer-meta-fav');
-    if($p.length){//relocatePersonInfo
-        //var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
-        if(izhAuthorRear){
-            $p.insertBefore($c).css('textAlign','right');
-        }
-        $p=$p.children().first().children().eq(1);
-        if($a.length){
-            if(izhQuickBlock){
-                // Region: 快速屏蔽
-                var $answerHead=$('.answer-head',$a);
-                if($('[name=more]',$answerHead).length){
-                    $answerHead.bind('DOMNodeInserted',function(event){
-                        addQuickBlock($(event.target));
-                    });
-                }
-                // Region end
-            }
-            if(izhAuthorList){
-                // Region: 回答目录项
-                var $ppla=$('<a>',{
-                            href:'#'+$a.attr('data-aid')
-                          , target:'_self'
-                          , style:css_AuthorListItemA
-                        })
-                  , $ppl=$('<li>').append($ppla).appendTo($pp);
-                if($a.attr('data-isowner')=='1'){
-                    _e=$a.get(0);
-                    $ppla.append('<span class="me"></span>');
-                }
-                var nameCSS='name';
-                if($a.attr('data-isfriend')=='1'){
-                    nameCSS+=' friend';
-                }
-                if($a.attr('data-collapsed')=='1'){
-                    nameCSS+=' collapsed'
-                }
-                if(!$p.length){
-                    nameCSS+=' noname';
-                }
-                $('<span>',{
-                    'class':nameCSS
-                  , html:!$p.length?'匿名用户':$p.html()
-                  , style:css_AuthorListItemA_name
-                }).appendTo($ppla);
-                if ($ppl.width()>ppWidth)
-                    ppWidth=$ppl.width();
-                // Region end
-                // Region: 回答篇幅指示
-                var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
-                $('<span>',{
-                    'class':'hp'
-                }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
-                // Region end
-                $ppla.mouseover(function(){
-                    var $frm=$(this.parentNode.parentNode.parentNode)
-                      , $uno=$frm.parent().mouseover();
-                    $(this).addClass('sel');
-                    if(_e){
-                        $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
-                        $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
-                    }
-                    // Region: 回答预览
-                    var nam=$('span.name',this);
-                    if(!nam.length)return;
-                    var aid=$(this).attr('href').slice(1)
-                      , prv=$uno.next('.izh-answer-preview')
-                      , top=$(this).position().top+$uno.position().top
-                      , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
-                      , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
-                      , div=$(sel,ctx)
-                      , htm=div.html()
-                      , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
-                    ;
-                    if(!prv.length){
-                        prv=$('<div>',{
-                                'class':div.class
-                            })
-                            .addClass('izh-answer-preview').width(div.width()+22)
-                            .mouseover(function(){$uno.mouseover();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
-                            .mouseout(function(){$uno.mouseout();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
-                            .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
-                            .insertAfter($uno)
-                        ;
-                    }
-                    if(prv.attr('data-aid')!=aid){
-                        prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
-                        if($('span.me',this).length)
-                            prv.find('a.zu-edit-button').remove();
-                        if(!nam.hasClass('noname'))
-                            $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
-                        var t=cmt.text(),i=t.indexOf('条评论');
-                        if(cmt.length&&i>0)
-                            $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
-                    }
-                    var th=div.height()+33
-                      , maxTop=$uno.position().top+12
-                      , contentPosition='';
-                    if(maxTop+th<$(unsafeWindow).height()){
-                        if(top+th<$(unsafeWindow).height()){
-                            prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
-                        }else{
-                            prv.css({'top':'','bottom':0});
-                        }
-                    }else{
-                        prv.css({'top':maxTop,'bottom':0});
-                        contentPosition='absolute';
-                    }
-                    prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
-                    // Region end
-                }).mouseout(function(){
-                    $(this).removeClass('sel');
-                    var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
-                    $uno.next().hide();
-                }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
-            }
-            if(_e==$a.get(0)){
-                _e=$ppla.get(0);
-            }
-        }
-    }
-    if($v.length){
-        if($a.children('.izh_fav').length<=0){
-            $('<div class="izh_fav">loading...</div>').bind('mouseover',function(){
-                $(this).show();
-            }).bind('mouseout',function(){
-                $(this).hide();
-            }).appendTo($a);
-        }
-        $v.bind('mouseover',function(){
-            var $a=$(this).parentsUntil('#zh-question-answer-wrap','.zm-item-answer');
-            $a.children('.izh_fav').css({
-                'bottom':$(this).height()+$a.height()-$(this).position().top-1
-              , 'left':$(this).position().left
-            }).show();
-            $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:$a.attr('data-aid')}),function(result,status,xhr){
-                var aid=this.url.substr(this.url.indexOf('answer_id=')+10)
-                  , $a=$('.zm-item-answer[data-aid='+aid+']')
-                  , $v=$a.children('.izh_fav').html('<div class="title">最近的选择</div>');
-                $.each(result.msg[0].slice(0,4),function(i,e){
-                    $('<a/>',{
-                        'class':'fav'
-                      , href:'javascript:;'
-                      , aid:aid
-                      , fid:e[0]
-                      , html:e[1]
-                    }).bind('click',function(){
-                        var u='http://www.zhihu.com/collection/';
-                        u+=$(this).hasClass('selected')?'remove':'add';
-                        $.post(u,$.param({_xsrf:$('input[name=_xsrf]').val(),answer_id:$(this).attr('aid'),favlist_id:$(this).attr('fid')}),function(result){
-                            var act=this.url.substring(this.url.lastIndexOf('/')+1)
-                              , fid_i=this.data.indexOf('favlist_id=')
-                              , fid=this.data.substring(fid_i+11)
-                              , aid_i=this.data.indexOf('answer_id=')
-                              , aid=this.data.substring(aid_i+10,fid_i-1)
-                              , $vi=$('.zm-item-answer[data-aid='+aid+'] .izh_fav a[fid='+fid+']')
-                              , inc=0;
-                            if(act=='remove'&&result.msg=='OK'){
-                                $vi.removeClass('selected');
-                                inc=-1;
-                            }else if(act=='add'&&result.msg.length){
-                                $vi.addClass('selected');
-                                inc=1;
-                            }
-                            if(inc!=0){
-                                $vi.children('span').html(parseInt($vi.children('span').html())+inc);
-                            }
+            $p=$p.children().first().children().eq(1);
+            if($a.length){
+                if(izhQuickBlock){
+                    // Region: 快速屏蔽
+                    var $answerHead=$('.answer-head',$a);
+                    if($('[name=more]',$answerHead).length){
+                        $answerHead.bind('DOMNodeInserted',function(event){
+                            addQuickBlock($(event.target));
                         });
-                    }).appendTo($v).append($('<span/>',{html:e[3]}));
-                });
-                $.each(result.msg[1].slice(0,4),function(i,e){
-                    $v.find('a.fav[fid='+e+']').addClass('selected');
+                    }
+                    // Region end
+                }
+                if(izhAuthorList){
+                    // Region: 回答目录项
+                    var $ppla=$('<a>',{
+                                href:'#'+$a.attr('data-aid')
+                              , target:'_self'
+                              , style:css_AuthorListItemA
+                            })
+                      , $ppl=$('<li>').append($ppla).appendTo($pp);
+                    if($a.attr('data-isowner')=='1'){
+                        _e=$a.get(0);
+                        $ppla.append('<span class="me"></span>');
+                    }
+                    var nameCSS='name';
+                    if($a.attr('data-isfriend')=='1'){
+                        nameCSS+=' friend';
+                    }
+                    if($a.attr('data-collapsed')=='1'){
+                        nameCSS+=' collapsed'
+                    }
+                    if(!$p.length){
+                        nameCSS+=' noname';
+                    }
+                    $('<span>',{
+                        'class':nameCSS
+                      , html:!$p.length?'匿名用户':$p.html()
+                      , style:css_AuthorListItemA_name
+                    }).appendTo($ppla);
+                    if ($ppl.width()>ppWidth)
+                        ppWidth=$ppl.width();
+                    // Region end
+                    // Region: 回答篇幅指示
+                    var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
+                    $('<span>',{
+                        'class':'hp'
+                    }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
+                    // Region end
+                    $ppla.mouseover(function(){
+                        var $frm=$(this.parentNode.parentNode.parentNode)
+                          , $uno=$frm.parent().mouseover();
+                        $(this).addClass('sel');
+                        if(_e){
+                            $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
+                            $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
+                        }
+                        // Region: 回答预览
+                        var nam=$('span.name',this);
+                        if(!nam.length)return;
+                        var aid=$(this).attr('href').slice(1)
+                          , prv=$uno.next('.izh-answer-preview')
+                          , top=$(this).position().top+$uno.position().top
+                          , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
+                          , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
+                          , div=$(sel,ctx)
+                          , htm=div.html()
+                          , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
+                        ;
+                        if(!prv.length){
+                            prv=$('<div>',{
+                                    'class':div.class
+                                })
+                                .addClass('izh-answer-preview').width(div.width()+22)
+                                .mouseover(function(){$uno.mouseover();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
+                                .mouseout(function(){$uno.mouseout();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
+                                .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
+                                .insertAfter($uno)
+                            ;
+                        }
+                        if(prv.attr('data-aid')!=aid){
+                            prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
+                            if($('span.me',this).length)
+                                prv.find('a.zu-edit-button').remove();
+                            if(!nam.hasClass('noname'))
+                                $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
+                            var t=cmt.text(),i=t.indexOf('条评论');
+                            if(cmt.length&&i>0)
+                                $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
+                        }
+                        var th=div.height()+33
+                          , maxTop=$uno.position().top+12
+                          , contentPosition='';
+                        if(maxTop+th<$(unsafeWindow).height()){
+                            if(top+th<$(unsafeWindow).height()){
+                                prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
+                            }else{
+                                prv.css({'top':'','bottom':0});
+                            }
+                        }else{
+                            prv.css({'top':maxTop,'bottom':0});
+                            contentPosition='absolute';
+                        }
+                        prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
+                        // Region end
+                    }).mouseout(function(){
+                        $(this).removeClass('sel');
+                        var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
+                        $uno.next().hide();
+                    }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
+                }
+                if(_e==$a.get(0)){
+                    _e=$ppla.get(0);
+                }
+            }
+        }
+        if($v.length){
+            if($a.children('.izh_fav').length<=0){
+                $('<div class="izh_fav">loading...</div>').bind('mouseover',function(){
+                    $(this).show();
+                }).bind('mouseout',function(){
+                    $(this).hide();
+                }).appendTo($a);
+            }
+            $v.bind('mouseover',function(){
+                var $a=$(this).parentsUntil('#zh-question-answer-wrap','.zm-item-answer');
+                $a.children('.izh_fav').css({
+                    'bottom':$(this).height()+$a.height()-$(this).position().top-1
+                  , 'left':$(this).position().left
+                }).show();
+                $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:$a.attr('data-aid')}),function(result,status,xhr){
+                    var aid=this.url.substr(this.url.indexOf('answer_id=')+10)
+                      , $a=$('.zm-item-answer[data-aid='+aid+']')
+                      , $v=$a.children('.izh_fav').html('<div class="title">最近的选择</div>');
+                    $.each(result.msg[0].slice(0,4),function(i,e){
+                        $('<a/>',{
+                            'class':'fav'
+                          , href:'javascript:;'
+                          , aid:aid
+                          , fid:e[0]
+                          , html:e[1]
+                        }).bind('click',function(){
+                            var u='http://www.zhihu.com/collection/';
+                            u+=$(this).hasClass('selected')?'remove':'add';
+                            $.post(u,$.param({_xsrf:$('input[name=_xsrf]').val(),answer_id:$(this).attr('aid'),favlist_id:$(this).attr('fid')}),function(result){
+                                var act=this.url.substring(this.url.lastIndexOf('/')+1)
+                                  , fid_i=this.data.indexOf('favlist_id=')
+                                  , fid=this.data.substring(fid_i+11)
+                                  , aid_i=this.data.indexOf('answer_id=')
+                                  , aid=this.data.substring(aid_i+10,fid_i-1)
+                                  , $vi=$('.zm-item-answer[data-aid='+aid+'] .izh_fav a[fid='+fid+']')
+                                  , inc=0;
+                                if(act=='remove'&&result.msg=='OK'){
+                                    $vi.removeClass('selected');
+                                    inc=-1;
+                                }else if(act=='add'&&result.msg.length){
+                                    $vi.addClass('selected');
+                                    inc=1;
+                                }
+                                if(inc!=0){
+                                    $vi.children('span').html(parseInt($vi.children('span').html())+inc);
+                                }
+                            });
+                        }).appendTo($v).append($('<span/>',{html:e[3]}));
+                    });
+                    $.each(result.msg[1].slice(0,4),function(i,e){
+                        $v.find('a.fav[fid='+e+']').addClass('selected');
+                    });
                 });
             });
+            $v.bind('mouseout',function(){
+                var $a=$(this).parentsUntil('#zh-question-answer-wrap','.zm-item-answer');
+                $a.children('.izh_fav').hide();
+            });
+        }
+        $c.bind('DOMNodeInserted',function(event){
+            processComment($(event.target));
         });
-        $v.bind('mouseout',function(){
-            var $a=$(this).parentsUntil('#zh-question-answer-wrap','.zm-item-answer');
-            $a.children('.izh_fav').hide();
-        });
+        if(izhShowComment){
+            $a.find('.zu-question-answer-meta-comment').css({'display':'block','float':'right'});
+            processComment($('.zm-comment-box',$a));
+        }
+        $a.attr('izh_processed','1');
     }
-    $c.bind('DOMNodeInserted',function(event){
-        processComment($(event.target));
-    });
-    if(izhShowComment){
-        $a.find('.zu-question-answer-meta-comment').css({'display':'block','float':'right'});
-        processComment($('.zm-comment-box',$a));
-    }
-    $a.attr('izh_processed','1');
-}
+
+;
 
 //答案按时间排序
     if(utils.getCfg('answer_orderByTime')){
