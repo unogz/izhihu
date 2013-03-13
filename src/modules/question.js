@@ -284,7 +284,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         if($a.attr('izh_processed')=='1')return;
         var $c=$a.children().last()
           , $p=$a.find('.zm-item-answer-author-info')
-          , $v=$a.find('.zu-question-answer-meta-fav');
+          , $v=$a.find('.meta-item[name=favo]');
         if($p.length){//relocatePersonInfo
             //var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
             if(izhAuthorRear){
@@ -414,7 +414,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                 }).appendTo($a);
             }
             $v.bind('mouseover',function(){
-                var $a=$(this).parentsUntil('#zh-question-answer-wrap','.zm-item-answer');
+                var $a=$(this).closest('.zm-item-answer');
                 $a.children('.izh_fav').css({
                     'bottom':$(this).height()+$a.height()-$(this).position().top-1
                   , 'left':$(this).position().left
@@ -460,7 +460,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                 });
             });
             $v.bind('mouseout',function(){
-                var $a=$(this).parentsUntil('#zh-question-answer-wrap','.zm-item-answer');
+                var $a=$(this).closest('.zm-item-answer');
                 $a.children('.izh_fav').hide();
             });
         }
