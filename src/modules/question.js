@@ -174,6 +174,36 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     }
   , processComment=function($cm){
         if($cm.is('.zm-comment-box')){
+        	/* Collections for comment
+        	$cm.find('.zm-comment-editable').bind('DOMNodeInserted',function(event){
+        		var $c=$(event.target),$cm=$c.closest('.zm-comment-box');
+        		if($c.is('a.member_mention')){
+                    if($cm.children('.izh_collections').length<=0){
+                        $('<div class="izh_collections">loading...</div>').bind('mouseover',function(){
+                            $(this).show();
+                        }).bind('mouseout',function(){
+                            $(this).hide();
+                        }).appendTo($cm);
+                    }
+                    $c.bind('mouseover',function(){
+                        var $ce=$(this).closest('.zm-comment-editable'),$cm=$(this).closest('.zm-comment-box');
+                        $cm.children('.izh_collections').css({
+                            'bottom':$(this).height()-$(this).position().top-1
+                          , 'left':$(this).position().left
+                        }).show();
+                        $.post('http://www.zhihu.com'+$(this).attr('href')+'/collections'
+                          , $.param({_xsrf:$('input[name=_xsrf]').val()})
+                          , function(result,status,xhr){
+                        		console.log(result);
+                        	});
+                    });
+                    $c.bind('mouseout',function(){
+                        var $ce=$(this).closest('.zm-comment-editable'),$cm=$(this).closest('.zm-comment-box');
+                        $cm.children('.izh_collections').hide();
+                    });
+        		}
+        	});
+ */
             if(izhShowComment){
                 $cm.css(css_comment).closest('.zm-item-meta').children('[name=addcomment]').on('click',function(event){
                     var $cm=$(this).parent().find('.zm-comment-box');
