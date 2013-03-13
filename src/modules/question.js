@@ -486,7 +486,9 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         processComment($(event.target));
     });
     if(izhShowComment){
-        $questionWrap.find('.meta-item[name=addcomment]').css({'display':'block','float':'right'});
+        $questionWrap.children('.meta-item[name=addcomment]')
+        	.css({'display':'block','float':'right','margin-left':7})
+        	.insertBefore($questionWrap.children().first());
     }
         
     //process each answer
