@@ -42,8 +42,12 @@
   , "version":      "2.0"
 =======
   , "name":         "iZhihu"
+<<<<<<< HEAD
   , "version":      "2.0.1.308"
 >>>>>>> Updated CRX
+=======
+  , "version":      "2.0.2.309"
+>>>>>>> Build 2.0.2
   , "permissions": [
         "http://*.zhihu.com/"
         ]
