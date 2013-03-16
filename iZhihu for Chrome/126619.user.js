@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.0.1
+// @version      2.0.2
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -1946,9 +1946,9 @@ utils.formatStr = function(tpl, obj) {
     });
 };
 
-var version = "2.0.1.308";
+var version = "2.0.2.309";
 
-var updateDate = "2013-3-8";
+var updateDate = "2013-3-16";
 
 var $ = unsafeWindow.$;
 

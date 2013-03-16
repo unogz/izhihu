@@ -11,7 +11,7 @@
   , "converted_from_user_script": true
   , "description":  ""
   , "name":         "iZhihu"
-  , "version":      "2.0.1.308"
+  , "version":      "2.0.2.309"
   , "permissions": [
         "http://*.zhihu.com/"
         ]
