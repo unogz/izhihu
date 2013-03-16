@@ -4766,7 +4766,10 @@ $(function() {
             $(".zm-comment-box:visible").each(function(i, e) {
                 if (!$cm.length || e != $cm.get(0)) $(e).closest(".zm-item-meta").children("[name=addcomment]")[0].click();
             });
-            var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), t = $ac.offset().top - $main.offset().top, b = $ac.offset().top - $main.offset().top, w = $ac.width(), h = $ac.height() + parseInt($ac.css("padding-bottom")) + parseInt($n.css("padding-top"));
+            var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), t = $ac.offset().top - $main.offset().top, b = $ac.offset().top - $main.offset().top, w = $ac.width(), h = $ac.height() + parseInt($ac.css("padding-bottom")) + parseInt($n.css("padding-top")), inAnswer = $ac.is(".zm-item-answer");
+            if (!inAnswer) {
+                h = $("#zh-question-filter-wrap").offset().top - $main.offset().top;
+            }
             if (!$ac.find(".izh_tape_a,.izh_tape_b").length) $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
             if (!$cm) $cm = $ac.find(".zm-comment-box");
             if ($cm.length) {
@@ -4796,7 +4799,7 @@ $(function() {
                     bottom: ""
                 }).height() + 100;
                 if (th < window.innerHeight - $main.offset().top) {
-                    var top = $cm.parent().offset().top - $(document).scrollTop();
+                    var top = inAnswer ? $cm.parent().offset().top - $(document).scrollTop() : 0;
                     if (top + th > window.innerHeight) {
                         $cm.css({
                             top: "",
@@ -4961,7 +4964,7 @@ $(function() {
         }, processAnswer = function($a) {
             if (!$a || !$a.length) return;
             if ($a.attr("izh_processed") == "1") return;
-            var $c = $a.children().last(), $p = $a.find(".zm-item-answer-author-info"), $v = $a.find(".zu-question-answer-meta-fav");
+            var $c = $a.children().last(), $p = $a.find(".zm-item-answer-author-info"), $v = $a.find(".meta-item[name=favo]");
             if ($p.length) {
                 //relocatePersonInfo
                 //var $f=$('<a>',{name:$a.attr('data-aid')}).before($c);
@@ -5098,7 +5101,7 @@ $(function() {
                     }).appendTo($a);
                 }
                 $v.bind("mouseover", function() {
-                    var $a = $(this).parentsUntil("#zh-question-answer-wrap", ".zm-item-answer");
+                    var $a = $(this).closest(".zm-item-answer");
                     $a.children(".izh_fav").css({
                         bottom: $(this).height() + $a.height() - $(this).position().top - 1,
                         left: $(this).position().left
@@ -5144,7 +5147,7 @@ $(function() {
                     });
                 });
                 $v.bind("mouseout", function() {
-                    var $a = $(this).parentsUntil("#zh-question-answer-wrap", ".zm-item-answer");
+                    var $a = $(this).closest(".zm-item-answer");
                     $a.children(".izh_fav").hide();
                 });
             }
@@ -5169,10 +5172,12 @@ $(function() {
             processComment($(event.target));
         });
         if (izhShowComment) {
-            $questionWrap.find(".meta-item[name=addcomment]").css({
+            $questionWrap.children(".meta-item[name=addcomment]").css({
                 display: "block",
-                "float": "right"
-            });
+                "float": "right",
+                "margin-left": 7
+            }).insertBefore($questionWrap.children().first());
+            processComment($(".zm-comment-box", $questionWrap));
         }
         //process each answer
         var _e = null, $listAnswers = $(".zm-item-answer", "#zh-single-question");
