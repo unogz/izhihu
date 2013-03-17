@@ -108,12 +108,10 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
           , t=$ac.offset().top-$main.offset().top
           , b=$ac.offset().top-$main.offset().top
           , w=$ac.width()
-          , h=$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
           , inAnswer=$ac.is('.zm-item-answer')
+          , h=inAnswer?$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
+                      :$lblQuestionMeta.offset().top+$lblQuestionMeta.height()+parseInt($lblQuestionMeta.css('padding-bottom'))-$main.offset().top
         ;
-        if(!inAnswer){
-            h=$('#zh-question-filter-wrap').offset().top-$main.offset().top;
-        }
         if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
             $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
         if(!$cm)$cm=$ac.find('.zm-comment-box');

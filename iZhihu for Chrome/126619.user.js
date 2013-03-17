@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.0.2
+// @version      2.0.3
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -1946,9 +1946,9 @@ utils.formatStr = function(tpl, obj) {
     });
 };
 
-var version = "2.0.2.309";
+var version = "2.0.3.310";
 
-var updateDate = "2013-3-16";
+var updateDate = "2013-3-17";
 
 var $ = unsafeWindow.$;
 
@@ -2220,10 +2220,7 @@ $(function() {
             $(".zm-comment-box:visible").each(function(i, e) {
                 if (!$cm.length || e != $cm.get(0)) $(e).closest(".zm-item-meta").children("[name=addcomment]")[0].click();
             });
-            var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), t = $ac.offset().top - $main.offset().top, b = $ac.offset().top - $main.offset().top, w = $ac.width(), h = $ac.height() + parseInt($ac.css("padding-bottom")) + parseInt($n.css("padding-top")), inAnswer = $ac.is(".zm-item-answer");
-            if (!inAnswer) {
-                h = $("#zh-question-filter-wrap").offset().top - $main.offset().top;
-            }
+            var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), t = $ac.offset().top - $main.offset().top, b = $ac.offset().top - $main.offset().top, w = $ac.width(), inAnswer = $ac.is(".zm-item-answer"), h = inAnswer ? $ac.height() + parseInt($ac.css("padding-bottom")) + parseInt($n.css("padding-top")) : $lblQuestionMeta.offset().top + $lblQuestionMeta.height() + parseInt($lblQuestionMeta.css("padding-bottom")) - $main.offset().top;
             if (!$ac.find(".izh_tape_a,.izh_tape_b").length) $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
             if (!$cm) $cm = $ac.find(".zm-comment-box");
             if ($cm.length) {
