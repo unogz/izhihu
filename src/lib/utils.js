@@ -76,9 +76,9 @@ utils.transferOldCfg=function(){
         this.setCfg('AuthorList',izhAuthorList);
     }
     if(oldShowComment){
-        izhShowComment=oldShowComment;
+        izhRightComment=oldShowComment;
         localStorage.removeItem('izh_ShowComment');
-        this.setCfg('ShowComment',izhShowComment);
+        this.setCfg('ShowComment',izhRightComment);
     }
     if(oldQuickFavo){
         izhQuickFavo=oldQuickFavo;
