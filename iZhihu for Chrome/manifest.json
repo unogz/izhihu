@@ -24,6 +24,7 @@
 <<<<<<< HEAD
   , "name":         "iZhihu"
 <<<<<<< HEAD
+<<<<<<< HEAD
   , "version":      "1.10"
   , "permissions": [
         "http://*.zhihu.com/"
@@ -52,6 +53,9 @@
 =======
   , "version":      "2.0.3.310"
 >>>>>>> Fixed issue of RightComment for Question
+=======
+  , "version":      "2.1.0.311"
+>>>>>>> Implemented RightComment in Home page
   , "permissions": [
         "http://*.zhihu.com/"
         ]
