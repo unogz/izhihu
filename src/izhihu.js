@@ -1,4 +1,4 @@
-var version='2.0.3.310';
+var version='2.1.0.311';
 var updateDate='2013-3-17';
 
 var $ = unsafeWindow.$;
@@ -298,7 +298,7 @@ var _e=null
         $('.zm-comment-box:visible')
         	.each(function(i,e){
             	if(!$cm.length||e!=$cm.get(0))
-            		$(e).closest('.zm-item-meta').children('[name=addcomment]')[0].click();
+            		$(e).closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
         var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
           , t=$ac.offset().top-$main.offset().top
@@ -306,8 +306,8 @@ var _e=null
           , w=$ac.width()
           , inAnswer=$ac.is('.zm-item-answer')
           , $questionMeta=$('#zh-question-meta-wrap')//question_meta
-          , h=inAnswer?$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
-                      :$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-$main.offset().top
+          , h=pageIs.Question?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-$main.offset().top
+                  			 :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
         ;
         if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
             $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
@@ -316,14 +316,14 @@ var _e=null
             if(!$cm.attr('tabindex')){
                 $cm.attr('tabindex','-1').focus();
             }
-            if(inAnswer){
-                $ac.addClass('izh_boxShadow');
-            }else{
+            if(pageIs.Question){
                 $('#izh_QuestionShadow').css({
                     'height':h
                   , 'margin-bottom':-h
                 }).show();
                 $questionMeta.next(':visible').andSelf().addClass('izh_noBorder');
+            }else{
+                $ac.addClass('izh_boxShadow');
             }
             $ac.find('.izh_tape_a').css({
                 'position':'absolute'
@@ -337,9 +337,9 @@ var _e=null
             var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo($body).show();
             $cm.css({'left':$ac.offset().left+$ac.width()-1});
             var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
-            if(th<window.innerHeight-$main.offset().top){
-                var top=inAnswer?$cm.parent().offset().top-$(document).scrollTop():0;
-                if(top+th>window.innerHeight){
+            if(th<$(unsafeWindow).height()-$main.offset().top){
+                var top=pageIs.Question?0:$cm.parent().offset().top-$(document).scrollTop();
+                if(top+th>$(unsafeWindow).height()){
                     $cm.css({'top':'','bottom':0});
                 }else{
                     $cm.css({'top':top>$main.offset().top?top:$main.offset().top,'bottom':''});
@@ -370,11 +370,11 @@ var _e=null
   , hideComment=function($ac,$cm){
         var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next();
         if(!$cm)$cm=$ac.find('.zm-comment-box');
-        if($ac.is('.zm-item-answer')){
-            $ac.removeClass('izh_boxShadow');
-        }else{
+        if(pageIs.Question){
             $('#izh_QuestionShadow').hide();
             $('#zh-question-meta-wrap').next(':visible').andSelf().removeClass('izh_noBorder');
+        }else{
+            $ac.removeClass('izh_boxShadow');
         }
         if($cm.length){
             $ac.find('.izh_tape_a').hide();
@@ -418,14 +418,22 @@ var _e=null
         	});
  */
             if($body.attr('izhRightComment')=='1'){
-                $cm.addClass('izh_boxShadow').css(css_comment).closest('.zm-item-meta').children('[name=addcomment]').on('click',function(event){
-                    var $cm=$(this).parent().find('.zm-comment-box');
+                $cm.addClass('izh_boxShadow').css(css_comment).closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]').click(function(event){
+                    var $cm=$(this).closest('.zm-item-meta').find('.zm-comment-box');
                     if($cm.length){
-                        var $a=$(this).parent().is('.zu-question-answer-item-meta')?$(this).closest('.zm-item-answer'):$(this).parent().prev();
-                        if($cm.is(':hidden')){
-                            showComment($a,$cm);
+                        var $itemMeta=$cm.closest('.zm-item-meta')
+                          , $item=$(null);
+                        if ($itemMeta.is('.feed-meta')){
+                            $item=$cm.closest('.feed-item');
+                        }else if($itemMeta.is('.zu-question-answer-item-meta')){
+                            $item=$cm.closest('.zm-item-answer');
                         }else{
-                            hideComment($a,$cm);
+                            $item=$itemMeta.prev();
+                        }
+                        if($cm.is(':hidden')){
+                            showComment($item,$cm);
+                        }else{
+                            hideComment($item,$cm);
                         }
                     }
                 });
@@ -455,8 +463,16 @@ var _e=null
                     }
                     // Region end
                 }
-                var $itemMeta=$cm.closest('.zm-item-meta');
-                showComment($itemMeta.is('.zu-question-answer-item-meta')?$cm.closest('.zm-item-answer'):$itemMeta.prev(),$cm);
+                var $itemMeta=$cm.closest('.zm-item-meta')
+                  , $item=$(null);
+                if ($itemMeta.is('.feed-meta')){
+                    $item=$cm.closest('.feed-item');
+                }else if($itemMeta.is('.zu-question-answer-item-meta')){
+                    $item=$cm.closest('.zm-item-answer');
+                }else{
+                    $item=$itemMeta.prev();
+                }
+                showComment($item,$cm);
                 $('i.zm-comment-bubble',$cm).hide();
                 $('.zm-comment-list',$cm).css({
                     'height':'100%'
@@ -465,8 +481,16 @@ var _e=null
                     var $cm=$(this).parent('.zm-comment-box:visible');
                     if($cm.length){
                         $('.izh-quick-block',$cm).show();
-                        var $a=$cm.closest('.zm-item-answer');
-                        showComment($a,$cm);
+                        var $itemMeta=$cm.closest('.zm-item-meta')
+                          , $item=$(null);
+                        if ($itemMeta.is('.feed-meta')){
+                            $item=$cm.closest('.feed-item');
+                        }else if($itemMeta.is('.zu-question-answer-item-meta')){
+                            $item=$cm.closest('.zm-item-answer');
+                        }else{
+                            $item=$itemMeta.prev();
+                        }
+                        showComment($item,$cm);
                         var $icm=$(event.target);
                         $icm.bind('DOMNodeRemoved',function(event){
                             var $cm=$(this).closest('.zm-comment-box:visible');
@@ -474,8 +498,16 @@ var _e=null
                                 if($(this).closest('.zm-comment-list').children().length==1){
                                 	$('.izh-quick-block',$cm).hide();
                                 }
-                                var $a=$cm.closest('.zm-item-answer');
-                                showComment($a,$cm);
+                                var $itemMeta=$cm.closest('.zm-item-meta')
+                                  , $item=$(null);
+                                if ($itemMeta.is('.feed-meta')){
+                                    $item=$cm.closest('.feed-item');
+                                }else if($itemMeta.is('.zu-question-answer-item-meta')){
+                                    $item=$cm.closest('.zm-item-answer');
+                                }else{
+                                    $item=$itemMeta.prev();
+                                }
+                                showComment($item,$cm);
                             }
                         });
                     }
@@ -485,8 +517,16 @@ var _e=null
                         if($(this).closest('.zm-comment-list').children().length==1){
                         	$('.izh-quick-block',$cm).hide();
                         }
-                        var $a=$cm.closest('.zm-item-answer');
-                        showComment($a,$cm);
+                        var $itemMeta=$cm.closest('.zm-item-meta')
+                          , $item=$(null);
+                        if ($itemMeta.is('.feed-meta')){
+                            $item=$cm.closest('.feed-item');
+                        }else if($itemMeta.is('.zu-question-answer-item-meta')){
+                            $item=$cm.closest('.zm-item-answer');
+                        }else{
+                            $item=$itemMeta.prev();
+                        }
+                        showComment($item,$cm);
                     }
                 });
                 $('.zm-comment-form.zm-comment-box-ft',$cm).css({
@@ -500,10 +540,17 @@ var _e=null
                 	'class':'zu-question-answer-meta-comment'
                   , html:'收起'
                	}).click(function(){
-                    var $itemMeta=$cm.closest('.zm-item-meta');
-                    var $a=$itemMeta.is('.zu-question-answer-item-meta')?$(this).closest('.zm-item-answer'):$itemMeta.prev();
-                    hideComment($a);
-                    $itemMeta.find('[name=addcomment]')[0].click();
+                    var $itemMeta=$cm.closest('.zm-item-meta')
+                      , $item=$(null);
+                    if ($itemMeta.is('.feed-meta')){
+                        $item=$cm.closest('.feed-item');
+                    }else if($itemMeta.is('.zu-question-answer-item-meta')){
+                        $item=$cm.closest('.zm-item-answer');
+                    }else{
+                        $item=$itemMeta.prev();
+                    }
+                    hideComment($item);
+                    $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
                 });
             if($body.attr('izhRightComment')=='1'){
                 $btnCC.css({
@@ -526,11 +573,15 @@ var _e=null
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
         var $c=$a.children().last()
-          , $p=$a.find('.zm-item-answer-author-info')
+          , $p=$a.find('.zm-item-answer-author-info').css('textAlign','right')
           , $v=$a.find('.meta-item[name=favo]');
         if($p.length){//relocatePersonInfo
             if(bAuthorRear){
-                $p.insertBefore($c).css('textAlign','right');
+                if($a.is('.feed-item')){
+                    $p.appendTo($a.find('.answer_wrap .zm-item-answer-detail .full-content'));
+                }else{
+                    $p.insertBefore($c);
+                }
             }
             $p=$p.children().first().children().eq(1);
             if($a.length){
@@ -544,7 +595,7 @@ var _e=null
                     }
                     // Region end
                 }
-                if(bAuthorList){
+                if ($pp && bAuthorList){
                     // Region: 回答目录项
                     var $ppla=$('<a>',{
                                 href:'#'+$a.attr('data-aid')
@@ -641,9 +692,9 @@ var _e=null
                         var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
                         $uno.next().hide();
                     }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
-                }
-                if(_e==$a.get(0)){
-                    _e=$ppla.get(0);
+                    if(_e==$a.get(0)){
+                        _e=$ppla.get(0);
+                    }
                 }
             }
         }
@@ -672,7 +723,7 @@ var _e=null
                           , aid:aid
                           , fid:e[0]
                           , html:e[1]
-                        }).bind('click',function(){
+                        }).click(function(){
                             var u='http://www.zhihu.com/collection/';
                             u+=$(this).hasClass('selected')?'remove':'add';
                             $.post(u,$.param({_xsrf:$('input[name=_xsrf]').val(),answer_id:$(this).attr('aid'),favlist_id:$(this).attr('fid')}),function(result){
