@@ -92,7 +92,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         if(!$f||!$f.length)return;
         var frm=$f.get(0);
         var width=ppWidth
-          , height=$(unsafeWindow).height()-$main.offset().top-3-$f.position().top;
+          , height=$win.height()-$main.offset().top-3-$f.position().top;
         if(frm.scrollHeight>height){
             $f.height(height);
             width+=20;

@@ -96,7 +96,7 @@ utils.transferOldCfg=function(){
         this.setCfg('HomeNoti',izhHomeNoti);
     }
 
-}
+};
 
 
 /**
@@ -117,4 +117,11 @@ utils.formatStr = function(tpl,obj){
     if (m == "}}") { return "}"; }
     return obj[n];
   });
-}
+};
+
+utils.getParamInQuery=function(queryStr,paramName){
+    var param=paramName+'='
+      , start=queryStr.indexOf(param)+param.length
+      , end=queryStr.indexOf('&',start);
+    return end<start?queryStr.substring(start):queryStr.substring(start,end);
+};
