@@ -4,7 +4,7 @@
 $(function(){
     var $lblActivityCaption=$('#zh-home-list-title')//activity_caption
       , $btnNewActivity=$('#zh-main-feed-fresh-button')//new_activity
-      , $feedList=$('#js-home-feed-list')//feed_list
+      , $feedList=$('.zh-general-list')//feed_list
     ;
     if (pageIs.Home){
         if (izhHomeNoti
@@ -23,6 +23,8 @@ $(function(){
               , 'line-height':'22px'
             }).appendTo($lblActivityCaption);
         }
+    }
+    if(pageIs.Home||pageIs.Debuts){
         $feedList.find('.feed-item').each(function(i,e){
             processAnswer($(e),null
               , izhAuthorRear

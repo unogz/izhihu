@@ -31,7 +31,7 @@ $(function(){
             		'<tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>',
             		'<tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" name="AuthorRear" /></td></tr>',
             		'<tr><td align="left">在问题页中显示回答者目录（在页面左侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" name="AuthorList" /></td></tr>',
-            		'<tr><td align="left">在回答右侧浮动显示回答的评论</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment" name="ShowComment" /></td></tr>',
+            		'<tr><td align="left">在页面右侧浮动显示打开的评论列表</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment" name="ShowComment" /></td></tr>',
             		'<tr><td align="left">为赞同列表、评论列表开启「快速黑名单」功能</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickBlock" name="QuickBlock" /></td></tr>',
             		'<tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" name="QuickFavo" /></td></tr>',
             	'</tbody>',
@@ -62,7 +62,7 @@ $(function(){
         if(utils.getCfg($(e).attr('name')))
             $(e).attr('checked','checked');
     });
-    $('#izh-dlg-settings').css({'z-index':'123','position':'fixed','top': ($(unsafeWindow).height() - $('#izh-dlg-settings').height()) / 2, 'left': ($(unsafeWindow).width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
+    $('#izh-dlg-settings').css({'z-index':'123','position':'fixed','top': ($win.height() - $('#izh-dlg-settings').height()) / 2, 'left': ($win.width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
   });
   var $dlg=$(domDlgSettings).appendTo(_doc.body);
   $dlg.drags({handler:'.modal-dialog-title-draggable'});
