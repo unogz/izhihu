@@ -2547,7 +2547,7 @@ $(function() {
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.0.3
+// @version      2.1.0
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -4492,9 +4492,14 @@ utils.formatStr = function(tpl, obj) {
     });
 };
 
-var version = "2.0.3.310";
+utils.getParamInQuery = function(queryStr, paramName) {
+    var param = paramName + "=", start = queryStr.indexOf(param) + param.length, end = queryStr.indexOf("&", start);
+    return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
+};
 
-var updateDate = "2013-3-17";
+var version = "2.1.0.311";
+
+var updateDate = "2013-3-19";
 
 var $ = unsafeWindow.$;
 
@@ -4514,7 +4519,7 @@ $(function main() {
     console.log("izhihu started.");
 });
 
-var pageIs = {}, _doc = window.document, $body = $(_doc.body), _path = window.frameElement ? window.frameElement.src.replace(/https?:\/\/www.zhihu.com/, "") : url.data.attr["path"], css = "", $h = $("head"), $s = $('<style type="text/css"></style>'), iPathAnswers = _path.indexOf("/answers"), iPathCollection = _path.indexOf("/collection");
+var pageIs = {}, $win = $(unsafeWindow), _doc = window.document, $body = $(_doc.body), _path = window.frameElement ? window.frameElement.src.replace(/https?:\/\/www.zhihu.com/, "") : url.data.attr["path"], css = "", $h = $("head"), $s = $('<style type="text/css"></style>'), iPathAnswers = _path.indexOf("/answers"), iPathCollection = _path.indexOf("/collection");
 
 pageIs.Home = "/" == _path;
 
@@ -4525,6 +4530,8 @@ pageIs.Question = !pageIs.Answer && 0 == _path.indexOf("/question/");
 pageIs.Answers = 0 < iPathAnswers && _path.substr(iPathAnswers) == "/answers";
 
 pageIs.Collection = 0 == iPathCollection;
+
+pageIs.Debuts = 0 == _path.indexOf("/debuts/");
 
 var izhHomeLayout = utils.getCfg("HomeLayout"), izhAuthorList = utils.getCfg("AuthorList"), izhRightComment = utils.getCfg("ShowComment"), izhQuickFavo = utils.getCfg("QuickFavo"), izhAuthorRear = utils.getCfg("AuthorRear"), izhHomeNoti = utils.getCfg("HomeNoti"), izhQuickBlock = utils.getCfg("QuickBlock");
 
@@ -4554,7 +4561,7 @@ css += [ ".z-icon-izh-fold{background-position:-173px -107px;width:15px;height:1
 
 css += [ '.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif !important;font-size:12px !important;text-shadow:none !important;border-collapse:collapse !important;margin:0 !important;line-height:120%}', ".t_set_tb thead td{background:#0080c0;color:#fff;border:none !important;padding:4px 8px 4px !important;border-top-left-radius:6px;border-top-right-radius:6px}", ".t_set_tb th,.t_set_tb td{padding:8px;background:#e7f3f9;border:none !important;border-top:2px solid #fcfcfc !important;color:#669;line-height:1.1em !important}", ".t_set_tb td input,.t_set_tb td textarea{font-size:12px !important;padding:0 !important}", ".t_set_tb tbody tr:hover th,.t_set_tb tbody tr:hover td{background:#d0dafd}", ".t_set_tb tfoot td{border-radius-bottomleft:10px;border-radius-bottomright:10px;-moz-border-radius-bottomleft:10px;-moz-border-radius-bottomright:10px;-webkit-border-bottom-left-radius:10px;-webkit-border-bottom-right-radius:10px}", ".t_jchkbox{display:inline;font-size:20px;line-height:15px;padding-right:4px;cursor:pointer;cursor:hand}", ".t_jchkbox .mark{display:inline}", ".t_jchkbox img{vertical-align:middle;width:45px;height:15px}", '.t_jchkbox img{background:transparent url("data:image/png;base64,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") no-repeat}', ".t_jchkbox img{background-position:0 0}", ".t_jchkbox-hover img{background-position:0 -15px}", ".t_jchkbox-checked img{background-position:0 -30px}", ".t_jchkbox-checked .t_jchkbox-hover img{background-position:0 -45px}", ".t_jchkbox-disabled img{background-position:0 -60px}", ".t_jchkbox-checked .t_jchkbox-disabled img{background-position:0 -75px}", "" ].join("\n");
 
-css += [ ".izh_boxShadow{box-shadow: 5px 5px 3px 0px #ccc !important;}", "#zh-question-meta-wrap.izh_noBorder{border-bottom-color:transparent !important;}", "#zh-question-filter-wrap.izh_noBorder{border-top-color:transparent !important;}", "" ].join("\n");
+css += [ ".izh_boxShadow{box-shadow: 5px 5px 3px 0px #999 !important;}", "#zh-question-meta-wrap.izh_noBorder{border-bottom-color:transparent !important;}", "#zh-question-filter-wrap.izh_noBorder{border-top-color:transparent !important;}", "" ].join("\n");
 
 if (izhHomeLayout) {
     css += [ "#zh-question-list { padding-left:30px!important }", "#zh-main-feed-fresh-button { margin-left:-30px!important }", ".feed-item {", "    border-bottom:1px solid #EEE!important;", "    margin-top:-1px!important", "}", ".feed-item .avatar { display:none!important }", ".feed-main,.feed-item.combine { margin-left:0!important }", ".feed-item-q { margin-left:-30px!important;padding-left:0!important }", ".feed-item-a .zm-comment-box { max-width:602px!important }", ".feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }", ".zm-tag-editor,", "#zh-question-title,", "#zh-question-detail,", "#zh-question-meta-wrap,", ".zh-answers-title,", "#zh-question-filter-wrap {", "    margin-left:-32px!important", "}", "#zh-question-log-page-wrap .zm-tag-editor,", "#zh-question-log-page-wrap #zh-question-title {", "    margin-left:0 !important", "}", ".zh-answers-title,", "#zh-question-filter-wrap {", "    border-bottom:1px solid #EEE!important;", "    z-index:1000!important", "}", "#zh-question-meta-wrap {", "    margin-bottom:0!important;", "    padding-bottom:10px!important;", "    border-bottom:1px solid #EEE!important", "}", "#zh-question-answer-wrap { margin-top:-1px!important }", "#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }", ".zu-question-collap-title { border-top:1px solid #EEE!important }", "#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }", ".zu-autohide,", ".zm-comment-op-link,", ".zm-side-trend-del,", ".unpin {", "    visibility:visible!important;", "    opacity:0;", "}", ".feed-item:hover .zu-autohide,", ".zm-item-answer .zu-autohide,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-nav-li:hover .unpin {", "    opacity:1;", "}", ".zm-item-vote-count:hover,.zm-votebar button:hover{", "    background:#a6ce56!important;", "    color:#3E5E00 !important", "}", "a,a:hover,", "i,", ".zu-autohide,", ".zm-votebar button,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-trend-del,", ".zm-side-nav-li,", ".zu-main-feed-fresh-button,", ".zg-icon,", ".zm-side-nav-li:hover .zg-icon,", ".zm-side-nav-li:hover i,", ".unpin,", ".zm-side-nav-li:hover .unpin {", "    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "}", "h3{ line-height:25px }", ".zu-footer-inner {padding:15px 0!important}", ".zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}", ".zm-side-list-content{clear:both}", ".unpin{ display:inline-block!important }", "" ].join("\n");
@@ -4577,10 +4584,9 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
     position: "fixed",
     "background-color": "#fff",
     outline: "none",
-    "z-index": "9",
+    "z-index": "9999",
     right: 10,
-    "border-radius": 0,
-    border: "1px solid #999999",
+    "border-radius": "0 6px 0 0",
     padding: "100px 0px 0px 10px"
 }, css_QuickBlock = {
     "background-position": "-146px -202px",
@@ -4607,7 +4613,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             $vi.attr("izh-QuickBlock", "1");
         }
         if ($vi.parent().children("a.izh-quick-block").length) return;
-        var width = $vi.closest(".zm-item-answer").width(), $btnQuickBlock = $("<a>", {
+        var width = $vi.closest("[data-aid]").width(), $btnQuickBlock = $("<a>", {
             "class": "izh-quick-block",
             html: "快速屏蔽",
             href: "javascript:void(0);"
@@ -4664,18 +4670,31 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).attr("checked", "checked");
         }).insertAfter($btnQuickBlock).hide();
     }
+}, getItem = function($c) {
+    var $item = $(null);
+    if ($c && $c.length) {
+        var $itemMeta = $c.closest(".zm-item-meta");
+        if ($itemMeta.is(".feed-meta")) {
+            $item = $c.closest(".feed-item");
+        } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
+            $item = $c.closest(".zm-item-answer");
+        } else {
+            $item = $itemMeta.prev();
+        }
+    }
+    return $item;
 }, showComment = function($ac, $cm) {
     $(".zm-comment-box:visible").each(function(i, e) {
         if (!$cm.length || e != $cm.get(0)) $(e).closest(".zm-item-meta").find("[name=addcomment],[name=add-q-comment]")[0].click();
     });
-    var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), t = $ac.offset().top - $main.offset().top, b = $ac.offset().top - $main.offset().top, w = $ac.width(), inAnswer = $ac.is(".zm-item-answer"), $questionMeta = $("#zh-question-meta-wrap"), h = pageIs.Question ? $questionMeta.offset().top + $questionMeta.height() + parseInt($questionMeta.css("padding-bottom")) - $main.offset().top : $ac.height() + parseInt($ac.css("padding-bottom")) + parseInt($n.css("padding-top"));
+    var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), t = $ac.offset().top - $main.offset().top, b = $ac.offset().top - $main.offset().top, w = $ac.width(), inAnswer = $ac.is(".zm-item-answer"), inQuestion = $ac.is("#zh-question-detail"), $questionMeta = $("#zh-question-meta-wrap"), h = inQuestion ? $questionMeta.offset().top + $questionMeta.height() + parseInt($questionMeta.css("padding-bottom")) - $main.offset().top : $ac.height() + parseInt($ac.css("padding-bottom")) + parseInt($n.css("padding-top"));
     if (!$ac.find(".izh_tape_a,.izh_tape_b").length) $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
     if (!$cm) $cm = $ac.find(".zm-comment-box");
     if ($cm.length) {
         if (!$cm.attr("tabindex")) {
             $cm.attr("tabindex", "-1").focus();
         }
-        if (pageIs.Question) {
+        if (inQuestion) {
             $("#izh_QuestionShadow").css({
                 height: h,
                 "margin-bottom": -h
@@ -4689,8 +4708,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             width: 1,
             height: h,
             top: 0,
-            left: w - 1,
-            "z-index": "10",
+            "margin-left": w - 1,
+            "z-index": "10000",
             "background-color": "#fff"
         }).show();
         var $t = $cm.clone().css({
@@ -4706,9 +4725,9 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             top: "",
             bottom: ""
         }).height() + 100;
-        if (th < $(unsafeWindow).height() - $main.offset().top) {
-            var top = pageIs.Question ? 0 : $cm.parent().offset().top - $(document).scrollTop();
-            if (top + th > $(unsafeWindow).height()) {
+        if (th < $win.height() - $main.offset().top) {
+            var top = inQuestion ? 0 : $cm.parent().offset().top - $(document).scrollTop();
+            if (top + th > $win.height()) {
                 $cm.css({
                     top: "",
                     bottom: 0
@@ -4736,18 +4755,18 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         width: 1,
         height: h,
         top: 0,
-        left: w,
-        "z-index": "8",
-        "background-color": "#999999"
+        "margin-left": w,
+        "z-index": "9998",
+        "background-color": "#eee"
     }).show();
-    $ac.css("border-color", "#999999");
-    $n.css("border-color", "#999999");
+    //$ac.css('border-color','#999999');
+    //$n.css('border-color','#999999');
     $(".zh-backtotop").css("visibility", "hidden");
     $body.scrollTop(t);
 }, hideComment = function($ac, $cm) {
-    var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next();
+    var $n = $ac.next(), $n = $n.length ? $n : $ac.parent().next(), inQuestion = $ac.is("#zh-question-detail");
     if (!$cm) $cm = $ac.find(".zm-comment-box");
-    if (pageIs.Question) {
+    if (inQuestion) {
         $("#izh_QuestionShadow").hide();
         $("#zh-question-meta-wrap").next(":visible").andSelf().removeClass("izh_noBorder");
     } else {
@@ -4757,8 +4776,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         $ac.find(".izh_tape_a").hide();
     }
     $ac.find(".izh_tape_b").hide();
-    $ac.css("border-color", "#DDDDDD");
-    $n.css("border-color", "#DDDDDD");
+    //$ac.css('border-color','#DDDDDD');
+    //$n.css('border-color','#DDDDDD');
     $(".izh_tape_a:visible,.izh_tape_b:visible").hide();
     $(".zh-backtotop").css("visibility", "visible");
 }, processComment = function($cm) {
@@ -4797,14 +4816,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             $cm.addClass("izh_boxShadow").css(css_comment).closest(".zm-item-meta").find("[name=addcomment],[name=add-q-comment]").click(function(event) {
                 var $cm = $(this).closest(".zm-item-meta").find(".zm-comment-box");
                 if ($cm.length) {
-                    var $itemMeta = $cm.closest(".zm-item-meta"), $item = $(null);
-                    if ($itemMeta.is(".feed-meta")) {
-                        $item = $cm.closest(".feed-item");
-                    } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-                        $item = $cm.closest(".zm-item-answer");
-                    } else {
-                        $item = $itemMeta.prev();
-                    }
+                    var $item = getItem($cm);
                     if ($cm.is(":hidden")) {
                         showComment($item, $cm);
                     } else {
@@ -4847,14 +4859,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                     $btnQuickBlock.hide();
                 }
             }
-            var $itemMeta = $cm.closest(".zm-item-meta"), $item = $(null);
-            if ($itemMeta.is(".feed-meta")) {
-                $item = $cm.closest(".feed-item");
-            } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-                $item = $cm.closest(".zm-item-answer");
-            } else {
-                $item = $itemMeta.prev();
-            }
+            var $item = getItem($cm);
             showComment($item, $cm);
             $("i.zm-comment-bubble", $cm).hide();
             $(".zm-comment-list", $cm).css({
@@ -4864,14 +4869,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                 var $cm = $(this).parent(".zm-comment-box:visible");
                 if ($cm.length) {
                     $(".izh-quick-block", $cm).show();
-                    var $itemMeta = $cm.closest(".zm-item-meta"), $item = $(null);
-                    if ($itemMeta.is(".feed-meta")) {
-                        $item = $cm.closest(".feed-item");
-                    } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-                        $item = $cm.closest(".zm-item-answer");
-                    } else {
-                        $item = $itemMeta.prev();
-                    }
+                    var $item = getItem($cm);
                     showComment($item, $cm);
                     var $icm = $(event.target);
                     $icm.bind("DOMNodeRemoved", function(event) {
@@ -4880,14 +4878,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                             if ($(this).closest(".zm-comment-list").children().length == 1) {
                                 $(".izh-quick-block", $cm).hide();
                             }
-                            var $itemMeta = $cm.closest(".zm-item-meta"), $item = $(null);
-                            if ($itemMeta.is(".feed-meta")) {
-                                $item = $cm.closest(".feed-item");
-                            } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-                                $item = $cm.closest(".zm-item-answer");
-                            } else {
-                                $item = $itemMeta.prev();
-                            }
+                            var $item = getItem($cm);
                             showComment($item, $cm);
                         }
                     });
@@ -4898,14 +4889,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                     if ($(this).closest(".zm-comment-list").children().length == 1) {
                         $(".izh-quick-block", $cm).hide();
                     }
-                    var $itemMeta = $cm.closest(".zm-item-meta"), $item = $(null);
-                    if ($itemMeta.is(".feed-meta")) {
-                        $item = $cm.closest(".feed-item");
-                    } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-                        $item = $cm.closest(".zm-item-answer");
-                    } else {
-                        $item = $itemMeta.prev();
-                    }
+                    var $item = getItem($cm);
                     showComment($item, $cm);
                 }
             });
@@ -4920,14 +4904,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             "class": "zu-question-answer-meta-comment",
             html: "收起"
         }).click(function() {
-            var $itemMeta = $cm.closest(".zm-item-meta"), $item = $(null);
-            if ($itemMeta.is(".feed-meta")) {
-                $item = $cm.closest(".feed-item");
-            } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-                $item = $cm.closest(".zm-item-answer");
-            } else {
-                $item = $itemMeta.prev();
-            }
+            var $item = getItem($cm), $itemMeta = $cm.closest(".zm-item-meta");
             hideComment($item);
             $itemMeta.find("[name=addcomment],[name=add-q-comment]")[0].click();
         });
@@ -4962,9 +4939,9 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         if ($a.length) {
             if (bQuickBlock) {
                 // Region: 快速屏蔽
-                var $answerHead = $(".answer-head", $a);
-                if ($("[name=more]", $answerHead).length) {
-                    $answerHead.bind("DOMNodeInserted", function(event) {
+                var $voteInfo = $(".zm-item-vote-info", $a);
+                if ($("[name=more]", $voteInfo).length) {
+                    $voteInfo.parent().bind("DOMNodeInserted", function(event) {
                         addQuickBlock($(event.target));
                     });
                 }
@@ -5043,8 +5020,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                         }).prepend(cmt.children("i").clone()).appendTo(prv);
                     }
                     var th = div.height() + 33, maxTop = $uno.position().top + 12, contentPosition = "";
-                    if (maxTop + th < $(unsafeWindow).height()) {
-                        if (top + th < $(unsafeWindow).height()) {
+                    if (maxTop + th < $win.height()) {
+                        if (top + th < $win.height()) {
                             prv.css({
                                 top: top > maxTop ? top : maxTop,
                                 bottom: ""
@@ -5087,8 +5064,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                 $(this).hide();
             }).appendTo($a);
         }
-        $v.bind("mouseover", function() {
-            var $a = $(this).closest(".zm-item-answer");
+        $v.bind("mouseenter", function() {
+            var $a = getItem($(this));
             $a.children(".izh_fav").css({
                 bottom: $(this).height() + $a.height() - $(this).position().top - 1,
                 left: $(this).position().left
@@ -5096,7 +5073,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             $.getJSON("http://www.zhihu.com/collections/json", $.param({
                 answer_id: $a.attr("data-aid")
             }), function(result, status, xhr) {
-                var aid = this.url.substr(this.url.indexOf("answer_id=") + 10), $a = $(".zm-item-answer[data-aid=" + aid + "]"), $v = $a.children(".izh_fav").html('<div class="title">最近的选择</div>');
+                var aid = this.url.substr(this.url.indexOf("answer_id=") + 10), sel = pageIs.Question ? ".zm-item-answer" : pageIs.Home ? ".feed-item" : "", $a = $(sel + "[data-aid=" + aid + "]"), $v = $a.children(".izh_fav").html('<div class="title">最近的选择</div>');
+                if ("" == sel) return;
                 $.each(result.msg[0].slice(0, 4), function(i, e) {
                     $("<a/>", {
                         "class": "fav",
@@ -5112,7 +5090,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                             answer_id: $(this).attr("aid"),
                             favlist_id: $(this).attr("fid")
                         }), function(result) {
-                            var act = this.url.substring(this.url.lastIndexOf("/") + 1), fid_i = this.data.indexOf("favlist_id="), fid = this.data.substring(fid_i + 11), aid_i = this.data.indexOf("answer_id="), aid = this.data.substring(aid_i + 10, fid_i - 1), $vi = $(".zm-item-answer[data-aid=" + aid + "] .izh_fav a[fid=" + fid + "]"), inc = 0;
+                            var act = this.url.substring(this.url.lastIndexOf("/") + 1), fid = utils.getParamInQuery(this.data, "favlist_id"), aid = utils.getParamInQuery(this.data, "answer_id"), sel = pageIs.Question ? ".zm-item-answer" : pageIs.Home ? ".feed-item" : "", $vi = "" == sel ? null : $(sel + "[data-aid=" + aid + "] .izh_fav a[fid=" + fid + "]"), inc = 0;
+                            if ("" == sel) return;
                             if (act == "remove" && result.msg == "OK") {
                                 $vi.removeClass("selected");
                                 inc = -1;
@@ -5133,7 +5112,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                 });
             });
         });
-        $v.bind("mouseout", function() {
+        $v.bind("mouseleave", function() {
             var $a = $(this).closest(".zm-item-answer");
             $a.children(".izh_fav").hide();
         });
@@ -5152,6 +5131,45 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
 };
 
 /**
+ * 回答页
+ */
+$(function() {
+    if (pageIs.Answer) {
+        var $lblQuestionMeta = $("#zh-question-meta-wrap");
+        var $questionWrap = $("#zh-question-meta-wrap");
+        $questionWrap.children(".panel-container").bind("DOMNodeInserted", function(event) {
+            processComment($(event.target));
+        });
+        if (izhRightComment) {
+            $questionWrap.children(".meta-item[name=addcomment]").css({
+                display: "block",
+                "float": "right",
+                "margin-left": 7
+            }).insertBefore($questionWrap.children().first());
+            if (!$("#izh_QuestionShadow").length) {
+                $("<div>", {
+                    "class": "izh_boxShadow",
+                    id: "izh_QuestionShadow"
+                }).css({
+                    "z-index": "-1",
+                    position: "relative",
+                    top: -25,
+                    "margin-left": -32
+                }).prependTo("#zh-single-question").hide();
+            }
+        }
+        processComment($(".zm-comment-box", $questionWrap));
+        //process each answer
+        var $listAnswers = $(".zm-item-answer", "#zh-single-question");
+        if ($listAnswers && $listAnswers.length) {
+            $listAnswers.each(function(i, e) {
+                processAnswer($(e), null, izhAuthorRear, false, izhRightComment, izhQuickBlock);
+            });
+        }
+    }
+});
+
+/**
  * 收藏页
  */
 $(function() {
@@ -5165,7 +5183,7 @@ $(function() {
             var allLinksCollection = new allLinks("Collections", "#zh-list-answer-wrap", "收藏夹");
             if (!allLinksCollection.initDialog()) return;
             $(".modal-dialog-bg").show();
-            var y = ($(unsafeWindow).height() - allLinksCollection.$dlg.width()) / 2, x = ($(unsafeWindow).width() - allLinksCollection.$dlg.width()) / 2;
+            var y = ($win.height() - allLinksCollection.$dlg.width()) / 2, x = ($win.width() - allLinksCollection.$dlg.width()) / 2;
             allLinksCollection.$dlg.css({
                 top: y,
                 left: x
@@ -5183,7 +5201,7 @@ $(function() {
             var allLinksAnswers = new allLinks("Answers", "#zh-profile-answer-list .zh-general-list", "用户回答");
             if (!allLinksAnswers.initDialog()) return;
             $(".modal-dialog-bg").show();
-            var y = ($(unsafeWindow).height() - allLinksAnswers.$dlg.width()) / 2, x = ($(unsafeWindow).width() - allLinksAnswers.$dlg.width()) / 2;
+            var y = ($win.height() - allLinksAnswers.$dlg.width()) / 2, x = ($win.width() - allLinksAnswers.$dlg.width()) / 2;
             allLinksAnswers.$dlg.css({
                 top: y,
                 left: x
@@ -5197,7 +5215,7 @@ $(function() {
  * 首页
  */
 $(function() {
-    var $lblActivityCaption = $("#zh-home-list-title"), $btnNewActivity = $("#zh-main-feed-fresh-button"), $feedList = $("#js-home-feed-list");
+    var $lblActivityCaption = $("#zh-home-list-title"), $btnNewActivity = $("#zh-main-feed-fresh-button"), $feedList = $(".zh-general-list");
     if (pageIs.Home) {
         if (izhHomeNoti && $lblActivityCaption.length && $btnNewActivity.length) {
             $lblActivityCaption.css({
@@ -5212,6 +5230,8 @@ $(function() {
                 "line-height": "22px"
             }).appendTo($lblActivityCaption);
         }
+    }
+    if (pageIs.Home || pageIs.Debuts) {
         $feedList.find(".feed-item").each(function(i, e) {
             processAnswer($(e), null, izhAuthorRear, izhAuthorList, izhRightComment, izhQuickBlock);
         });
@@ -5312,7 +5332,7 @@ $(function() {
             // Adjust AuthorList's size and locate its position
             if (!$f || !$f.length) return;
             var frm = $f.get(0);
-            var width = ppWidth, height = $(unsafeWindow).height() - $main.offset().top - 3 - $f.position().top;
+            var width = ppWidth, height = $win.height() - $main.offset().top - 3 - $f.position().top;
             if (frm.scrollHeight > height) {
                 $f.height(height);
                 width += 20;
@@ -5384,7 +5404,7 @@ $(function() {
 $(function() {
     var domBtnSettings = [ "<li>", '<a href="javascript:void(0);" tabindex="-1">', '<i class="zg-icon zg-icon-dd-settings izhihu-settings"></i>', "iZhihu", "</a>", "</li>" ].join("");
     var cbemptyimg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII=";
-    var domDlgSettings = [ '<div id="izh-dlg-settings" class="modal-dialog" tabindex="0" style="display:none;width:500px">', '<div class="modal-dialog-title modal-dialog-title-draggable">', '<span class="modal-dialog-title-text">配置选项</span>', '<span class="modal-dialog-title-close"></span>', "</div>", '<div class="modal-dialog-content">', "<div>", '<div class="zg-section">', '<table class="t_set_tb"border="0"cellspacing="0"cellpadding="5"width="100%">', "<thead>", '<tr><td colspan="2"align="left"><b>功能开关</b>（更改后设置将立刻保存，但只有当页面再次打开时才会生效)</td></tr>', "</thead>", "<tbody>", '<tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" /></td></tr>', '<tr><td align="left"title="* 导航部分加宽\n* 首页隐藏大头像\n* 赞同票右移\n* 首页评论框拉宽\n* 过渡效果 ">改变网页样式外观</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>', '<tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>', '<tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" name="AuthorRear" /></td></tr>', '<tr><td align="left">在问题页中显示回答者目录（在页面左侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" name="AuthorList" /></td></tr>', '<tr><td align="left">在回答右侧浮动显示回答的评论</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment" name="ShowComment" /></td></tr>', '<tr><td align="left">为赞同列表、评论列表开启「快速黑名单」功能</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickBlock" name="QuickBlock" /></td></tr>', '<tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" name="QuickFavo" /></td></tr>', "</tbody>", "</table>", "</div>", '<div class="zg-left">', "当前版本：" + version + "；", "最后更新：" + updateDate + "<br/>", '制作：<a data-tip="p$t$unogzx" href="/people/unogzx">@钢盅郭子</a>，', '<a data-tip="p$t$liuyong25" href="/people/liuyong25">@天猪(刘勇)</a>，', '<a data-tip="p$t$yukirock" href="/people/yukirock">@罗大睿</a><br/>', '感谢：<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>', "</div>", '<div class="zm-command">', '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>', "</div>", "</div>", "</div>", "</div>" ].join("");
+    var domDlgSettings = [ '<div id="izh-dlg-settings" class="modal-dialog" tabindex="0" style="display:none;width:500px">', '<div class="modal-dialog-title modal-dialog-title-draggable">', '<span class="modal-dialog-title-text">配置选项</span>', '<span class="modal-dialog-title-close"></span>', "</div>", '<div class="modal-dialog-content">', "<div>", '<div class="zg-section">', '<table class="t_set_tb"border="0"cellspacing="0"cellpadding="5"width="100%">', "<thead>", '<tr><td colspan="2"align="left"><b>功能开关</b>（更改后设置将立刻保存，但只有当页面再次打开时才会生效)</td></tr>', "</thead>", "<tbody>", '<tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" /></td></tr>', '<tr><td align="left"title="* 导航部分加宽\n* 首页隐藏大头像\n* 赞同票右移\n* 首页评论框拉宽\n* 过渡效果 ">改变网页样式外观</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>', '<tr><td align="left"title="挪到 Timeline 右上方，与标题「最新动态」平行">调整首页中的「新动态」提醒按钮</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>', '<tr><td align="left">将问题页中的回答者信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" name="AuthorRear" /></td></tr>', '<tr><td align="left">在问题页中显示回答者目录（在页面左侧掩藏）</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" name="AuthorList" /></td></tr>', '<tr><td align="left">在页面右侧浮动显示打开的评论列表</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment" name="ShowComment" /></td></tr>', '<tr><td align="left">为赞同列表、评论列表开启「快速黑名单」功能</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickBlock" name="QuickBlock" /></td></tr>', '<tr><td align="left"title="">在「收藏」按钮上方显示「快速收藏」</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" name="QuickFavo" /></td></tr>', "</tbody>", "</table>", "</div>", '<div class="zg-left">', "当前版本：" + version + "；", "最后更新：" + updateDate + "<br/>", '制作：<a data-tip="p$t$unogzx" href="/people/unogzx">@钢盅郭子</a>，', '<a data-tip="p$t$liuyong25" href="/people/liuyong25">@天猪(刘勇)</a>，', '<a data-tip="p$t$yukirock" href="/people/yukirock">@罗大睿</a><br/>', '感谢：<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>', "</div>", '<div class="zm-command">', '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>', "</div>", "</div>", "</div>", "</div>" ].join("");
     var d = '<div id="izh-dlg-settings" title="配置选项"><p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the x icon.</p></div>';
     $(domBtnSettings).insertBefore($("ul#top-nav-profile-dropdown li:last")).click(function() {
         console.log(this);
@@ -5395,8 +5415,8 @@ $(function() {
         $("#izh-dlg-settings").css({
             "z-index": "123",
             position: "fixed",
-            top: ($(unsafeWindow).height() - $("#izh-dlg-settings").height()) / 2,
-            left: ($(unsafeWindow).width() - $("#izh-dlg-settings").width()) / 2
+            top: ($win.height() - $("#izh-dlg-settings").height()) / 2,
+            left: ($win.width() - $("#izh-dlg-settings").width()) / 2
         }).fadeIn("slow");
     });
     var $dlg = $(domDlgSettings).appendTo(_doc.body);

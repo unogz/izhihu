@@ -1,5 +1,6 @@
 {
     "manifest_version": 2
+<<<<<<< HEAD
   , "content_scripts": [ {
         "exclude_globs":    [  ]
       , "include_globs":    [ "*" ]
@@ -57,7 +58,27 @@
   , "version":      "2.1.0.311"
 >>>>>>> Implemented RightComment in Home page
   , "permissions": [
+=======
+  , "converted_from_user_script": true
+
+  , "name"           : "iZhihu"
+  , "version"        : "2.1.0.311"
+  , "description"    : ""
+  , "permissions"    : [
+>>>>>>> New version released
         "http://*.zhihu.com/"
+    ]
+  , "content_scripts": [ {
+        "run_at"       : "document_end"
+      , "exclude_globs": [  ]
+      , "include_globs": [ "*" ]
+      , "matches"      : [
+            "http://www.zhihu.com/*"
         ]
+      , "js"           : [
+            "jquery.min.js"
+          , "126619.user.js"
+        ]
+    } ]
 }
 >>>>>>> For CRX
