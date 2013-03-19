@@ -1,18 +1,23 @@
 {
     "manifest_version": 2
-  , "content_scripts": [ {
-        "exclude_globs":    [  ]
-      , "include_globs":    [ "*" ]
-      , "js":               [ "jquery.min.js","126619.user.js" ]
-      , "matches":          [   "http://www.zhihu.com/*"
-                            ]
-      , "run_at": "document_end"
-    } ]
   , "converted_from_user_script": true
-  , "description":  ""
-  , "name":         "iZhihu"
-  , "version":      "2.1.0.311"
-  , "permissions": [
+
+  , "name"           : "iZhihu"
+  , "version"        : "2.1.0.311"
+  , "description"    : ""
+  , "permissions"    : [
         "http://*.zhihu.com/"
+    ]
+  , "content_scripts": [ {
+        "run_at"       : "document_end"
+      , "exclude_globs": [  ]
+      , "include_globs": [ "*" ]
+      , "matches"      : [
+            "http://www.zhihu.com/*"
         ]
+      , "js"           : [
+            "jquery.min.js"
+          , "126619.user.js"
+        ]
+    } ]
 }
