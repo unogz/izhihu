@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.1.0
+// @version      2.1.2
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -1951,7 +1951,7 @@ utils.getParamInQuery = function(queryStr, paramName) {
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
 
-var version = "2.1.0.311";
+var version = "2.1.2.313";
 
 var updateDate = "2013-3-19";
 
@@ -2128,10 +2128,10 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
     var $item = $(null);
     if ($c && $c.length) {
         var $itemMeta = $c.closest(".zm-item-meta");
-        if ($itemMeta.is(".feed-meta")) {
+        if ($itemMeta.parent().is(".feed-meta")) {
             $item = $c.closest(".feed-item");
-        } else if ($itemMeta.is(".zu-question-answer-item-meta")) {
-            $item = $c.closest(".zm-item-answer");
+        } else if ($itemMeta.is(".answer-actions")) {
+            $item = $c.closest(".zm-item-answer,.feed-item");
         } else {
             $item = $itemMeta.prev();
         }
@@ -2379,12 +2379,23 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
 }, processAnswer = function($a, $pp, bAuthorRear, bAuthorList, bRightComment, bQuickBlock) {
     if (!$a || !$a.length) return;
     if ($a.attr("izh_processed") == "1") return;
-    var $c = $a.children().last(), $p = $a.find(".zm-item-answer-author-info").css("textAlign", "right"), $v = $a.find(".meta-item[name=favo]");
+    var $c = $a.children().last(), $p = $a.find(".zm-item-answer-author-info"), $v = $a.find(".meta-item[name=favo]");
     if ($p.length) {
         //relocatePersonInfo
         if (bAuthorRear) {
+            $p.css({
+                textAlign: "right",
+                width: "100%"
+            });
             if ($a.is(".feed-item")) {
-                $p.appendTo($a.find(".answer_wrap .zm-item-answer-detail .full-content"));
+                $a.find(".answer_wrap .zm-item-answer-detail .zm-item-rich-text").append($p.hide()).bind("DOMNodeInserted", function(event) {
+                    var $c = $(event.target);
+                    if ($c.is(".zm-editable-content")) {
+                        $(this).children(".zm-item-answer-author-info").insertBefore($c.children(".answer-date-link-wrap")).css({
+                            position: "absolute"
+                        }).show();
+                    }
+                });
             } else {
                 $p.insertBefore($c);
             }
@@ -2575,10 +2586,12 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         processComment($(event.target));
     });
     if (bRightComment) {
-        $a.find(".zu-question-answer-meta-comment").css({
+        var $bc = $a.find(".zu-question-answer-meta-comment");
+        $bc.css({
             display: "block",
-            "float": "right"
-        });
+            "float": "right",
+            "margin-left": 7
+        }).prependTo($bc.parent());
     }
     processComment($(".zm-comment-box", $a));
     $a.attr("izh_processed", "1");

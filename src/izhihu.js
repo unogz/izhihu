@@ -1,4 +1,4 @@
-var version='2.1.0.311';
+var version='2.1.2.313';
 var updateDate='2013-3-19';
 
 var $ = unsafeWindow.$;
@@ -299,10 +299,10 @@ var _e=null
         var $item=$(null);
         if($c && $c.length){ 
             var $itemMeta=$c.closest('.zm-item-meta');
-            if ($itemMeta.is('.feed-meta')){
+            if ($itemMeta.parent().is('.feed-meta')){
                 $item=$c.closest('.feed-item');
-            }else if($itemMeta.is('.zu-question-answer-item-meta')){
-                $item=$c.closest('.zm-item-answer');
+            }else if($itemMeta.is('.answer-actions')){
+                $item=$c.closest('.zm-item-answer,.feed-item');
             }else{
                 $item=$itemMeta.prev();
             }
@@ -544,12 +544,24 @@ var _e=null
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
         var $c=$a.children().last()
-          , $p=$a.find('.zm-item-answer-author-info').css('textAlign','right')
+          , $p=$a.find('.zm-item-answer-author-info')
           , $v=$a.find('.meta-item[name=favo]');
         if($p.length){//relocatePersonInfo
             if(bAuthorRear){
+                $p.css({
+                    'textAlign':'right'
+                  , 'width':'100%'
+                });
                 if($a.is('.feed-item')){
-                    $p.appendTo($a.find('.answer_wrap .zm-item-answer-detail .full-content'));
+                    $a.find('.answer_wrap .zm-item-answer-detail .zm-item-rich-text')
+                    	.append($p.hide()).bind('DOMNodeInserted',function(event){
+                    	    var $c=$(event.target);
+                    	    if($c.is('.zm-editable-content')){
+                    	        $(this).children('.zm-item-answer-author-info')
+                    	        	.insertBefore($c.children('.answer-date-link-wrap'))
+                    	        	.css({'position':'absolute'}).show();
+                    	    }
+                    	});
                 }else{
                     $p.insertBefore($c);
                 }
@@ -739,7 +751,12 @@ var _e=null
             processComment($(event.target));
         });
         if(bRightComment){
-            $a.find('.zu-question-answer-meta-comment').css({'display':'block','float':'right'});
+            var $bc=$a.find('.zu-question-answer-meta-comment');
+            $bc.css({
+                'display':'block'
+              , 'float':'right'
+              , 'margin-left':7
+            }).prependTo($bc.parent());
         }
         processComment($('.zm-comment-box',$a));
         $a.attr('izh_processed','1');
