@@ -2021,6 +2021,10 @@ if (izhHomeLayout) {
     css += [ "#zh-question-list { padding-left:30px!important }", "#zh-main-feed-fresh-button { margin-left:-30px!important }", ".feed-item {", "    border-bottom:1px solid #EEE!important;", "    margin-top:-1px!important", "}", ".feed-item .avatar { display:none!important }", ".feed-main,.feed-item.combine { margin-left:0!important }", ".feed-item-q { margin-left:-30px!important;padding-left:0!important }", ".feed-item-a .zm-comment-box { max-width:602px!important }", ".feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }", ".zm-tag-editor,", "#zh-question-title,", "#zh-question-detail,", "#zh-question-meta-wrap,", ".zh-answers-title,", "#zh-question-filter-wrap {", "    margin-left:-32px!important", "}", "#zh-question-log-page-wrap .zm-tag-editor,", "#zh-question-log-page-wrap #zh-question-title {", "    margin-left:0 !important", "}", ".zh-answers-title,", "#zh-question-filter-wrap {", "    border-bottom:1px solid #EEE!important;", "    z-index:1000!important", "}", "#zh-question-meta-wrap {", "    margin-bottom:0!important;", "    padding-bottom:10px!important;", "    border-bottom:1px solid #EEE!important", "}", "#zh-question-answer-wrap { margin-top:-1px!important }", "#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }", ".zu-question-collap-title { border-top:1px solid #EEE!important }", "#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }", ".zu-autohide,", ".zm-comment-op-link,", ".zm-side-trend-del,", ".unpin {", "    visibility:visible!important;", "    opacity:0;", "}", ".feed-item:hover .zu-autohide,", ".zm-item-answer .zu-autohide,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-nav-li:hover .unpin {", "    opacity:1;", "}", ".zm-item-vote-count:hover,.zm-votebar button:hover{", "    background:#a6ce56!important;", "    color:#3E5E00 !important", "}", "a,a:hover,", "i,", ".zu-autohide,", ".zm-votebar button,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-trend-del,", ".zm-side-nav-li,", ".zu-main-feed-fresh-button,", ".zg-icon,", ".zm-side-nav-li:hover .zg-icon,", ".zm-side-nav-li:hover i,", ".unpin,", ".zm-side-nav-li:hover .unpin {", "    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "}", "h3{ line-height:25px }", ".zu-footer-inner {padding:15px 0!important}", ".zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}", ".zm-side-list-content{clear:both}", ".unpin{ display:inline-block!important }", "" ].join("\n");
 }
 
+if (izhQuickBlock) {
+    css += [ "#izh_blockCart{position:fixed;right:0;bottom:0;z-index:99;overflow-y:auto;overflow-x:hidden;padding:0 30px 0 60px;}", "#izh_blockCart .do{display:block;margin:2px;width:100%;height:20px;}", "#izh_blockCart .list{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", "#izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", "#izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", "#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", "#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", "#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", "" ].join("\n");
+}
+
 var heads = _doc.getElementsByTagName("head");
 
 if (heads.length > 0) {
@@ -2053,6 +2057,77 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
     }), function(r) {
         var u = this.url.replace(/http:\/\/www.zhihu.com/g, "").replace(/\/block/g, "");
         $('a[href="' + u + '"]').css("text-decoration", "line-through");
+    });
+}, in2BlockCart = function($e) {
+    var $cartDIV = $("#izh_blockCart"), href = $e.attr("href");
+    if ($cartDIV.find('.user2B[user="' + href + '"]').length) return;
+    if (!$cartDIV.length) {
+        $cartDIV = $('<div id="izh_blockCart">').css({
+            top: $main.offset().top
+        }).append($("<div>", {
+            "class": "do"
+        }).append($("<a>", {
+            html: "大赦",
+            click: function() {
+                $(".list", "#izh_blockCart").empty();
+            }
+        }).css({
+            display: "block",
+            "float": "left"
+        })).append($("<a>", {
+            html: "收监"
+        }).css({
+            display: "block",
+            "float": "right"
+        }))).append('<div class="list"></div>').appendTo($body);
+    }
+    $.get("http://www.zhihu.com" + href + "/json", "", function(r) {
+        var user = r.msg[0], userName = user[0], userID = user[1], f_ = r.msg[3], _f = r.msg[4], cssF = _f ? "zg-icon " : "", $cart = $(".list", "#izh_blockCart"), href = "/people/" + userID;
+        console.log(userName + ":" + f_ + ":" + _f);
+        if ($cart.find('.user2B[user="' + href + '"]').length) return;
+        if (cssF != "") {
+            cssF += f_ ? "zu-entry-focus-each" : "zu-entry-focus-single-way";
+        }
+        var $user2B = $("<div>", {
+            "class": "user2B",
+            user: "/people/" + userID
+        }).append($("<a>", {
+            "class": "del",
+            html: "赦",
+            href: "javascript:void(0);",
+            click: function() {
+                $(this).closest(".user2B").remove();
+            }
+        })).append($("<i>", {
+            "class": "say",
+            html: "冤枉"
+        })).append($("<i>", {
+            "class": "say_1"
+        })).append($("<i>", {
+            "class": "say_2"
+        })).append($("<i>", {
+            "class": cssF
+        }).show()).append($("<span>", {
+            "class": "name",
+            html: userName
+        }));
+        if (_f && f_) {
+            if ($cart.find(".user2B i.zu-entry-focus-each").length) {
+                $cart.find(".user2B i.zu-entry-focus-each:last").parent().after($user2B);
+            } else {
+                $cart.prepend($user2B);
+            }
+        } else if (_f) {
+            if ($cart.find(".user2B i.zu-entry-focus-single-way").length) {
+                $cart.find(".user2B i.zu-entry-focus-single-way:last").parent().after($user2B);
+            } else if ($cart.find(".user2B i.zu-entry-focus-each").length) {
+                $cart.find(".user2B i.zu-entry-focus-each:last").parent().after($user2B);
+            } else {
+                $cart.prepend($user2B);
+            }
+        } else {
+            $cart.append($user2B);
+        }
     });
 }, addQuickBlock = function($vi) {
     if ($vi.is(".zm-item-vote-info") && !$vi.children("a[name=more]").length) {
@@ -2087,33 +2162,36 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             }
         }).insertBefore($vi);
         $("<a>", {
-            "class": "izh-quick-block-do zg-icon",
-            href: "javascript:void(0);"
+            "class": "izh-quick-block-do",
+            href: "javascript:void(0);",
+            html: "候审"
         }).css($.extend(css_QuickBlock, {
             position: "absolute",
             left: width,
-            "margin-top": "2.5em",
-            "margin-left": "2.5em"
+            width: "4em",
+            "margin-top": "1.5em",
+            "font-size": "200%"
         })).click(function() {
             $(".zm-item-vote-info input.izh-quick-block-sel:checked", this.parentNode).each(function(i, e) {
-                quickBlock($(e).next());
+                in2BlockCart($(e).next());
             });
         }).insertAfter($btnQuickBlock).hide();
         $("<a>", {
             "class": "izh-quick-block-selAll",
-            html: "不选",
+            html: "无",
             href: "javascript:void(0);"
         }).css({
             position: "absolute",
             left: width,
             width: "2em",
-            "margin-top": "3em"
+            "margin-top": "1.5em",
+            "margin-left": "3em"
         }).click(function() {
             $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).removeAttr("checked");
         }).insertAfter($btnQuickBlock).hide();
         $("<a>", {
             "class": "izh-quick-block-notAll",
-            html: "全选",
+            html: "全",
             href: "javascript:void(0);"
         }).css({
             position: "absolute",
@@ -2289,7 +2367,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
                     }).css($.extend(css_QuickBlock, {
                         "float": "right"
                     })).click(function() {
-                        quickBlock($(this).next());
+                        in2BlockCart($(this).next());
                     }).prependTo(e).hide();
                 });
                 var $btnQuickBlock = $("<a>", {
