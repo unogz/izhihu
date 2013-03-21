@@ -211,6 +211,8 @@ if(izhQuickBlock){
           ,'#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}'
           ,'#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}'
           ,'#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}'
+          ,'.izh-quick-block-do:hover{text-decoration:none;}'
+          ,'.izh-quick-block-do:before{content:attr(izh_doing2B);font-size:150%;display:block;}'
           ,''].join('\n');
 }
 var heads = _doc.getElementsByTagName("head");
@@ -253,8 +255,15 @@ var _e=null
   , in2BlockCart=function($e){
         var $cartDIV=$('#izh_blockCart')
           , href=$e.attr('href')
+          , $do=$e.closest('.zm-item-vote-info').parent()
+          	    .find('.izh-quick-block-do[izh_doing2B!="0"]') // Current block doing
         ;
-        if($cartDIV.find('.user2B[user="'+href+'"]').length)return;
+        if($cartDIV.find('.user2B[user="'+href+'"]').length){
+            var doing2B=parseInt($do.attr('izh_doing2B'));
+            if(!isNaN(doing2B))
+            	$do.attr('izh_doing2B',--doing2B);
+            return;
+        }
         if(!$cartDIV.length){
             $cartDIV=$('<div id="izh_blockCart">').css({
                 'top':$main.offset().top
@@ -295,8 +304,15 @@ var _e=null
               , cssF=_f?'zg-icon ':''
               , $cart=$('.list','#izh_blockCart')
               , href='/people/'+userID
+              , $doParent=$('.izh-quick-block-do[izh_doing2B!="0"]') // Current block doing
+                    .parent().has('.zm-item-vote-info li a[href="'+href+'"]') // & Current user included
+              , $do=$doParent.children('.izh-quick-block-do')
             ;console.log(userName+':'+f_+':'+_f);
-            if($cart.find('.user2B[user="'+href+'"]').length)return;
+            var doing2B=parseInt($do.attr('izh_doing2B'));
+            if(!isNaN(doing2B))
+            	$do.attr('izh_doing2B',--doing2B);
+            if($cart.find('.user2B[user="'+href+'"]').length)
+                return; // User already in block list
             if(cssF!=''){
                 cssF+=f_?'zu-entry-focus-each':'zu-entry-focus-single-way'
             }
@@ -376,7 +392,7 @@ var _e=null
                       this.setAttribute('on','1');
                     }
                 }).insertBefore($vi);
-            $('<a>',{'class':'izh-quick-block-do',href:'javascript:void(0);',html:'候审'})
+            $('<a>',{'class':'izh-quick-block-do','izh_num2B':'0','izh_doing2B':'0',href:'javascript:void(0);',html:'候审'})
               .css($.extend(css_QuickBlock,{
                   'position':'absolute'
                 , 'left':width
@@ -384,7 +400,14 @@ var _e=null
                 , 'margin-top':'1.5em'
                 , 'font-size':'200%'
               })).click(function(){
-                  $('.zm-item-vote-info input.izh-quick-block-sel:checked',this.parentNode).each(function(i,e){
+                  if($('.izh-quick-block-do[izh_doing2B!="0"]').length)
+                      return; // NA when other block doing
+                  var $do=$(this)
+                    , doing2B=parseInt($do.attr('izh_doing2B'))
+                    , $users2B=$('.zm-item-vote-info input.izh-quick-block-sel:checked',this.parentNode)
+                  ;
+                  $do.attr('izh_doing2B',$users2B.length);
+                  $users2B.each(function(i,e){
                       in2BlockCart($(e).next());
                   });
               }).insertAfter($btnQuickBlock).hide();
@@ -395,7 +418,9 @@ var _e=null
               , 'margin-top':'1.5em'
               , 'margin-left':'3em'
             }).click(function(){
-              $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).removeAttr('checked');
+                var $users=$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode);
+                $users.removeAttr('checked');
+                $('.izh-quick-block-do',this.parentNode).attr('izh_num2B',0);
             }).insertAfter($btnQuickBlock).hide();
             $('<a>',{'class':'izh-quick-block-notAll',html:'全',href:'javascript:void(0);'}).css({
                 'position':'absolute'
@@ -403,7 +428,9 @@ var _e=null
               , 'width':'2em'
               , 'margin-top':'1.5em'
             }).click(function(){
-              $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).attr('checked','checked');
+                var $users=$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode);
+                $users.attr('checked','checked');
+              	$('.izh-quick-block-do',this.parentNode).attr('izh_num2B',$users.length);
             }).insertAfter($btnQuickBlock).hide();
         }
   }
