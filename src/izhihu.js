@@ -211,8 +211,10 @@ if(izhQuickBlock){
           ,'#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}'
           ,'#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}'
           ,'#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}'
+          ,'.izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}'
+          ,'.izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}'
+          ,'.izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}'
           ,'.izh-quick-block-do:hover{text-decoration:none;}'
-          ,'.izh-quick-block-do:before{content:attr(izh_doing2B);font-size:150%;display:block;}'
           ,''].join('\n');
 }
 var heads = _doc.getElementsByTagName("head");
@@ -252,16 +254,14 @@ var _e=null
             $('a[href="'+u+'"]').css('text-decoration','line-through');
         });
   	}
-  , in2BlockCart=function($e){
+  , in2BlockCart=function($e,$doing){
         var $cartDIV=$('#izh_blockCart')
           , href=$e.attr('href')
-          , $do=$e.closest('.zm-item-vote-info').parent()
-          	    .find('.izh-quick-block-do[izh_doing2B!="0"]') // Current block doing
         ;
         if($cartDIV.find('.user2B[user="'+href+'"]').length){
-            var doing2B=parseInt($do.attr('izh_doing2B'));
+            var doing2B=parseInt($doing.attr('izh_doing2B'));
             if(!isNaN(doing2B))
-            	$do.attr('izh_doing2B',--doing2B);
+            	$doing.attr('izh_doing2B',--doing2B);
             return;
         }
         if(!$cartDIV.length){
@@ -304,13 +304,13 @@ var _e=null
               , cssF=_f?'zg-icon ':''
               , $cart=$('.list','#izh_blockCart')
               , href='/people/'+userID
-              , $doParent=$('.izh-quick-block-do[izh_doing2B!="0"]') // Current block doing
+              , $blockParent=$('.izh-quick-block:visible').has('.izh-quick-block-do[izh_doing2B!="0"]') // Current block doing
                     .parent().has('.zm-item-vote-info li a[href="'+href+'"]') // & Current user included
-              , $do=$doParent.children('.izh-quick-block-do')
+              , $doing=$blockParent.find('.izh-quick-block-do')
             ;console.log(userName+':'+f_+':'+_f);
-            var doing2B=parseInt($do.attr('izh_doing2B'));
+            var doing2B=parseInt($doing.attr('izh_doing2B'));
             if(!isNaN(doing2B))
-            	$do.attr('izh_doing2B',--doing2B);
+            	$doing.attr('izh_doing2B',--doing2B);
             if($cart.find('.user2B[user="'+href+'"]').length)
                 return; // User already in block list
             if(cssF!=''){
@@ -369,69 +369,70 @@ var _e=null
                 var $u=$('.voters a[href^="/people/"]',$vi);
                 $u.each(function(i,e){
                     $('<input>',{'class':'izh-quick-block-sel',type:'checkbox'}).css({
-                    }).insertBefore(e).hide();
+                    }).insertBefore(e).hide().click(function(){
+                        var $vi=$(this).closest('.zm-item-vote-info')
+                          , $quickBlock=$vi.parent().find('.izh-quick-block')
+                          , $users=$('input.izh-quick-block-sel:checked',$vi)
+                        ;
+                      	$quickBlock.attr('izh_num2B',$users.length);
+                    });
                 });
                 $vi.attr('izh-QuickBlock','1');
             }
-            if($vi.parent().children('a.izh-quick-block').length)
+            if($vi.parent().children('a.izh-quick-block-switch').length)
                 return;
             var width=$vi.closest('[data-aid]').width()
-              , $btnQuickBlock=$('<a>',{'class':'izh-quick-block',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+              , $btnQuickBlock=$('<a>',{'class':'izh-quick-block-switch',html:'快速屏蔽',href:'javascript:void(0);'}).css({
                     'position':'absolute'
                   , 'left':width
                   , 'width':'4em'
                 }).click(function(){
                     if(this.getAttribute('on')=='1'){
-                      $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
-                      $(this).nextAll('[class^=izh-quick-block]').hide();
-                      this.setAttribute('on','0');
+                        $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
+                        $(this).nextAll('.izh-quick-block').hide();
+                        this.setAttribute('on','0');
                     }
                     else{
-                      $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
-                      $(this).nextAll('[class^=izh-quick-block]').show();
-                      this.setAttribute('on','1');
+                        $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
+                        $(this).nextAll('.izh-quick-block').show();
+                        this.setAttribute('on','1');
                     }
-                }).insertBefore($vi);
-            $('<a>',{'class':'izh-quick-block-do','izh_num2B':'0','izh_doing2B':'0',href:'javascript:void(0);',html:'候审'})
-              .css($.extend(css_QuickBlock,{
-                  'position':'absolute'
-                , 'left':width
-                , 'width':'4em'
-                , 'margin-top':'1.5em'
+                }).insertBefore($vi)
+              , $quickBlock=$('<div>',{'class':'izh-quick-block','izh_num2B':'0'}).css({'left':width}).insertBefore($vi).hide()
+            ;
+            $('<a>',{'class':'izh-quick-block-do','izh_doing2B':'0',href:'javascript:void(0);',html:'候审'})
+              .css({//$.extend(css_QuickBlock,{
+                  'margin-top':'1em'
                 , 'font-size':'200%'
-              })).click(function(){
-                  if($('.izh-quick-block-do[izh_doing2B!="0"]').length)
+                , 'width':'2em'
+              }).click(function(){
+                  if($('.izh-quick-block .izh-quick-block-do[izh_doing2B!="0"]').length)
                       return; // NA when other block doing
-                  var $do=$(this)
-                    , doing2B=parseInt($do.attr('izh_doing2B'))
-                    , $users2B=$('.zm-item-vote-info input.izh-quick-block-sel:checked',this.parentNode)
+                  var $doing=$(this)
+                    , doing2B=parseInt($doing.attr('izh_doing2B'))
+                    , $quickBlock=$doing.closest('.izh-quick-block')
+                    , $users2B=$('.zm-item-vote-info input.izh-quick-block-sel:checked',$quickBlock.parent())
                   ;
-                  $do.attr('izh_doing2B',$users2B.length);
+                  $doing.attr('izh_doing2B',$users2B.length);
                   $users2B.each(function(i,e){
-                      in2BlockCart($(e).next());
+                      in2BlockCart($(e).next(),$doing);
                   });
-              }).insertAfter($btnQuickBlock).hide();
+              }).prependTo($quickBlock);
             $('<a>',{'class':'izh-quick-block-selAll',html:'无',href:'javascript:void(0);'}).css({
-                'position':'absolute'
-              , 'left':width
-              , 'width':'2em'
-              , 'margin-top':'1.5em'
-              , 'margin-left':'3em'
+                'margin-left':'3em'
             }).click(function(){
-                var $users=$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode);
+                var $quickBlock=$(this).closest('.izh-quick-block')
+                  , $users=$('.zm-item-vote-info input.izh-quick-block-sel',$quickBlock.parent());
                 $users.removeAttr('checked');
-                $('.izh-quick-block-do',this.parentNode).attr('izh_num2B',0);
-            }).insertAfter($btnQuickBlock).hide();
+                $quickBlock.attr('izh_num2B',0);
+            }).prependTo($quickBlock);
             $('<a>',{'class':'izh-quick-block-notAll',html:'全',href:'javascript:void(0);'}).css({
-                'position':'absolute'
-              , 'left':width
-              , 'width':'2em'
-              , 'margin-top':'1.5em'
             }).click(function(){
-                var $users=$('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode);
+                var $quickBlock=$(this).closest('.izh-quick-block')
+                , $users=$('.zm-item-vote-info input.izh-quick-block-sel',$quickBlock.parent());
                 $users.attr('checked','checked');
-              	$('.izh-quick-block-do',this.parentNode).attr('izh_num2B',$users.length);
-            }).insertAfter($btnQuickBlock).hide();
+              	$quickBlock.attr('izh_num2B',$users.length);
+            }).prependTo($quickBlock);
         }
   }
   , getItem=function($c){
@@ -590,13 +591,14 @@ var _e=null
                     // Region: 快速屏蔽
                     var $u=$('.zm-comment-hd',$cm);
                     $u.each(function(i,e){
-                        $('<a>',{'class':'zg-icon izh-quick-block-do',html:'',href:'javascript:void(0);'})
-                        	.css($.extend(css_QuickBlock,{'float':'right'}))
+                        $('<a>',{'class':'izh-quick-block-do',html:'候审',href:'javascript:void(0);'})
+                        	.css({//$.extend(css_QuickBlock,{
+                        	    'position':'absolute','left':0,'top':40})
                         	.click(function(){in2BlockCart($(this).next());}).prependTo(e).hide();
                     });
-                    var $btnQuickBlock=$('<a>',{'class':'izh-quick-block',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+                    var $btnQuickBlock=$('<a>',{'class':'izh-quick-block-switch',html:'快速屏蔽',href:'javascript:void(0);'}).css({
                         'position':'absolute'
-                      , 'right':10, 'top':70
+                      , 'left':70, 'top':70
                     }).prependTo($cm).click(function(){
                         if(this.getAttribute('on')=='1'){
                         	$('.zm-comment-hd .izh-quick-block-do').hide();
@@ -621,7 +623,7 @@ var _e=null
                 }).bind('DOMNodeInserted',function(event){
                     var $cm=$(this).parent('.zm-comment-box:visible');
                     if($cm.length){
-                        $('.izh-quick-block',$cm).show();
+                        $('.izh-quick-block-switch',$cm).show();
                         var $item=getItem($cm);
                         showComment($item,$cm);
                         var $icm=$(event.target);
@@ -629,7 +631,7 @@ var _e=null
                             var $cm=$(this).closest('.zm-comment-box:visible');
                             if($cm.length){
                                 if($(this).closest('.zm-comment-list').children().length==1){
-                                	$('.izh-quick-block',$cm).hide();
+                                	$('.izh-quick-block-switch',$cm).hide();
                                 }
                                 var $item=getItem($cm);
                                 showComment($item,$cm);
@@ -640,7 +642,7 @@ var _e=null
                     var $cm=$(this).closest('.zm-comment-box:visible');
                     if($cm.length){
                         if($(this).closest('.zm-comment-list').children().length==1){
-                        	$('.izh-quick-block',$cm).hide();
+                        	$('.izh-quick-block-switch',$cm).hide();
                         }
                         var $item=getItem($cm);
                         showComment($item,$cm);
