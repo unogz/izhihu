@@ -128,8 +128,8 @@ if(izhHomeLayout){
            ,'.feed-item .avatar { display:none!important }'
            ,'.feed-main,.feed-item.combine { margin-left:0!important }'
            ,'.feed-item-q { margin-left:-30px!important;padding-left:0!important }'
-           ,'.feed-item-a .zm-comment-box { max-width:602px!important }'
-           ,'.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }'
+           ,izhRightComment?'':'.feed-item-a .zm-comment-box { max-width:602px!important }'
+           ,izhRightComment?'':'.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }'
            ,'.zm-tag-editor,'
            ,'#zh-question-title,'
            ,'#zh-question-detail,'
@@ -201,8 +201,10 @@ if(izhHomeLayout){
            ,''].join('\n');
 }
 if(izhQuickBlock){
-    css +=['#izh_blockCart{position:fixed;right:0;bottom:0;z-index:99;overflow-y:auto;overflow-x:hidden;padding:0 30px 0 60px;}'
-          ,'#izh_blockCart .do{display:block;margin:2px;width:100%;height:20px;}'
+    css +=['#izh_blockCart{background-color:#fff;position:fixed;right:0;bottom:0;z-index:99;overflow-y:auto;overflow-x:hidden;padding:0 30px 0 60px;}'
+          ,'#izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}'
+          ,'#izh_blockCart.doing .do:after{text-decoration:blink;}'
+          ,'#izh_blockCart .do{text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}'
           ,'#izh_blockCart .list{display:block;margin:2px;width:100%;}'
           ,'#izh_blockCart .user2B{display:block;margin:2px;width:100%;}'
           ,'#izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}'
@@ -211,10 +213,15 @@ if(izhQuickBlock){
           ,'#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}'
           ,'#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}'
           ,'#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}'
+          ,'#izh_blockCart .user2B i.zu-entry-focus-single-way'
+          ,',#izh_blockCart .user2B i.zu-entry-focus-each{padding:0 !important;}'
+          //,'#izh_blockCart .user2B i.rel:after{display:table-cell;line-height:normal;}'
+          //,'#izh_blockCart .user2B i.zu-entry-focus-single-way:after{content:">";}'
+          //,'#izh_blockCart .user2B i.zu-entry-focus-each:after{content:"><";}'
           ,'.izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}'
           ,'.izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}'
           ,'.izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}'
-          ,'.izh-quick-block-do:hover{text-decoration:none;}'
+          ,'.izh-quick-block.doing:after{text-decoration:blink;}'
           ,''].join('\n');
 }
 var heads = _doc.getElementsByTagName("head");
@@ -255,45 +262,54 @@ var _e=null
         });
   	}
   , in2BlockCart=function($e,$doing){
-        var $cartDIV=$('#izh_blockCart')
+        var $cartDIV=$('#izh_blockCart').addClass('doing')
           , href=$e.attr('href')
         ;
         if($cartDIV.find('.user2B[user="'+href+'"]').length){
             var doing2B=parseInt($doing.attr('izh_doing2B'));
-            if(!isNaN(doing2B))
+            if(!isNaN(doing2B)){
             	$doing.attr('izh_doing2B',--doing2B);
+                if(!doing2B)$cartDIV.removeClass('doing');
+            }
             return;
         }
         if(!$cartDIV.length){
             $cartDIV=$('<div id="izh_blockCart">').css({
                 'top':$main.offset().top
-            })
-            .append(
+            }).append(
                 $('<div>',{
                     'class':'do'
-                })
-                .append(
+                  , 'izh_num2B':0
+                }).append(
                     $('<a>',{
-                        html:'大赦'
+                        'class':'button delAll'
+                      , href:'javascript:void(0);'
+                      , html:'大赦'
                       , click:function(){
-                          $('.list','#izh_blockCart').empty();
+                          var $cart=$('.list','#izh_blockCart');
+                          $cart.empty();
+                          var  num2B=$cart[0].children.length;
+                          $(this.parentNode).attr('izh_num2B',num2B>999?'1k+':num2B);
                       }
                     }).css({
                         'display':'block'
                       , 'float':'left'
                     })
-                )
-                .append(
+                ).append(
                     $('<a>',{
-                        html:'收监'
+                        'class':'button block'
+                      , href:'javascript:void(0);'
+                      , html:'收监'
                     }).css({
                         'display':'block'
                       , 'float':'right'
                     })
                 )
-            )
-            .append('<div class="list"></div>')
-            .appendTo($body);
+            ).append(
+                $('<div>',{
+                    'class':'list'
+                })
+            ).appendTo($body);
         }
         $.get('http://www.zhihu.com'+href+'/json','',function(r){
             var user=r.msg[0]
@@ -301,7 +317,7 @@ var _e=null
               , userID=user[1]
               , f_=r.msg[3]
               , _f=r.msg[4]
-              , cssF=_f?'zg-icon ':''
+              , cssF=_f?'zg-icon rel ':''
               , $cart=$('.list','#izh_blockCart')
               , href='/people/'+userID
               , $blockParent=$('.izh-quick-block:visible').has('.izh-quick-block-do[izh_doing2B!="0"]') // Current block doing
@@ -309,8 +325,10 @@ var _e=null
               , $doing=$blockParent.find('.izh-quick-block-do')
             ;console.log(userName+':'+f_+':'+_f);
             var doing2B=parseInt($doing.attr('izh_doing2B'));
-            if(!isNaN(doing2B))
+            if(!isNaN(doing2B)){
             	$doing.attr('izh_doing2B',--doing2B);
+                if(!doing2B)$cart.parent().removeClass('doing');
+            }
             if($cart.find('.user2B[user="'+href+'"]').length)
                 return; // User already in block list
             if(cssF!=''){
@@ -322,28 +340,28 @@ var _e=null
                 })
                 .append(
                     $('<a>',{
-                        'class':'del'
+                        'class':'button del'
                       , html:'赦'
                       , href:'javascript:void(0);'
                       , click:function(){
+                          	var $cart=$(this).closest('.list');
                             $(this).closest('.user2B').remove();
+                            var num2B=$cart[0].children.length;
+                            $cart.prev().attr('izh_num2B',num2B>999?'1k+':num2B);
                         }
                     })
                 )
                 .append($('<i>',{'class':'say',html:'冤枉'}))
                 .append($('<i>',{'class':'say_1'}))
                 .append($('<i>',{'class':'say_2'}))
-            	.append(
-            	    $('<i>',{
-            	        'class':cssF
-            	    }).show()
-            	)
+            	.append($('<i>',{'class':cssF}).show())
             	.append(
                     $('<span>',{
                         'class':'name'
                       , html:userName
                     })
-                );
+                )
+            ;
             if(_f&&f_){
                 if($cart.find('.user2B i.zu-entry-focus-each').length){
                     $cart.find('.user2B i.zu-entry-focus-each:last').parent().after($user2B);
@@ -361,6 +379,8 @@ var _e=null
             }else{
                 $cart.append($user2B);
             }
+            var num2B=$cart[0].children.length;
+            $cart.prev().attr('izh_num2B',num2B>999?'1k+':num2B)
         });
   }
   , addQuickBlock=function($vi){
