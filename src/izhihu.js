@@ -1,5 +1,5 @@
-var version='2.1.2.313';
-var updateDate='2013-3-19';
+var version='2.1.5.316';
+var updateDate='2013-3-22';
 
 var $ = unsafeWindow.$;
 var _ = this._;
@@ -546,11 +546,20 @@ var _e=null
         var $c=$a.children().last()
           , $p=$a.find('.zm-item-answer-author-info')
           , $v=$a.find('.meta-item[name=favo]');
+        if(bQuickBlock){
+            // Region: 快速屏蔽
+            var $voteInfo=$('.zm-item-vote-info',$a);
+            if($('[name=more]',$voteInfo).length){
+                $voteInfo.parent().bind('DOMNodeInserted',function(event){
+                    addQuickBlock($(event.target));
+                });
+            }
+            // Region end
+        }
         if($p.length){//relocatePersonInfo
             if(bAuthorRear){
                 $p.css({
                     'textAlign':'right'
-                  , 'width':'100%'
                 });
                 if($a.is('.feed-item')){
                     $a.find('.answer_wrap .zm-item-answer-detail .zm-item-rich-text')
@@ -559,7 +568,10 @@ var _e=null
                     	    if($c.is('.zm-editable-content')){
                     	        $(this).children('.zm-item-answer-author-info')
                     	        	.insertBefore($c.children('.answer-date-link-wrap'))
-                    	        	.css({'position':'absolute'}).show();
+                    	        	.css({
+                    	        	    'position':'absolute'
+                    	        	  , 'right':0
+                    	        	}).show();
                     	    }
                     	});
                 }else{
@@ -567,117 +579,105 @@ var _e=null
                 }
             }
             $p=$p.children().first().children().eq(1);
-            if($a.length){
-                if(bQuickBlock){
-                    // Region: 快速屏蔽
-                    var $voteInfo=$('.zm-item-vote-info',$a);
-                    if($('[name=more]',$voteInfo).length){
-                        $voteInfo.parent().bind('DOMNodeInserted',function(event){
-                            addQuickBlock($(event.target));
-                        });
-                    }
-                    // Region end
+            if ($pp && bAuthorList){
+                // Region: 回答目录项
+                var $ppla=$('<a>',{
+                            href:'#'+$a.attr('data-aid')
+                          , target:'_self'
+                          , style:css_AuthorListItemA
+                        })
+                  , $ppl=$('<li>').append($ppla).appendTo($pp);
+                if($a.attr('data-isowner')=='1'){
+                    _e=$a.get(0);
+                    $ppla.append('<span class="me"></span>');
                 }
-                if ($pp && bAuthorList){
-                    // Region: 回答目录项
-                    var $ppla=$('<a>',{
-                                href:'#'+$a.attr('data-aid')
-                              , target:'_self'
-                              , style:css_AuthorListItemA
+                var nameCSS='name';
+                if($a.attr('data-isfriend')=='1'){
+                    nameCSS+=' friend';
+                }
+                if($a.attr('data-collapsed')=='1'){
+                    nameCSS+=' collapsed'
+                }
+                if(!$p.length){
+                    nameCSS+=' noname';
+                }
+                $('<span>',{
+                    'class':nameCSS
+                  , html:!$p.length?'匿名用户':$p.html()
+                  , style:css_AuthorListItemA_name
+                }).appendTo($ppla);
+                if ($ppl.width()>ppWidth)
+                    ppWidth=$ppl.width();
+                // Region end
+                // Region: 回答篇幅指示
+                var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
+                $('<span>',{
+                    'class':'hp'
+                }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
+                // Region end
+                $ppla.mouseover(function(){
+                    var $frm=$(this.parentNode.parentNode.parentNode)
+                      , $uno=$frm.parent().mouseover();
+                    $(this).addClass('sel');
+                    if(_e){
+                        $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
+                        $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
+                    }
+                    // Region: 回答预览
+                    var nam=$('span.name',this);
+                    if(!nam.length)return;
+                    var aid=$(this).attr('href').slice(1)
+                      , prv=$uno.next('.izh-answer-preview')
+                      , top=$(this).position().top+$uno.position().top
+                      , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
+                      , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
+                      , div=$(sel,ctx)
+                      , htm=div.html()
+                      , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
+                    ;
+                    if(!prv.length){
+                        prv=$('<div>',{
+                                'class':div.class
                             })
-                      , $ppl=$('<li>').append($ppla).appendTo($pp);
-                    if($a.attr('data-isowner')=='1'){
-                        _e=$a.get(0);
-                        $ppla.append('<span class="me"></span>');
-                    }
-                    var nameCSS='name';
-                    if($a.attr('data-isfriend')=='1'){
-                        nameCSS+=' friend';
-                    }
-                    if($a.attr('data-collapsed')=='1'){
-                        nameCSS+=' collapsed'
-                    }
-                    if(!$p.length){
-                        nameCSS+=' noname';
-                    }
-                    $('<span>',{
-                        'class':nameCSS
-                      , html:!$p.length?'匿名用户':$p.html()
-                      , style:css_AuthorListItemA_name
-                    }).appendTo($ppla);
-                    if ($ppl.width()>ppWidth)
-                        ppWidth=$ppl.width();
-                    // Region end
-                    // Region: 回答篇幅指示
-                    var nHP=Math.ceil($('.zm-editable-content',$a).text().length/100);
-                    $('<span>',{
-                        'class':'hp'
-                    }).css({'width':nHP*10,'margin-left':-nHP*10}).appendTo($ppla);
-                    // Region end
-                    $ppla.mouseover(function(){
-                        var $frm=$(this.parentNode.parentNode.parentNode)
-                          , $uno=$frm.parent().mouseover();
-                        $(this).addClass('sel');
-                        if(_e){
-                            $uno.children('.meT').css('display',0>_e.offsetTop-$frm.scrollTop()?'':'none');
-                            $uno.children('.meB').css('display',$frm.height()<_e.offsetTop-$frm.scrollTop()+_e.offsetHeight?'':'none');
-                        }
-                        // Region: 回答预览
-                        var nam=$('span.name',this);
-                        if(!nam.length)return;
-                        var aid=$(this).attr('href').slice(1)
-                          , prv=$uno.next('.izh-answer-preview')
-                          , top=$(this).position().top+$uno.position().top
-                          , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
-                          , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
-                          , div=$(sel,ctx)
-                          , htm=div.html()
-                          , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
+                            .addClass('izh-answer-preview').width(div.width()+22)
+                            .mouseover(function(){$uno.mouseover();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
+                            .mouseout(function(){$uno.mouseout();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
+                            .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
+                            .insertAfter($uno)
                         ;
-                        if(!prv.length){
-                            prv=$('<div>',{
-                                    'class':div.class
-                                })
-                                .addClass('izh-answer-preview').width(div.width()+22)
-                                .mouseover(function(){$uno.mouseover();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).addClass('sel');$(this).show();})
-                                .mouseout(function(){$uno.mouseout();$('li a[href=#'+$(this).attr('data-aid')+']',$uno).removeClass('sel');$(this).hide();})
-                                .click(function(){$('li a[href=#'+$(this).attr('data-aid')+']',$uno)[0].click();})
-                                .insertAfter($uno)
-                            ;
-                        }
-                        if(prv.attr('data-aid')!=aid){
-                            prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
-                            if($('span.me',this).length)
-                                prv.find('a.zu-edit-button').remove();
-                            if(!nam.hasClass('noname'))
-                                $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
-                            var t=cmt.text(),i=t.indexOf('条评论');
-                            if(cmt.length&&i>0)
-                                $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
-                        }
-                        var th=div.height()+33
-                          , maxTop=$uno.position().top+12
-                          , contentPosition='';
-                        if(maxTop+th<$win.height()){
-                            if(top+th<$win.height()){
-                                prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
-                            }else{
-                                prv.css({'top':'','bottom':0});
-                            }
-                        }else{
-                            prv.css({'top':maxTop,'bottom':0});
-                            contentPosition='absolute';
-                        }
-                        prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
-                        // Region end
-                    }).mouseout(function(){
-                        $(this).removeClass('sel');
-                        var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
-                        $uno.next().hide();
-                    }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
-                    if(_e==$a.get(0)){
-                        _e=$ppla.get(0);
                     }
+                    if(prv.attr('data-aid')!=aid){
+                        prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
+                        if($('span.me',this).length)
+                            prv.find('a.zu-edit-button').remove();
+                        if(!nam.hasClass('noname'))
+                            $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
+                        var t=cmt.text(),i=t.indexOf('条评论');
+                        if(cmt.length&&i>0)
+                            $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
+                    }
+                    var th=div.height()+33
+                      , maxTop=$uno.position().top+12
+                      , contentPosition='';
+                    if(maxTop+th<$win.height()){
+                        if(top+th<$win.height()){
+                            prv.css({'top':top>maxTop?top:maxTop,'bottom':''});
+                        }else{
+                            prv.css({'top':'','bottom':0});
+                        }
+                    }else{
+                        prv.css({'top':maxTop,'bottom':0});
+                        contentPosition='absolute';
+                    }
+                    prv.css({'left':$uno.width()}).show().children().first().css('position',contentPosition);
+                    // Region end
+                }).mouseout(function(){
+                    $(this).removeClass('sel');
+                    var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
+                    $uno.next().hide();
+                }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
+                if(_e==$a.get(0)){
+                    _e=$ppla.get(0);
                 }
             }
         }
@@ -690,9 +690,10 @@ var _e=null
                 }).appendTo($a);
             }
             $v.bind('mouseenter',function(){
-                var $a=getItem($(this));
+                var $a=getItem($(this))
+                  , $m=$(this).closest('.zm-item-meta');
                 $a.children('.izh_fav').css({
-                    'bottom':$(this).height()+$a.height()-$(this).position().top-1
+                    'bottom':$m.height()+$m.height()-$(this).height()//$(this).height()+$a.height()-$(this).position().top-1+parseInt($a.css('padding-top'))
                   , 'left':$(this).position().left
                 }).show();
                 $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:$a.attr('data-aid')}),function(result,status,xhr){
@@ -743,7 +744,7 @@ var _e=null
                 });
             });
             $v.bind('mouseleave',function(){
-                var $a=$(this).closest('.zm-item-answer');
+                var $a=getItem($(this));
                 $a.children('.izh_fav').hide();
             });
         }

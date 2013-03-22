@@ -2547,7 +2547,7 @@ $(function() {
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.1.2
+// @version      2.1.5
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -4215,12 +4215,13 @@ allLinks = function(name, listSel, listName) {
 
 //分析内容
 var processNode = function(content, $dlg) {
-    $(content).filter(".zm-item").each(function(index, item) {
-        var dom = $(item);
+    $(content).find(".zm-item-answer").each(function(index, item) {
+        var dom = $(item), parent = dom.parent(), lnkTitle = $("a", dom.closest(".zm-item").children().first()), hrefQuestion = url.data.attr["base"] + lnkTitle.attr("href");
+        //console.log(dom);
         var obj = {
-            title: dom.find(".zm-item-title a").text(),
-            questionUrl: dom.find(".zm-item-title a").attr("href"),
-            answerUrl: url.data.attr["base"] + dom.find(".answer-date-link-wrap a").attr("href"),
+            title: lnkTitle.text(),
+            questionUrl: hrefQuestion,
+            answerUrl: hrefQuestion + (dom.parent().is(".zm-item-fav") ? "/answer/" + dom.attr("data-atoken") : ""),
             answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
             summary: dom.find(".zm-item-answer-summary").children().remove().end().text(),
             content: dom.find(".zm-editable-content").html()
@@ -4497,9 +4498,9 @@ utils.getParamInQuery = function(queryStr, paramName) {
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
 
-var version = "2.1.2.313";
+var version = "2.1.5.316";
 
-var updateDate = "2013-3-19";
+var updateDate = "2013-3-22";
 
 var $ = unsafeWindow.$;
 
@@ -4926,19 +4927,28 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
     if (!$a || !$a.length) return;
     if ($a.attr("izh_processed") == "1") return;
     var $c = $a.children().last(), $p = $a.find(".zm-item-answer-author-info"), $v = $a.find(".meta-item[name=favo]");
+    if (bQuickBlock) {
+        // Region: 快速屏蔽
+        var $voteInfo = $(".zm-item-vote-info", $a);
+        if ($("[name=more]", $voteInfo).length) {
+            $voteInfo.parent().bind("DOMNodeInserted", function(event) {
+                addQuickBlock($(event.target));
+            });
+        }
+    }
     if ($p.length) {
         //relocatePersonInfo
         if (bAuthorRear) {
             $p.css({
-                textAlign: "right",
-                width: "100%"
+                textAlign: "right"
             });
             if ($a.is(".feed-item")) {
                 $a.find(".answer_wrap .zm-item-answer-detail .zm-item-rich-text").append($p.hide()).bind("DOMNodeInserted", function(event) {
                     var $c = $(event.target);
                     if ($c.is(".zm-editable-content")) {
                         $(this).children(".zm-item-answer-author-info").insertBefore($c.children(".answer-date-link-wrap")).css({
-                            position: "absolute"
+                            position: "absolute",
+                            right: 0
                         }).show();
                     }
                 });
@@ -4947,123 +4957,112 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             }
         }
         $p = $p.children().first().children().eq(1);
-        if ($a.length) {
-            if (bQuickBlock) {
-                // Region: 快速屏蔽
-                var $voteInfo = $(".zm-item-vote-info", $a);
-                if ($("[name=more]", $voteInfo).length) {
-                    $voteInfo.parent().bind("DOMNodeInserted", function(event) {
-                        addQuickBlock($(event.target));
-                    });
-                }
+        if ($pp && bAuthorList) {
+            // Region: 回答目录项
+            var $ppla = $("<a>", {
+                href: "#" + $a.attr("data-aid"),
+                target: "_self",
+                style: css_AuthorListItemA
+            }), $ppl = $("<li>").append($ppla).appendTo($pp);
+            if ($a.attr("data-isowner") == "1") {
+                _e = $a.get(0);
+                $ppla.append('<span class="me"></span>');
             }
-            if ($pp && bAuthorList) {
-                // Region: 回答目录项
-                var $ppla = $("<a>", {
-                    href: "#" + $a.attr("data-aid"),
-                    target: "_self",
-                    style: css_AuthorListItemA
-                }), $ppl = $("<li>").append($ppla).appendTo($pp);
-                if ($a.attr("data-isowner") == "1") {
-                    _e = $a.get(0);
-                    $ppla.append('<span class="me"></span>');
+            var nameCSS = "name";
+            if ($a.attr("data-isfriend") == "1") {
+                nameCSS += " friend";
+            }
+            if ($a.attr("data-collapsed") == "1") {
+                nameCSS += " collapsed";
+            }
+            if (!$p.length) {
+                nameCSS += " noname";
+            }
+            $("<span>", {
+                "class": nameCSS,
+                html: !$p.length ? "匿名用户" : $p.html(),
+                style: css_AuthorListItemA_name
+            }).appendTo($ppla);
+            if ($ppl.width() > ppWidth) ppWidth = $ppl.width();
+            // Region end
+            // Region: 回答篇幅指示
+            var nHP = Math.ceil($(".zm-editable-content", $a).text().length / 100);
+            $("<span>", {
+                "class": "hp"
+            }).css({
+                width: nHP * 10,
+                "margin-left": -nHP * 10
+            }).appendTo($ppla);
+            // Region end
+            $ppla.mouseover(function() {
+                var $frm = $(this.parentNode.parentNode.parentNode), $uno = $frm.parent().mouseover();
+                $(this).addClass("sel");
+                if (_e) {
+                    $uno.children(".meT").css("display", 0 > _e.offsetTop - $frm.scrollTop() ? "" : "none");
+                    $uno.children(".meB").css("display", $frm.height() < _e.offsetTop - $frm.scrollTop() + _e.offsetHeight ? "" : "none");
                 }
-                var nameCSS = "name";
-                if ($a.attr("data-isfriend") == "1") {
-                    nameCSS += " friend";
+                // Region: 回答预览
+                var nam = $("span.name", this);
+                if (!nam.length) return;
+                var aid = $(this).attr("href").slice(1), prv = $uno.next(".izh-answer-preview"), top = $(this).position().top + $uno.position().top, sel = ".zm-item-answer[data-aid=" + aid + "] > .zm-item-rich-text", ctx = nam.is(".collapsed") ? "#zh-question-collapsed-wrap" : "#zh-question-answer-wrap", div = $(sel, ctx), htm = div.html(), cmt = $(".zm-item-meta > .zu-question-answer-meta-comment", div.parent());
+                if (!prv.length) {
+                    prv = $("<div>", {
+                        "class": div.class
+                    }).addClass("izh-answer-preview").width(div.width() + 22).mouseover(function() {
+                        $uno.mouseover();
+                        $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).addClass("sel");
+                        $(this).show();
+                    }).mouseout(function() {
+                        $uno.mouseout();
+                        $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).removeClass("sel");
+                        $(this).hide();
+                    }).click(function() {
+                        $("li a[href=#" + $(this).attr("data-aid") + "]", $uno)[0].click();
+                    }).insertAfter($uno);
                 }
-                if ($a.attr("data-collapsed") == "1") {
-                    nameCSS += " collapsed";
+                if (prv.attr("data-aid") != aid) {
+                    prv.attr("data-aid", aid).html(htm).find("a").attr("onclick", "return false;");
+                    if ($("span.me", this).length) prv.find("a.zu-edit-button").remove();
+                    if (!nam.hasClass("noname")) $("img.zm-list-avatar", div.parent()).clone().appendTo(prv);
+                    var t = cmt.text(), i = t.indexOf("条评论");
+                    if (cmt.length && i > 0) $("<span>", {
+                        "class": "comment",
+                        html: t.substring(0, i)
+                    }).prepend(cmt.children("i").clone()).appendTo(prv);
                 }
-                if (!$p.length) {
-                    nameCSS += " noname";
-                }
-                $("<span>", {
-                    "class": nameCSS,
-                    html: !$p.length ? "匿名用户" : $p.html(),
-                    style: css_AuthorListItemA_name
-                }).appendTo($ppla);
-                if ($ppl.width() > ppWidth) ppWidth = $ppl.width();
-                // Region end
-                // Region: 回答篇幅指示
-                var nHP = Math.ceil($(".zm-editable-content", $a).text().length / 100);
-                $("<span>", {
-                    "class": "hp"
-                }).css({
-                    width: nHP * 10,
-                    "margin-left": -nHP * 10
-                }).appendTo($ppla);
-                // Region end
-                $ppla.mouseover(function() {
-                    var $frm = $(this.parentNode.parentNode.parentNode), $uno = $frm.parent().mouseover();
-                    $(this).addClass("sel");
-                    if (_e) {
-                        $uno.children(".meT").css("display", 0 > _e.offsetTop - $frm.scrollTop() ? "" : "none");
-                        $uno.children(".meB").css("display", $frm.height() < _e.offsetTop - $frm.scrollTop() + _e.offsetHeight ? "" : "none");
-                    }
-                    // Region: 回答预览
-                    var nam = $("span.name", this);
-                    if (!nam.length) return;
-                    var aid = $(this).attr("href").slice(1), prv = $uno.next(".izh-answer-preview"), top = $(this).position().top + $uno.position().top, sel = ".zm-item-answer[data-aid=" + aid + "] > .zm-item-rich-text", ctx = nam.is(".collapsed") ? "#zh-question-collapsed-wrap" : "#zh-question-answer-wrap", div = $(sel, ctx), htm = div.html(), cmt = $(".zm-item-meta > .zu-question-answer-meta-comment", div.parent());
-                    if (!prv.length) {
-                        prv = $("<div>", {
-                            "class": div.class
-                        }).addClass("izh-answer-preview").width(div.width() + 22).mouseover(function() {
-                            $uno.mouseover();
-                            $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).addClass("sel");
-                            $(this).show();
-                        }).mouseout(function() {
-                            $uno.mouseout();
-                            $("li a[href=#" + $(this).attr("data-aid") + "]", $uno).removeClass("sel");
-                            $(this).hide();
-                        }).click(function() {
-                            $("li a[href=#" + $(this).attr("data-aid") + "]", $uno)[0].click();
-                        }).insertAfter($uno);
-                    }
-                    if (prv.attr("data-aid") != aid) {
-                        prv.attr("data-aid", aid).html(htm).find("a").attr("onclick", "return false;");
-                        if ($("span.me", this).length) prv.find("a.zu-edit-button").remove();
-                        if (!nam.hasClass("noname")) $("img.zm-list-avatar", div.parent()).clone().appendTo(prv);
-                        var t = cmt.text(), i = t.indexOf("条评论");
-                        if (cmt.length && i > 0) $("<span>", {
-                            "class": "comment",
-                            html: t.substring(0, i)
-                        }).prepend(cmt.children("i").clone()).appendTo(prv);
-                    }
-                    var th = div.height() + 33, maxTop = $uno.position().top + 12, contentPosition = "";
-                    if (maxTop + th < $win.height()) {
-                        if (top + th < $win.height()) {
-                            prv.css({
-                                top: top > maxTop ? top : maxTop,
-                                bottom: ""
-                            });
-                        } else {
-                            prv.css({
-                                top: "",
-                                bottom: 0
-                            });
-                        }
+                var th = div.height() + 33, maxTop = $uno.position().top + 12, contentPosition = "";
+                if (maxTop + th < $win.height()) {
+                    if (top + th < $win.height()) {
+                        prv.css({
+                            top: top > maxTop ? top : maxTop,
+                            bottom: ""
+                        });
                     } else {
                         prv.css({
-                            top: maxTop,
+                            top: "",
                             bottom: 0
                         });
-                        contentPosition = "absolute";
                     }
+                } else {
                     prv.css({
-                        left: $uno.width()
-                    }).show().children().first().css("position", contentPosition);
-                }).mouseout(function() {
-                    $(this).removeClass("sel");
-                    var $uno = $(this.parentNode.parentNode.parentNode.parentNode);
-                    $uno.next().hide();
-                }).click(function() {
-                    $(this).mouseout();
-                    $uno.css("left", 9 - $uno.width());
-                });
-                if (_e == $a.get(0)) {
-                    _e = $ppla.get(0);
+                        top: maxTop,
+                        bottom: 0
+                    });
+                    contentPosition = "absolute";
                 }
+                prv.css({
+                    left: $uno.width()
+                }).show().children().first().css("position", contentPosition);
+            }).mouseout(function() {
+                $(this).removeClass("sel");
+                var $uno = $(this.parentNode.parentNode.parentNode.parentNode);
+                $uno.next().hide();
+            }).click(function() {
+                $(this).mouseout();
+                $uno.css("left", 9 - $uno.width());
+            });
+            if (_e == $a.get(0)) {
+                _e = $ppla.get(0);
             }
         }
     }
@@ -5076,9 +5075,9 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             }).appendTo($a);
         }
         $v.bind("mouseenter", function() {
-            var $a = getItem($(this));
+            var $a = getItem($(this)), $m = $(this).closest(".zm-item-meta");
             $a.children(".izh_fav").css({
-                bottom: $(this).height() + $a.height() - $(this).position().top - 1,
+                bottom: $m.height() + $m.height() - $(this).height(),
                 left: $(this).position().left
             }).show();
             $.getJSON("http://www.zhihu.com/collections/json", $.param({
@@ -5124,7 +5123,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             });
         });
         $v.bind("mouseleave", function() {
-            var $a = $(this).closest(".zm-item-answer");
+            var $a = getItem($(this));
             $a.children(".izh_fav").hide();
         });
     }

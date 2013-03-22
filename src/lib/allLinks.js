@@ -97,15 +97,19 @@ allLinks=function(name,listSel,listName){
 
 //分析内容
 var processNode = function(content,$dlg){
-  $(content).filter('.zm-item').each(function(index, item){
-    var dom = $(item);
+  $(content).find('.zm-item-answer').each(function(index, item){
+    var dom = $(item)
+      , parent = dom.parent()
+      , lnkTitle = $("a", dom.closest(".zm-item").children().first())
+      , hrefQuestion = url.data.attr["base"] + lnkTitle.attr("href")
+    ;//console.log(dom);
     var obj = {
-      title: dom.find('.zm-item-title a').text(),
-      questionUrl: dom.find('.zm-item-title a').attr('href'),
-      answerUrl: url.data.attr['base']+dom.find('.answer-date-link-wrap a').attr('href'),
-      answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
-      summary: dom.find('.zm-item-answer-summary').children().remove().end().text(),
-      content: dom.find('.zm-editable-content').html()
+        title: lnkTitle.text(),
+        questionUrl: hrefQuestion,
+        answerUrl: hrefQuestion + (dom.parent().is(".zm-item-fav") ? "/answer/" + dom.attr("data-atoken") : ""),
+        answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
+        summary: dom.find(".zm-item-answer-summary").children().remove().end().text(),
+        content: dom.find(".zm-editable-content").html()
     };
     result.push(obj);
     var str = utils.formatStr('<li style="list-style-type:none"><a href="{answerUrl}" title="* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}">{answerUrl}</a></li>', obj);
