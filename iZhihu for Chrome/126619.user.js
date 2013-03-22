@@ -2018,11 +2018,11 @@ css += [ '.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif
 css += [ ".izh_boxShadow{box-shadow: 5px 5px 3px 0px #999 !important;}", "#zh-question-meta-wrap.izh_noBorder{border-bottom-color:transparent !important;}", "#zh-question-filter-wrap.izh_noBorder{border-top-color:transparent !important;}", "" ].join("\n");
 
 if (izhHomeLayout) {
-    css += [ "#zh-question-list { padding-left:30px!important }", "#zh-main-feed-fresh-button { margin-left:-30px!important }", ".feed-item {", "    border-bottom:1px solid #EEE!important;", "    margin-top:-1px!important", "}", ".feed-item .avatar { display:none!important }", ".feed-main,.feed-item.combine { margin-left:0!important }", ".feed-item-q { margin-left:-30px!important;padding-left:0!important }", ".feed-item-a .zm-comment-box { max-width:602px!important }", ".feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }", ".zm-tag-editor,", "#zh-question-title,", "#zh-question-detail,", "#zh-question-meta-wrap,", ".zh-answers-title,", "#zh-question-filter-wrap {", "    margin-left:-32px!important", "}", "#zh-question-log-page-wrap .zm-tag-editor,", "#zh-question-log-page-wrap #zh-question-title {", "    margin-left:0 !important", "}", ".zh-answers-title,", "#zh-question-filter-wrap {", "    border-bottom:1px solid #EEE!important;", "    z-index:1000!important", "}", "#zh-question-meta-wrap {", "    margin-bottom:0!important;", "    padding-bottom:10px!important;", "    border-bottom:1px solid #EEE!important", "}", "#zh-question-answer-wrap { margin-top:-1px!important }", "#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }", ".zu-question-collap-title { border-top:1px solid #EEE!important }", "#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }", ".zu-autohide,", ".zm-comment-op-link,", ".zm-side-trend-del,", ".unpin {", "    visibility:visible!important;", "    opacity:0;", "}", ".feed-item:hover .zu-autohide,", ".zm-item-answer .zu-autohide,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-nav-li:hover .unpin {", "    opacity:1;", "}", ".zm-item-vote-count:hover,.zm-votebar button:hover{", "    background:#a6ce56!important;", "    color:#3E5E00 !important", "}", "a,a:hover,", "i,", ".zu-autohide,", ".zm-votebar button,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-trend-del,", ".zm-side-nav-li,", ".zu-main-feed-fresh-button,", ".zg-icon,", ".zm-side-nav-li:hover .zg-icon,", ".zm-side-nav-li:hover i,", ".unpin,", ".zm-side-nav-li:hover .unpin {", "    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "}", "h3{ line-height:25px }", ".zu-footer-inner {padding:15px 0!important}", ".zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}", ".zm-side-list-content{clear:both}", ".unpin{ display:inline-block!important }", "" ].join("\n");
+    css += [ "#zh-question-list { padding-left:30px!important }", "#zh-main-feed-fresh-button { margin-left:-30px!important }", ".feed-item {", "    border-bottom:1px solid #EEE!important;", "    margin-top:-1px!important", "}", ".feed-item .avatar { display:none!important }", ".feed-main,.feed-item.combine { margin-left:0!important }", ".feed-item-q { margin-left:-30px!important;padding-left:0!important }", izhRightComment ? "" : ".feed-item-a .zm-comment-box { max-width:602px!important }", izhRightComment ? "" : ".feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }", ".zm-tag-editor,", "#zh-question-title,", "#zh-question-detail,", "#zh-question-meta-wrap,", ".zh-answers-title,", "#zh-question-filter-wrap {", "    margin-left:-32px!important", "}", "#zh-question-log-page-wrap .zm-tag-editor,", "#zh-question-log-page-wrap #zh-question-title {", "    margin-left:0 !important", "}", ".zh-answers-title,", "#zh-question-filter-wrap {", "    border-bottom:1px solid #EEE!important;", "    z-index:1000!important", "}", "#zh-question-meta-wrap {", "    margin-bottom:0!important;", "    padding-bottom:10px!important;", "    border-bottom:1px solid #EEE!important", "}", "#zh-question-answer-wrap { margin-top:-1px!important }", "#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }", ".zu-question-collap-title { border-top:1px solid #EEE!important }", "#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }", ".zu-autohide,", ".zm-comment-op-link,", ".zm-side-trend-del,", ".unpin {", "    visibility:visible!important;", "    opacity:0;", "}", ".feed-item:hover .zu-autohide,", ".zm-item-answer .zu-autohide,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-nav-li:hover .unpin {", "    opacity:1;", "}", ".zm-item-vote-count:hover,.zm-votebar button:hover{", "    background:#a6ce56!important;", "    color:#3E5E00 !important", "}", "a,a:hover,", "i,", ".zu-autohide,", ".zm-votebar button,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-trend-del,", ".zm-side-nav-li,", ".zu-main-feed-fresh-button,", ".zg-icon,", ".zm-side-nav-li:hover .zg-icon,", ".zm-side-nav-li:hover i,", ".unpin,", ".zm-side-nav-li:hover .unpin {", "    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "}", "h3{ line-height:25px }", ".zu-footer-inner {padding:15px 0!important}", ".zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}", ".zm-side-list-content{clear:both}", ".unpin{ display:inline-block!important }", "" ].join("\n");
 }
 
 if (izhQuickBlock) {
-    css += [ "#izh_blockCart{position:fixed;right:0;bottom:0;z-index:99;overflow-y:auto;overflow-x:hidden;padding:0 30px 0 60px;}", "#izh_blockCart .do{display:block;margin:2px;width:100%;height:20px;}", "#izh_blockCart .list{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", "#izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", "#izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", "#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", "#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", "#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block-do:hover{text-decoration:none;}", "" ].join("\n");
+    css += [ "#izh_blockCart{background-color:#fff;position:fixed;right:0;bottom:0;z-index:99;overflow-y:auto;overflow-x:hidden;padding:0 30px 0 60px;}", "#izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}", "#izh_blockCart.doing .do:after{text-decoration:blink;}", "#izh_blockCart .do{text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}", "#izh_blockCart .list{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", "#izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", "#izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", "#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", "#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", "#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block.doing:after{text-decoration:blink;}", "" ].join("\n");
 }
 
 var heads = _doc.getElementsByTagName("head");
@@ -2059,37 +2059,53 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         $('a[href="' + u + '"]').css("text-decoration", "line-through");
     });
 }, in2BlockCart = function($e, $doing) {
-    var $cartDIV = $("#izh_blockCart"), href = $e.attr("href");
+    var $cartDIV = $("#izh_blockCart").addClass("doing"), href = $e.attr("href");
     if ($cartDIV.find('.user2B[user="' + href + '"]').length) {
         var doing2B = parseInt($doing.attr("izh_doing2B"));
-        if (!isNaN(doing2B)) $doing.attr("izh_doing2B", --doing2B);
+        if (!isNaN(doing2B)) {
+            $doing.attr("izh_doing2B", --doing2B);
+            if (!doing2B) $cartDIV.removeClass("doing");
+        }
         return;
     }
     if (!$cartDIV.length) {
         $cartDIV = $('<div id="izh_blockCart">').css({
             top: $main.offset().top
         }).append($("<div>", {
-            "class": "do"
+            "class": "do",
+            izh_num2B: 0
         }).append($("<a>", {
+            "class": "button delAll",
+            href: "javascript:void(0);",
             html: "大赦",
             click: function() {
-                $(".list", "#izh_blockCart").empty();
+                var $cart = $(".list", "#izh_blockCart");
+                $cart.empty();
+                var num2B = $cart[0].children.length;
+                $(this.parentNode).attr("izh_num2B", num2B > 999 ? "1k+" : num2B);
             }
         }).css({
             display: "block",
             "float": "left"
         })).append($("<a>", {
+            "class": "button block",
+            href: "javascript:void(0);",
             html: "收监"
         }).css({
             display: "block",
             "float": "right"
-        }))).append('<div class="list"></div>').appendTo($body);
+        }))).append($("<div>", {
+            "class": "list"
+        })).appendTo($body);
     }
     $.get("http://www.zhihu.com" + href + "/json", "", function(r) {
         var user = r.msg[0], userName = user[0], userID = user[1], f_ = r.msg[3], _f = r.msg[4], cssF = _f ? "zg-icon " : "", $cart = $(".list", "#izh_blockCart"), href = "/people/" + userID, $blockParent = $(".izh-quick-block:visible").has('.izh-quick-block-do[izh_doing2B!="0"]').parent().has('.zm-item-vote-info li a[href="' + href + '"]'), $doing = $blockParent.find(".izh-quick-block-do");
         console.log(userName + ":" + f_ + ":" + _f);
         var doing2B = parseInt($doing.attr("izh_doing2B"));
-        if (!isNaN(doing2B)) $doing.attr("izh_doing2B", --doing2B);
+        if (!isNaN(doing2B)) {
+            $doing.attr("izh_doing2B", --doing2B);
+            if (!doing2B) $cart.parent().removeClass("doing");
+        }
         if ($cart.find('.user2B[user="' + href + '"]').length) return;
         // User already in block list
         if (cssF != "") {
@@ -2099,11 +2115,14 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             "class": "user2B",
             user: "/people/" + userID
         }).append($("<a>", {
-            "class": "del",
+            "class": "button del",
             html: "赦",
             href: "javascript:void(0);",
             click: function() {
+                var $cart = $(this).closest(".list");
                 $(this).closest(".user2B").remove();
+                var num2B = $cart[0].children.length;
+                $cart.prev().attr("izh_num2B", num2B > 999 ? "1k+" : num2B);
             }
         })).append($("<i>", {
             "class": "say",
@@ -2135,6 +2154,8 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         } else {
             $cart.append($user2B);
         }
+        var num2B = $cart[0].children.length;
+        $cart.prev().attr("izh_num2B", num2B > 999 ? "1k+" : num2B);
     });
 }, addQuickBlock = function($vi) {
     if ($vi.is(".zm-item-vote-info") && !$vi.children("a[name=more]").length) {
