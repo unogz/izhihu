@@ -2051,6 +2051,16 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
     "background-position": "-146px -202px",
     width: 16,
     height: 16
+}, unblockAll = function() {
+    $(".zg-btn-unfollow").each(function(i, e) {
+        var uid = $(e).attr("id").slice(4);
+        $.post("http://www.zhihu.com/settings/unblockuser", $.param({
+            _xsrf: $("input[name=_xsrf]").val(),
+            uid: uid
+        }), function(r) {
+            console.log(r);
+        });
+    });
 }, quickBlock = function($e) {
     $.post("http://www.zhihu.com" + $e.attr("href") + "/block", $.param({
         action: "add",
