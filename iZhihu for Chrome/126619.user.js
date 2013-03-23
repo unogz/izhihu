@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.1.4
+// @version      2.2.0
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -1669,12 +1669,13 @@ allLinks = function(name, listSel, listName) {
 
 //分析内容
 var processNode = function(content, $dlg) {
-    $(content).filter(".zm-item").each(function(index, item) {
-        var dom = $(item);
+    $(content).find(".zm-item-answer").each(function(index, item) {
+        var dom = $(item), parent = dom.parent(), lnkTitle = $("a", dom.closest(".zm-item").children().first()), hrefQuestion = url.data.attr["base"] + lnkTitle.attr("href");
+        //console.log(dom);
         var obj = {
-            title: dom.find(".zm-item-title a").text(),
-            questionUrl: dom.find(".zm-item-title a").attr("href"),
-            answerUrl: url.data.attr["base"] + dom.find(".answer-date-link-wrap a").attr("href"),
+            title: lnkTitle.text(),
+            questionUrl: hrefQuestion,
+            answerUrl: hrefQuestion + (dom.parent().is(".zm-item-fav") ? "/answer/" + dom.attr("data-atoken") : ""),
             answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
             summary: dom.find(".zm-item-answer-summary").children().remove().end().text(),
             content: dom.find(".zm-editable-content").html()
@@ -1951,9 +1952,9 @@ utils.getParamInQuery = function(queryStr, paramName) {
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
 
-var version = "2.1.4.315";
+var version = "2.2.0.317";
 
-var updateDate = "2013-3-19";
+var updateDate = "2013-3-23";
 
 var $ = unsafeWindow.$;
 
@@ -2022,7 +2023,7 @@ if (izhHomeLayout) {
 }
 
 if (izhQuickBlock) {
-    css += [ "#izh_blockCart{background-color:#fff;position:fixed;right:0;bottom:0;z-index:99;overflow-y:auto;overflow-x:hidden;padding:0 30px 0 60px;}", "#izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}", "#izh_blockCart.doing .do:after{text-decoration:blink;}", "#izh_blockCart .do{text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}", "#izh_blockCart .list{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B{display:block;margin:2px;width:100%;}", "#izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", "#izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", "#izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", "#izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", "#izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", "#izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", "#izh_blockCart .user2B i.rel:after{display:table-cell;line-height:normal;}", "#izh_blockCart .user2B i.zu-entry-focus-single-way", ",#izh_blockCart .user2B i.zu-entry-focus-each{padding:0 !important;}", '#izh_blockCart .user2B i.zu-entry-focus-single-way:after{content:">";}', '#izh_blockCart .user2B i.zu-entry-focus-each:after{content:"><";}', ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block.doing:after{text-decoration:blink;}", "" ].join("\n");
+    css += [ ".izh_blockCart{background-color:#0771C1;position:fixed;right:0;z-index:9;padding:0 30px 0 60px;border:1px solid #0771C1;border-left-width:10px;border-top-left-radius:6px;}", ".izh_blockCart .do{color:#fff;text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}", ".izh_blockCart.doing .do:after{text-decoration:blink;color:red;}", ".izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}", ".izh_blockCart .do .button{color:#fff;}", ".izh_blockCart .frame{overflow-y:auto;overflow-x:hidden;position:absolute;top:25px;bottom:0;left:0;right:0;background-color:#fff;padding-top:5px;}", ".izh_blockCart .list{display:block;margin:2px;width:100%;padding-right:5px;}", ".izh_blockCart .list.each .rel{border-right:2px solid #259;}", ".izh_blockCart .list.single .rel{border-right:2px dotted #259;}", ".izh_blockCart .user2B{display:block;margin:2px 0;padding:0 30px 0 60px;}", ".izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", ".izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", ".izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", ".izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", ".izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", ".izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block.doing:after{text-decoration:blink;}", "" ].join("\n");
 }
 
 var heads = _doc.getElementsByTagName("head");
@@ -2056,8 +2057,38 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         _xsrf: $("input[name=_xsrf]").val()
     }), function(r) {
         var u = this.url.replace(/http:\/\/www.zhihu.com/g, "").replace(/\/block/g, "");
+        $('#izh_blockCart .user2B[href="' + u + '"]').find(".del")[0].click();
         $('a[href="' + u + '"]').css("text-decoration", "line-through");
     });
+}, resizeBlockCart = function($cartDIV) {
+    var $temp = $cartDIV.clone().attr("id", "").css({
+        height: "",
+        position: "absolute",
+        bottom: "",
+        "z-index": "-1"
+    }).appendTo($body).show();
+    $temp.find(".frame").css({
+        position: "static",
+        top: "",
+        bottom: "",
+        left: "",
+        right: "",
+        overflow: ""
+    });
+    var h = $temp.height();
+    $temp.remove();
+    $temp = null;
+    if (h + $main.offset().top < $win.height()) {
+        $cartDIV.css({
+            height: h,
+            bottom: ""
+        });
+    } else {
+        $cartDIV.css({
+            height: "",
+            bottom: 0
+        });
+    }
 }, in2BlockCart = function($e, $doing) {
     var $cartDIV = $("#izh_blockCart").addClass("doing"), href = $e.attr("href");
     if ($cartDIV.find('.user2B[user="' + href + '"]').length) {
@@ -2069,7 +2100,7 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         return;
     }
     if (!$cartDIV.length) {
-        $cartDIV = $('<div id="izh_blockCart">').css({
+        $cartDIV = $('<div id="izh_blockCart"class="izh_blockCart">').css({
             top: $main.offset().top
         }).append($("<div>", {
             "class": "do",
@@ -2079,10 +2110,10 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             href: "javascript:void(0);",
             html: "大赦",
             click: function() {
-                var $cart = $(".list", "#izh_blockCart");
-                $cart.empty();
-                var num2B = $cart[0].children.length;
-                $(this.parentNode).attr("izh_num2B", num2B > 999 ? "1k+" : num2B);
+                var $cartDIV = $("#izh_blockCart");
+                $cartDIV.css("bottom", "").find(".list").empty();
+                $(this.parentNode).attr("izh_num2B", "0");
+                $cartDIV.css("height", "");
             }
         }).css({
             display: "block",
@@ -2090,39 +2121,73 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
         })).append($("<a>", {
             "class": "button block",
             href: "javascript:void(0);",
-            html: "收监"
+            html: "收监",
+            click: function() {
+                $("#izh_blockCart").find(".user2B").each(function(i, e) {
+                    quickBlock($(e));
+                });
+            }
         }).css({
             display: "block",
             "float": "right"
+        })).append($("<a>", {
+            "class": "zg-icon zg-icon-double-arrow",
+            href: "javascript:void(0);",
+            click: function() {
+                var $cartDIV = $("#izh_blockCart");
+                if ($cartDIV.attr("mini") != "1") {
+                    $cartDIV.find(".frame").hide();
+                    $cartDIV.css({
+                        height: "",
+                        bottom: ""
+                    });
+                    $cartDIV.attr("mini", "1");
+                } else {
+                    $cartDIV.find(".frame").show();
+                    resizeBlockCart($cartDIV);
+                    $cartDIV.attr("mini", "0");
+                }
+            }
+        }).css({
+            position: "absolute",
+            left: 0,
+            top: 5
         }))).append($("<div>", {
+            "class": "frame"
+        }).append($("<div>", {
+            "class": "list each"
+        })).append($("<div>", {
+            "class": "list single"
+        })).append($("<div>", {
             "class": "list"
-        })).appendTo($body);
+        }))).appendTo($body);
     }
     $.get("http://www.zhihu.com" + href + "/json", "", function(r) {
-        var user = r.msg[0], userName = user[0], userID = user[1], f_ = r.msg[3], _f = r.msg[4], cssF = _f ? "zg-icon rel " : "", $cart = $(".list", "#izh_blockCart"), href = "/people/" + userID, $blockParent = $(".izh-quick-block:visible").has('.izh-quick-block-do[izh_doing2B!="0"]').parent().has('.zm-item-vote-info li a[href="' + href + '"]'), $doing = $blockParent.find(".izh-quick-block-do");
+        var user = r.msg[0], userName = user[0], userID = user[1], f_ = r.msg[3], _f = r.msg[4], cssF = _f ? "zg-icon rel " : "", $cartDIV = $("#izh_blockCart"), $cart = $cartDIV.find(".list"), href = "/people/" + userID, $blockParent = $(".izh-quick-block:visible").has('.izh-quick-block-do[izh_doing2B!="0"]').parent().has('.zm-item-vote-info li a[href="' + href + '"]'), $doing = $blockParent.find(".izh-quick-block-do");
         console.log(userName + ":" + f_ + ":" + _f);
         var doing2B = parseInt($doing.attr("izh_doing2B"));
         if (!isNaN(doing2B)) {
             $doing.attr("izh_doing2B", --doing2B);
-            if (!doing2B) $cart.parent().removeClass("doing");
+            if (!doing2B) $cartDIV.removeClass("doing");
         }
-        if ($cart.find('.user2B[user="' + href + '"]').length) return;
+        if ($cartDIV.find('.list .user2B[user="' + href + '"]').length) return;
         // User already in block list
         if (cssF != "") {
             cssF += f_ ? "zu-entry-focus-each" : "zu-entry-focus-single-way";
         }
         var $user2B = $("<div>", {
             "class": "user2B",
-            user: "/people/" + userID
+            href: "/people/" + userID
         }).append($("<a>", {
             "class": "button del",
             html: "赦",
             href: "javascript:void(0);",
             click: function() {
-                var $cart = $(this).closest(".list");
-                $(this).closest(".user2B").remove();
-                var num2B = $cart[0].children.length;
-                $cart.prev().attr("izh_num2B", num2B > 999 ? "1k+" : num2B);
+                var $user = $(this).closest(".user2B"), $cartDIV = $("#izh_blockCart");
+                $user.remove();
+                var num2B = $cartDIV.find(".list .user2B").length;
+                $cartDIV.children(".do").attr("izh_num2B", num2B == 0 ? "0" : num2B > 999 ? "1k+" : num2B);
+                if (num2B) resizeBlockCart($cartDIV); else $cartDIV.css("height", "");
             }
         })).append($("<i>", {
             "class": "say",
@@ -2138,24 +2203,15 @@ var _e = null, ppWidth = 0, ppHeight = 400, css_comment = {
             html: userName
         }));
         if (_f && f_) {
-            if ($cart.find(".user2B i.zu-entry-focus-each").length) {
-                $cart.find(".user2B i.zu-entry-focus-each:last").parent().after($user2B);
-            } else {
-                $cart.prepend($user2B);
-            }
+            $cart.eq(0).append($user2B);
         } else if (_f) {
-            if ($cart.find(".user2B i.zu-entry-focus-single-way").length) {
-                $cart.find(".user2B i.zu-entry-focus-single-way:last").parent().after($user2B);
-            } else if ($cart.find(".user2B i.zu-entry-focus-each").length) {
-                $cart.find(".user2B i.zu-entry-focus-each:last").parent().after($user2B);
-            } else {
-                $cart.prepend($user2B);
-            }
+            $cart.eq(1).append($user2B);
         } else {
-            $cart.append($user2B);
+            $cart.eq(2).append($user2B);
         }
-        var num2B = $cart[0].children.length;
-        $cart.prev().attr("izh_num2B", num2B > 999 ? "1k+" : num2B);
+        var num2B = $cartDIV.find(".list .user2B").length;
+        $cartDIV.children(".do").attr("izh_num2B", num2B == 0 ? "0" : num2B > 999 ? "1k+" : num2B);
+        resizeBlockCart($cartDIV);
     });
 }, addQuickBlock = function($vi) {
     if ($vi.is(".zm-item-vote-info") && !$vi.children("a[name=more]").length) {
