@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 var version='2.2.0.317';
 var updateDate='2013-3-23';
-=======
-var version='2.2.0.316';
-var updateDate='2013-3-19';
->>>>>>> 7f780999f2ad26b7a65a84458368e83b4aed8869
 
 var $ = unsafeWindow.$;
 var _ = this._;
