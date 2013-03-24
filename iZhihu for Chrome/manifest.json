@@ -1,71 +1,11 @@
 {
     "manifest_version": 2
-<<<<<<< HEAD
-  , "content_scripts": [ {
-        "exclude_globs":    [  ]
-      , "include_globs":    [ "*" ]
-<<<<<<< HEAD
-<<<<<<< HEAD
-      , "js":               [ "126619.user.js" ]
-=======
-      , "js":               [ "jquery-1.9.1.min.js","126619.user.js" ]
->>>>>>> For CRX
-=======
-      , "js":               [ "jquery.min.js","126619.user.js" ]
->>>>>>> Fixed
-      , "matches":          [   "http://www.zhihu.com/*"
-                            ]
-      , "run_at": "document_end"
-    } ]
-  , "converted_from_user_script": true
-  , "description":  ""
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  , "name":         "iZhihu"
-<<<<<<< HEAD
-<<<<<<< HEAD
-  , "version":      "1.10"
-  , "permissions": [
-        "http://*.zhihu.com/"
-        ]
-}
-=======
-<<<<<<< HEAD
-  , "name":         "iZhihu for Chrome"
-  , "version":      "2.0"
-=======
-=======
->>>>>>> For CRX
-  , "name":         "iZhihu"
-=======
-  , "name":         "iZhihu 测试版"
->>>>>>> For 2.0
-  , "version":      "2.0"
-=======
-  , "name":         "iZhihu"
-<<<<<<< HEAD
-  , "version":      "2.0.1.308"
->>>>>>> Updated CRX
-=======
-  , "version":      "2.0.2.309"
->>>>>>> Build 2.0.2
-=======
-  , "version":      "2.0.3.310"
->>>>>>> Fixed issue of RightComment for Question
-=======
-  , "version":      "2.1.0.311"
->>>>>>> Implemented RightComment in Home page
-  , "permissions": [
-=======
   , "converted_from_user_script": true
 
   , "name"           : "iZhihu"
-  , "version"        : "2.1.5.316"
+  , "version"        : "2.2.0.317"
   , "description"    : ""
   , "permissions"    : [
->>>>>>> New version released
         "http://*.zhihu.com/"
     ]
   , "content_scripts": [ {
@@ -81,4 +21,3 @@
         ]
     } ]
 }
->>>>>>> For CRX
