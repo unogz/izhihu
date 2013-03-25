@@ -63,6 +63,15 @@ var i=0
   , css_AuthorListItemA='padding:0 10px 0 0;'
   , css_AuthorListItemA_name='padding:0 5px;'
 ;
+
+window.iZhihu = {
+    $win:$win
+  , $body:$body
+  , $main:$main
+};
+
+var _QuickBlock=QuickBlock(window.iZhihu);
+
 if(pageIs.Question&&izhAuthorList){
     css+=['div.uno{position:absolute;left:0;border:1px solid #0771C1;border-right-width:0;border-top-right-radius:6px}'
          ,'div.uno .frame{overflow-x:hidden;overflow-y:auto;direction:rtl}'
@@ -201,32 +210,7 @@ if(izhHomeLayout){
            ,''].join('\n');
 }
 if(izhQuickBlock){
-    css +=['.izh_blockCart{background-color:#0771C1;position:fixed;right:0;z-index:9;padding:0 30px 0 60px;border:1px solid #0771C1;border-left-width:10px;border-top-left-radius:6px;}'
-          ,'.izh_blockCart .do{color:#fff;text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}'
-          ,'.izh_blockCart.doing .do:after{text-decoration:blink;color:red;}'
-          ,'.izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}'
-          ,'.izh_blockCart .do .button{color:#fff;}'
-          ,'.izh_blockCart .frame{overflow-y:auto;overflow-x:hidden;position:absolute;top:25px;bottom:0;left:0;right:0;background-color:#fff;padding-top:5px;}'
-          ,'.izh_blockCart .list{display:block;margin:2px;width:100%;padding-right:5px;}'
-          ,'.izh_blockCart .list.each .rel{border-right:2px solid #259;}'
-          ,'.izh_blockCart .list.single .rel{border-right:2px dotted #259;}'
-          ,'.izh_blockCart .user2B{display:block;margin:2px 0;padding:0 30px 0 60px;}'
-          ,'.izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}'
-          ,'.izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}'
-          ,'.izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}'
-          ,'.izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}'
-          ,'.izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}'
-          ,'.izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}'
-          //,'.izh_blockCart .user2B i.zu-entry-focus-single-way'
-          //,',.izh_blockCart .user2B i.zu-entry-focus-each{padding:0 !important;}'
-          //,'.izh_blockCart .user2B i.rel:after{display:table-cell;line-height:normal;}'
-          //,'.izh_blockCart .user2B i.zu-entry-focus-single-way:after{content:">";}'
-          //,'.izh_blockCart .user2B i.zu-entry-focus-each:after{content:"><";}'
-          ,'.izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}'
-          ,'.izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}'
-          ,'.izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}'
-          ,'.izh-quick-block.doing:after{text-decoration:blink;}'
-          ,''].join('\n');
+    css += _QuickBlock.css;
 }
 var heads = _doc.getElementsByTagName("head");
 if (heads.length > 0) {
@@ -250,7 +234,7 @@ var _e=null
       , 'right':10
       , 'border-radius':'0 6px 0 0'
       , 'padding':'100px 0px 0px 10px'
-    }
+    }/*
   , css_QuickBlock={
         'background-position':'-146px -202px'
       , 'width':16
@@ -515,7 +499,7 @@ var _e=null
               	$quickBlock.attr('izh_num2B',$users.length);
             }).prependTo($quickBlock);
         }
-  }
+  }*/
   , getItem=function($c){
         var $item=$(null);
         if($c && $c.length){ 
@@ -675,7 +659,7 @@ var _e=null
                         $('<a>',{'class':'izh-quick-block-do',html:'候审',href:'javascript:void(0);'})
                         	.css({//$.extend(css_QuickBlock,{
                         	    'position':'absolute','left':0,'top':40})
-                        	.click(function(){in2BlockCart($(this).next());}).prependTo(e).hide();
+                        	.click(function(){_QuickBlock.in2BlockCart($(this).next());}).prependTo(e).hide();
                     });
                     var $btnQuickBlock=$('<a>',{'class':'izh-quick-block-switch',html:'快速屏蔽',href:'javascript:void(0);'}).css({
                         'position':'absolute'
@@ -773,7 +757,7 @@ var _e=null
             var $voteInfo=$('.zm-item-vote-info',$a);
             if($('[name=more]',$voteInfo).length){
                 $voteInfo.parent().bind('DOMNodeInserted',function(event){
-                    addQuickBlock($(event.target));
+                    _QuickBlock.addQuickBlock($(event.target),_QuickBlock);
                 });
             }
             // Region end
