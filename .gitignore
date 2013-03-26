@@ -24,3 +24,4 @@ grails-*.zip
 *.swp
 .DS_Store
 
+/.gitCfg.bat
