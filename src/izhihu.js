@@ -1,5 +1,5 @@
-var version='2.2.0.317';
-var updateDate='2013-3-23';
+var version='2.2.1.318';
+var updateDate='2013-3-26';
 
 var $ = unsafeWindow.$;
 var _ = this._;
@@ -228,6 +228,12 @@ if(izhQuickBlock){
           ,'.izh-quick-block.doing:after{text-decoration:blink;}'
           ,''].join('\n');
 }
+
+if(izhRightComment){
+    css +=['.mention-popup{z-index:10000 !important;}'
+          ,''].join('\n');
+}
+
 var heads = _doc.getElementsByTagName("head");
 if (heads.length > 0) {
     var node = _doc.createElement("style");
