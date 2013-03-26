@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.2.0
+// @version      2.2.1
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -1606,11 +1606,6 @@ function QuickBlock(iZhihu) {
     var init = function(izh) {
         return {
             css: [ ".izh_blockCart{background-color:#0771C1;position:fixed;right:0;z-index:9;padding:0 30px 0 60px;border:1px solid #0771C1;border-left-width:10px;border-top-left-radius:6px;}", ".izh_blockCart .do{color:#fff;text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}", ".izh_blockCart.doing .do:after{text-decoration:blink;color:red;}", ".izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}", ".izh_blockCart .do .button{color:#fff;}", ".izh_blockCart .frame{overflow-y:auto;overflow-x:hidden;position:absolute;top:25px;bottom:0;left:0;right:0;background-color:#fff;padding-top:5px;}", ".izh_blockCart .list{display:block;margin:2px;width:100%;padding-right:5px;}", ".izh_blockCart .list.each .rel{border-right:2px solid #259;}", ".izh_blockCart .list.single .rel{border-right:2px dotted #259;}", ".izh_blockCart .user2B{display:block;margin:2px 0;padding:0 30px 0 60px;}", ".izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", ".izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", ".izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", ".izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", ".izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", ".izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block.doing:after{text-decoration:blink;}", "" ].join("\n"),
-            css_QuickBlock: {
-                "background-position": "-146px -202px",
-                width: 16,
-                height: 16
-            },
             unblockAll: function() {
                 $(".zg-btn-unfollow").each(function(i, e) {
                     var uid = $(e).attr("id").slice(4);
@@ -2230,9 +2225,9 @@ utils.getParamInQuery = function(queryStr, paramName) {
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
 
-var version = "2.2.0.317";
+var version = "2.2.1.318";
 
-var updateDate = "2013-3-23";
+var updateDate = "2013-3-26";
 
 var $ = unsafeWindow.$;
 
@@ -2306,6 +2301,10 @@ css += [ ".izh_boxShadow{box-shadow: 5px 5px 3px 0px #999 !important;}", "#zh-qu
 
 if (izhHomeLayout) {
     css += [ "#zh-question-list { padding-left:30px!important }", "#zh-main-feed-fresh-button { margin-left:-30px!important }", ".feed-item {", "    border-bottom:1px solid #EEE!important;", "    margin-top:-1px!important", "}", ".feed-item .avatar { display:none!important }", ".feed-main,.feed-item.combine { margin-left:0!important }", ".feed-item-q { margin-left:-30px!important;padding-left:0!important }", izhRightComment ? "" : ".feed-item-a .zm-comment-box { max-width:602px!important }", izhRightComment ? "" : ".feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }", ".zm-tag-editor,", "#zh-question-title,", "#zh-question-detail,", "#zh-question-meta-wrap,", ".zh-answers-title,", "#zh-question-filter-wrap {", "    margin-left:-32px!important", "}", "#zh-question-log-page-wrap .zm-tag-editor,", "#zh-question-log-page-wrap #zh-question-title {", "    margin-left:0 !important", "}", ".zh-answers-title,", "#zh-question-filter-wrap {", "    border-bottom:1px solid #EEE!important;", "    z-index:1000!important", "}", "#zh-question-meta-wrap {", "    margin-bottom:0!important;", "    padding-bottom:10px!important;", "    border-bottom:1px solid #EEE!important", "}", "#zh-question-answer-wrap { margin-top:-1px!important }", "#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }", ".zu-question-collap-title { border-top:1px solid #EEE!important }", "#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }", ".zu-autohide,", ".zm-comment-op-link,", ".zm-side-trend-del,", ".unpin {", "    visibility:visible!important;", "    opacity:0;", "}", ".feed-item:hover .zu-autohide,", ".zm-item-answer .zu-autohide,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-nav-li:hover .unpin {", "    opacity:1;", "}", ".zm-item-vote-count:hover,.zm-votebar button:hover{", "    background:#a6ce56!important;", "    color:#3E5E00 !important", "}", "a,a:hover,", "i,", ".zu-autohide,", ".zm-votebar button,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-trend-del,", ".zm-side-nav-li,", ".zu-main-feed-fresh-button,", ".zg-icon,", ".zm-side-nav-li:hover .zg-icon,", ".zm-side-nav-li:hover i,", ".unpin,", ".zm-side-nav-li:hover .unpin {", "    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "}", "h3{ line-height:25px }", ".zu-footer-inner {padding:15px 0!important}", ".zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}", ".zm-side-list-content{clear:both}", ".unpin{ display:inline-block!important }", "" ].join("\n");
+}
+
+if (izhRightComment) {
+    css += [ ".mention-popup{z-index:10000 !important;}", "" ].join("\n");
 }
 
 if (izhQuickBlock) {
