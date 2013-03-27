@@ -34,8 +34,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             processAnswer($(e),null
               , izhAuthorRear
               , false
-              , izhRightComment
-              , izhQuickBlock);
+              , izhRightComment);
         });
     }
   }

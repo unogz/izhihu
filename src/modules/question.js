@@ -56,8 +56,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             processAnswer($(e),$pp
               , izhAuthorRear
               , izhAuthorList
-              , izhRightComment
-              , izhQuickBlock);
+              , izhRightComment);
         });
         if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
             var $ppla=$('<a>',{href:'#draft',target:'_self'})
@@ -135,7 +134,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                           , $body.attr('izhAuthorRear')=='1'
                           , $body.attr('izhAuthorList')=='1'
                           , $body.attr('izhRightComment')=='1'
-                          , $body.attr('izhQuickBlock')=='1'
                         );
                         var count = $('.zm-item-answer[izh_processed=1]','#zh-question-collapsed-wrap').length;
                         if(count==numCollapsedCount){
