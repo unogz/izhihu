@@ -10,9 +10,9 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
 
     var $questionWrap=$('#zh-question-meta-wrap');
     $questionWrap.children('.panel-container').bind('DOMNodeInserted',function(event){
-        processComment($(event.target));
+        window.iZhihu.Comment.processComment($(event.target));
     });
-    if(izhRightComment){
+    if(window.iZhihu.Comment.on){
         $questionWrap.children('.meta-item[name=addcomment]')
         	.css({'display':'block','float':'right','margin-left':7})
         	.insertBefore($questionWrap.children().first());
@@ -25,7 +25,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             }).prependTo('#zh-single-question').hide();
         }   
     }
-    processComment($('.zm-comment-box',$questionWrap));
+    window.iZhihu.Comment.processComment($('.zm-comment-box',$questionWrap));
 
     //process each answer
     var $listAnswers=$('.zm-item-answer','#zh-single-question');
@@ -33,8 +33,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         $listAnswers.each(function(i,e){
             processAnswer($(e),null
               , izhAuthorRear
-              , false
-              , izhRightComment);
+              , false);
         });
     }
   }

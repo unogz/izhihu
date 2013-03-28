@@ -29,8 +29,6 @@ $(function(){
             processAnswer($(e),null
               , izhAuthorRear
               , izhAuthorList
-              , izhRightComment
-              , izhQuickBlock
             );
         });
         $feedList.bind('DOMNodeInserted',function(event){
@@ -39,8 +37,6 @@ $(function(){
                 processAnswer($item,null
                   , $body.attr('izhAuthorRear')=='1'
                   , $body.attr('izhAuthorList')=='1'
-                  , $body.attr('izhRightComment')=='1'
-                  , $body.attr('izhQuickBlock')=='1'
                 );
             }
         });

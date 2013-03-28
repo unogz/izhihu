@@ -24,9 +24,9 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     
     var $questionWrap=$('#zh-question-meta-wrap');
     $questionWrap.children('.panel-container').bind('DOMNodeInserted',function(event){
-        processComment($(event.target));
+        window.iZhihu.Comment.processComment($(event.target));
     });
-    if(izhRightComment){
+    if(window.iZhihu.Comment.on){
         $questionWrap.children('.meta-item[name=addcomment]')
         	.css({'display':'block','float':'right','margin-left':7})
         	.insertBefore($questionWrap.children().first());
@@ -39,7 +39,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             }).prependTo('#zh-single-question').hide();
         }   
     }
-    processComment($('.zm-comment-box',$questionWrap));
+    window.iZhihu.Comment.processComment($('.zm-comment-box',$questionWrap));
 
     //process each answer
     var $listAnswers=$('.zm-item-answer','#zh-single-question');
@@ -55,8 +55,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         $listAnswers.each(function(i,e){
             processAnswer($(e),$pp
               , izhAuthorRear
-              , izhAuthorList
-              , izhRightComment);
+              , izhAuthorList);
         });
         if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
             var $ppla=$('<a>',{href:'#draft',target:'_self'})
@@ -133,7 +132,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                         processAnswer($a,$pp
                           , $body.attr('izhAuthorRear')=='1'
                           , $body.attr('izhAuthorList')=='1'
-                          , $body.attr('izhRightComment')=='1'
                         );
                         var count = $('.zm-item-answer[izh_processed=1]','#zh-question-collapsed-wrap').length;
                         if(count==numCollapsedCount){
