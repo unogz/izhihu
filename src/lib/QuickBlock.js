@@ -85,7 +85,7 @@ function QuickBlock(iZhihu) {
             var $cartDIV=$('#izh_blockCart').addClass('doing')
               , href=$e.attr('href')
             ;
-            if($cartDIV.find('.user2B[user="'+href+'"]').length){
+            if($cartDIV.find('.user2B[href="'+href+'"]').length){
                 var doing2B=parseInt($doing.attr('izh_doing2B'));
                 if(!isNaN(doing2B)){
                 	$doing.attr('izh_doing2B',--doing2B);
