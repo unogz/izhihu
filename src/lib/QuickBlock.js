@@ -32,20 +32,18 @@ function QuickBlock(iZhihu) {
             ,'.izh_blockCart .do .button{color:#fff;}'
             ,'.izh_blockCart .frame{overflow-y:auto;overflow-x:hidden;position:absolute;top:25px;bottom:0;left:0;right:0;background-color:#fff;padding-top:5px;}'
             ,'.izh_blockCart .list{display:block;margin:2px;width:100%;padding-right:5px;}'
-            ,'.izh_blockCart .list.each .rel{border-right:2px solid #259;}'
-            ,'.izh_blockCart .list.single .rel{border-right:2px dotted #259;}'
-            ,'.izh_blockCart .user2B{display:block;margin:2px 0;padding:0 30px 0 60px;}'
+            ,'.izh_blockCart .list .rel{border-width:0 2px;border-style:solid;border-color:#fff;width:24px;height:18px;}'
+            ,'.izh_blockCart .list.i_fo .rel{border-left-color:#259;background-position:-120px -184px;}'
+            ,'.izh_blockCart .list.fo_i .rel{border-right-color:#259;background-position:-120px -164px;}'
+            ,'.izh_blockCart .list.i_fo.fo_i .rel{background-position:-78px -200px;}'
+            ,'.izh_blockCart .user2B{display:block;margin:2px 0;padding:0 40px 0 60px;}'
             ,'.izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}'
             ,'.izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}'
+            ,'.izh_blockCart .list.unfo .user2B .name{background-color:#f00;}'
             ,'.izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}'
             ,'.izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}'
             ,'.izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}'
             ,'.izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}'
-            //,'.izh_blockCart .user2B i.zu-entry-focus-single-way'
-            //,',.izh_blockCart .user2B i.zu-entry-focus-each{padding:0 !important;}'
-            //,'.izh_blockCart .user2B i.rel:after{display:table-cell;line-height:normal;}'
-            //,'.izh_blockCart .user2B i.zu-entry-focus-single-way:after{content:">";}'
-            //,'.izh_blockCart .user2B i.zu-entry-focus-each:after{content:"><";}'
             ,'.izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}'
             ,'.izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}'
             ,'.izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}'
@@ -107,6 +105,7 @@ function QuickBlock(iZhihu) {
                             'class':'button delAll'
                           , href:'javascript:void(0);'
                           , html:'大赦'
+                          , title:'清空「候审」列表'
                           , click:function(){
                               var $cartDIV=$('#izh_blockCart');
                               $cartDIV.css('bottom','').find('.list').empty();
@@ -115,21 +114,61 @@ function QuickBlock(iZhihu) {
                           }
                         }).css({
                             'display':'block'
+                          , 'position':'absolute'
+                          , 'left':24
+                        })
+                    ).append(
+                        $('<input>',{
+                            'class':'unfo'
+                          , href:'javascript:void(0);'
+                          , type:'checkbox'
+                          , title:'选中后，将我关注的人标出，准备「取消关注」'
+                          , click:function(){
+                              $('.action',this.parentNode).html(this.checked?'放逐':'收监');
+                              var $cartDIV=$(this.parentNode.parentNode)
+                                , ll=$('.frame .list.i_fo',$cartDIV);
+                              if(this.checked){
+                                  ll.addClass('unfo');
+                              }else{
+                                  ll.removeClass('unfo');
+                              }
+                          }
+                        }).css({
+                            'display':'block'
                           , 'float':'left'
+                          , 'height':22
+                          , 'line-height':22
+                        })
+                    ).append(
+                        $('<span>',{
+                            'class':''
+                          , href:'javascript:void(0);'
+                          , html:'从轻'
+                        }).css({
+                            'display':'block'
+                          , 'float':'left'
+                          , 'margin-right':20
                         })
                     ).append(
                         $('<a>',{
-                            'class':'button block'
+                            'class':'button action'
                           , href:'javascript:void(0);'
                           , html:'收监'
+                          , title:'收监：将列表内所有人加入黑名单；放逐：对我关注的人取消关注'
                           , click:function(){
-                              $('#izh_blockCart').find('.user2B').each(function(i,e){
-                                  iZhihu.QuickBlock.doQuickBlock($(e));
-                              });
+                              if($('.unfo',this.parentNode).is(':checked')){
+                                  alert($('#izh_blockCart').find('.list.unfo .user2B').length);// Unfo
+                              }else{return;
+                                  $('#izh_blockCart').find('.user2B').each(function(i,e){
+                                      iZhihu.QuickBlock.doQuickBlock($(e));
+                                  });
+                              }
                           }
                         }).css({
                             'display':'block'
                           , 'float':'right'
+                          , 'margin-left':20
+                          , 'margin-right':-10
                         })
                     ).append(
                         $('<a>',{
@@ -157,11 +196,15 @@ function QuickBlock(iZhihu) {
                     $('<div>',{'class':'frame'}
                     ).append(
                         $('<div>',{
-                            'class':'list each'
+                            'class':'list i_fo fo_i'
                         })
                     ).append(
                         $('<div>',{
-                            'class':'list single'
+                            'class':'list i_fo'
+                        })
+                    ).append(
+                        $('<div>',{
+                            'class':'list fo_i'
                         })
                     ).append(
                         $('<div>',{
@@ -176,7 +219,7 @@ function QuickBlock(iZhihu) {
                   , userID=user[1]
                   , f_=r.msg[3]
                   , _f=r.msg[4]
-                  , cssF=_f?'zg-icon rel ':''
+                  , cssF=_f||f_?'zg-icon rel ':''
                   , $cartDIV=$('#izh_blockCart')
                   , $cart=$cartDIV.find('.list')
                   , href='/people/'+userID
@@ -191,9 +234,6 @@ function QuickBlock(iZhihu) {
                 }
                 if($cartDIV.find('.list .user2B[user="'+href+'"]').length)
                     return; // User already in block list
-                if(cssF!=''){
-                    cssF+=f_?'zu-entry-focus-each':'zu-entry-focus-single-way'
-                }
                 var $user2B=$('<div>',{
                     	'class':'user2B'
                       , 'href':'/people/'+userID
@@ -228,12 +268,14 @@ function QuickBlock(iZhihu) {
                         })
                     )
                 ;
-                if(_f&&f_){
+                if(f_&&_f){
                     $cart.eq(0).append($user2B);
-                }else if(_f){
+                }else if(f_){
                     $cart.eq(1).append($user2B);
-                }else{
+                }else if(_f){
                     $cart.eq(2).append($user2B);
+                }else{
+                    $cart.eq(3).append($user2B);
                 }
                 var num2B=$cartDIV.find('.list .user2B').length;
                 $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>999?'1k+':num2B);
