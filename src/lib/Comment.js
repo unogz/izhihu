@@ -164,6 +164,10 @@ function Comment(iZhihu) {
                             }
                         }
                     });
+                    if(iZhihu.QuickBlock){
+                        iZhihu.QuickBlock.addQuickBlockInComment($cm);
+                    }
+/*
                     if(iZhihu.$body.attr('izhQuickBlock')=='1'){
                         // Region: 快速屏蔽
                         var $u=$('.zm-comment-hd',$cm);
@@ -191,6 +195,7 @@ function Comment(iZhihu) {
                         }
                         // Region end
                     }
+*/
                     var $item=getItem($cm);
                     iZhihu.Comment.showComment($item,$cm);
                     $('i.zm-comment-bubble',$cm).hide();

@@ -1766,44 +1766,38 @@ function Comment(iZhihu) {
                             }
                         }
                     });
-                    if (iZhihu.$body.attr("izhQuickBlock") == "1") {
+                    if (iZhihu.QuickBlock) {
+                        iZhihu.QuickBlock.addQuickBlockInComment($cm);
+                    }
+                    /*
+                    if(iZhihu.$body.attr('izhQuickBlock')=='1'){
                         // Region: 快速屏蔽
-                        var $u = $(".zm-comment-hd", $cm);
-                        $u.each(function(i, e) {
-                            $("<a>", {
-                                "class": "izh-quick-block-do",
-                                html: "候审",
-                                href: "javascript:void(0);"
-                            }).css({
-                                //$.extend(css_QuickBlock,{
-                                position: "absolute",
-                                left: 0,
-                                top: 40
-                            }).click(function() {
-                                _QuickBlock.in2BlockCart($(this).next());
-                            }).prependTo(e).hide();
+                        var $u=$('.zm-comment-hd',$cm);
+                        $u.each(function(i,e){
+                            $('<a>',{'class':'izh-quick-block-do',html:'候审',href:'javascript:void(0);'})
+                                .css({//$.extend(css_QuickBlock,{
+                                    'position':'absolute','left':0,'top':40})
+                                .click(function(){_QuickBlock.in2BlockCart($(this).next());}).prependTo(e).hide();
                         });
-                        var $btnQuickBlock = $("<a>", {
-                            "class": "izh-quick-block-switch",
-                            html: "快速屏蔽",
-                            href: "javascript:void(0);"
-                        }).css({
-                            position: "absolute",
-                            left: 70,
-                            top: 70
-                        }).prependTo($cm).click(function() {
-                            if (this.getAttribute("on") == "1") {
-                                $(".zm-comment-hd .izh-quick-block-do").hide();
-                                this.setAttribute("on", "0");
-                            } else {
-                                $(".zm-comment-hd .izh-quick-block-do").show();
-                                this.setAttribute("on", "1");
+                        var $btnQuickBlock=$('<a>',{'class':'izh-quick-block-switch',html:'快速屏蔽',href:'javascript:void(0);'}).css({
+                            'position':'absolute'
+                          , 'left':70, 'top':70
+                        }).prependTo($cm).click(function(){
+                            if(this.getAttribute('on')=='1'){
+                                $('.zm-comment-hd .izh-quick-block-do').hide();
+                                this.setAttribute('on','0');
+                            }
+                            else{
+                                $('.zm-comment-hd .izh-quick-block-do').show();
+                                this.setAttribute('on','1');
                             }
                         });
-                        if ($cm.is(".empty")) {
+                        if($cm.is('.empty')){
                             $btnQuickBlock.hide();
                         }
+                        // Region end
                     }
+*/
                     var $item = getItem($cm);
                     iZhihu.Comment.showComment($item, $cm);
                     $("i.zm-comment-bubble", $cm).hide();
@@ -1876,7 +1870,7 @@ function Comment(iZhihu) {
  * @class QuickBlock
  */
 function QuickBlock(iZhihu) {
-    if (typeof iZhihu === "undefined" || !iZhihu) {
+    if (typeof iZhihu === "undefined" || !iZhihu || !iZhihu.config["QuickBlock"]) {
         return null;
     }
     iZhihu.QuickBlock = this;
@@ -1897,7 +1891,7 @@ function QuickBlock(iZhihu) {
         this.in2BlockCart = function() {};
         this.addQuickBlock = function() {};
     } else {
-        this.css = [ ".izh_blockCart{background-color:#0771C1;position:fixed;right:0;z-index:9;padding:0 30px 0 60px;border:1px solid #0771C1;border-left-width:10px;border-top-left-radius:6px;}", ".izh_blockCart .do{color:#fff;text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}", ".izh_blockCart.doing .do:after{text-decoration:blink;color:red;}", ".izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}", ".izh_blockCart .do .button{color:#fff;}", ".izh_blockCart .frame{overflow-y:auto;overflow-x:hidden;position:absolute;top:25px;bottom:0;left:0;right:0;background-color:#fff;padding-top:5px;}", ".izh_blockCart .list{display:block;margin:2px;width:100%;padding-right:5px;}", ".izh_blockCart .list .rel{border-width:0 2px;border-style:solid;border-color:#fff;width:24px;height:18px;}", ".izh_blockCart .list.i_fo .rel{border-left-color:#259;background-position:-120px -184px;}", ".izh_blockCart .list.fo_i .rel{border-right-color:#259;background-position:-120px -164px;}", ".izh_blockCart .list.i_fo.fo_i .rel{background-position:-78px -200px;}", ".izh_blockCart .user2B{display:block;margin:2px 0;padding:0 40px 0 60px;}", ".izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", ".izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", ".izh_blockCart .list.unfo .user2B .name{background-color:#f00;}", ".izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", ".izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", ".izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", ".izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block.doing:after{text-decoration:blink;}", "" ].join("\n");
+        this.css = [ ".izh_blockCart{background-color:#0771C1;position:fixed;right:0;z-index:9;padding:0 30px 0 60px;border:1px solid #0771C1;border-left-width:10px;border-top-left-radius:6px;}", ".izh_blockCart .do{color:#fff;text-align:center;display:block;margin:2px;min-width:80px;width:100%;height:20px;}", ".izh_blockCart.doing .do:after{text-decoration:blink;color:red;}", ".izh_blockCart .do:after{position:relative;content:attr(izh_num2B);}", ".izh_blockCart .do .button{color:#fff;}", ".izh_blockCart .frame{overflow-y:auto;overflow-x:hidden;position:absolute;top:25px;bottom:0;left:0;right:0;background-color:#fff;padding-top:5px;}", ".izh_blockCart .list{display:block;margin:2px;width:100%;padding-right:5px;}", ".izh_blockCart .list .rel{border-width:0 2px;border-style:solid;border-color:#fff;width:24px;height:18px;}", ".izh_blockCart .list.i_fo .rel{border-left-color:#259;background-position:-120px -184px;}", ".izh_blockCart .list.fo_i .rel{border-right-color:#259;background-position:-120px -164px;}", ".izh_blockCart .list.i_fo.fo_i .rel{background-position:-78px -200px;}", ".izh_blockCart .user2B{display:block;margin:2px 0;padding:0 40px 0 60px;}", ".izh_blockCart .user2B i.zg-icon{display:block;position:absolute;right:0;margin-top:5px;}", ".izh_blockCart .user2B .name{display:block;color:#fff;background-color:#000;white-space:nowrap;padding:2px 5px;border-radius:3px;}", ".izh_blockCart .list.unfo .user2B .name{background-color:#f00;}", ".izh_blockCart .user2B .del{display:block;position:absolute;margin-left:-4.5em;}", ".izh_blockCart .user2B i.say{display:block;position:absolute;margin-left:-44px;border-radius:6px 6px 0 6px;border:1px solid #999;padding:0 5px 0 3px;}", ".izh_blockCart .user2B i.say_1{display:block;position:absolute;margin-left:-10px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-bottom:1px solid #999;}", ".izh_blockCart .user2B i.say_2{display:block;position:absolute;margin-left:-9px;height:6px;background-color:#fff;width:6px;margin-top:17px;border-radius:0 0 0 6px;border:1px solid #999;border-width:0 0 1px 1px}", ".izh-quick-block{position:absolute;text-align:center;width:4em;margin-top:1.5em;white-space:nowrap;}", ".izh-quick-block [class^=izh-quick-block]{position:absolute;display:block;white-space:nowrap;}", ".izh-quick-block:after{content:attr(izh_num2B);margin-top:1em;display:block;}", ".izh-quick-block.doing:after{text-decoration:blink;}", "" ].join("\n");
         this.unblockAll = function() {
             $(".zg-btn-unfollow").each(function(i, e) {
                 var uid = $(e).attr("id").slice(4);
@@ -1951,10 +1945,10 @@ function QuickBlock(iZhihu) {
         };
         this.in2BlockCart = function($e, $doing) {
             var $cartDIV = $("#izh_blockCart").addClass("doing"), href = $e.attr("href");
-            if ($cartDIV.find('.user2B[user="' + href + '"]').length) {
-                var doing2B = parseInt($doing.attr("izh_doing2B"));
+            if ($cartDIV.find('.user2B[href="' + href + '"]').length) {
+                var doing2B = parseInt($doing ? $doing.attr("izh_doing2B") : "0");
                 if (!isNaN(doing2B)) {
-                    $doing.attr("izh_doing2B", --doing2B);
+                    if ($doing) $doing.attr("izh_doing2B", --doing2B);
                     if (!doing2B) $cartDIV.removeClass("doing");
                 }
                 return;
@@ -1964,7 +1958,8 @@ function QuickBlock(iZhihu) {
                     top: iZhihu.$main.offset().top
                 }).append($("<div>", {
                     "class": "do",
-                    izh_num2B: 0
+                    izh_num2B: 0,
+                    title: "下为「候审」列表\n点击左上角可收起/展开\n数字为人犯总数（红色表示仍有人犯正待入列）"
                 }).append($("<a>", {
                     "class": "button delAll",
                     href: "javascript:void(0);",
@@ -1984,14 +1979,15 @@ function QuickBlock(iZhihu) {
                     "class": "unfo",
                     href: "javascript:void(0);",
                     type: "checkbox",
-                    title: "选中后，将我关注的人标出，准备「取消关注」",
+                    title: "选中后，将我关注之人标出，改以放逐（取消关注）论处",
                     click: function() {
-                        $(".action", this.parentNode).html(this.checked ? "放逐" : "收监");
-                        var $cartDIV = $(this.parentNode.parentNode), ll = $(".frame .list.i_fo", $cartDIV);
+                        var $cartDIV = $(this.parentNode.parentNode), ll = $(".frame .list.i_fo", $cartDIV), $action = $(".action", this.parentNode);
                         if (this.checked) {
                             ll.addClass("unfo");
+                            $action.html("放逐").css("padding", "0 2em 0 0").attr("title", "对列表内我关注之人取消关注");
                         } else {
                             ll.removeClass("unfo");
+                            $action.html("收监").css("padding", "0 0 0 2em").attr("title", "将下列人犯逐一加入黑名单");
                         }
                     }
                 }).css({
@@ -2002,7 +1998,8 @@ function QuickBlock(iZhihu) {
                 })).append($("<span>", {
                     "class": "",
                     href: "javascript:void(0);",
-                    html: "从轻"
+                    html: "从轻",
+                    title: "选中后，将我关注的人标出，准备「取消关注」"
                 }).css({
                     display: "block",
                     "float": "left",
@@ -2011,7 +2008,7 @@ function QuickBlock(iZhihu) {
                     "class": "button action",
                     href: "javascript:void(0);",
                     html: "收监",
-                    title: "收监：将列表内所有人加入黑名单；放逐：对我关注的人取消关注",
+                    title: "将下列人犯逐一加入黑名单",
                     click: function() {
                         if ($(".unfo", this.parentNode).is(":checked")) {
                             alert($("#izh_blockCart").find(".list.unfo .user2B").length);
@@ -2026,7 +2023,8 @@ function QuickBlock(iZhihu) {
                     display: "block",
                     "float": "right",
                     "margin-left": 20,
-                    "margin-right": -10
+                    "margin-right": -10,
+                    padding: "0 0 0 2em"
                 })).append($("<a>", {
                     "class": "zg-icon zg-icon-double-arrow",
                     href: "javascript:void(0);",
@@ -2131,7 +2129,8 @@ function QuickBlock(iZhihu) {
                 var width = $vi.closest("[data-aid]").width(), $btnQuickBlock = $("<a>", {
                     "class": "izh-quick-block-switch",
                     html: "快速屏蔽",
-                    href: "javascript:void(0);"
+                    href: "javascript:void(0);",
+                    title: "开始从赞同列表中选择屏蔽对象"
                 }).css({
                     position: "absolute",
                     left: width,
@@ -2139,12 +2138,16 @@ function QuickBlock(iZhihu) {
                 }).click(function() {
                     if (this.getAttribute("on") == "1") {
                         $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).hide();
-                        $(this).nextAll(".izh-quick-block").hide();
-                        this.setAttribute("on", "0");
+                        $(this).attr({
+                            title: "开始从赞同列表中选择屏蔽对象",
+                            on: "0"
+                        }).nextAll(".izh-quick-block").hide();
                     } else {
                         $(".zm-item-vote-info input.izh-quick-block-sel", this.parentNode).show();
-                        $(this).nextAll(".izh-quick-block").show();
-                        this.setAttribute("on", "1");
+                        $(this).attr({
+                            title: "结束从赞同列表中选择屏蔽对象",
+                            on: "1"
+                        }).nextAll(".izh-quick-block").show();
                     }
                 }).insertBefore($vi), $quickBlock = $("<div>", {
                     "class": "izh-quick-block",
@@ -2156,7 +2159,8 @@ function QuickBlock(iZhihu) {
                     "class": "izh-quick-block-do",
                     izh_doing2B: "0",
                     href: "javascript:void(0);",
-                    html: "候审"
+                    html: "候审",
+                    title: "将所选之人列入候审名单以待收监"
                 }).css({
                     //$.extend(css_QuickBlock,{
                     "margin-top": "1em",
@@ -2174,7 +2178,8 @@ function QuickBlock(iZhihu) {
                 $("<a>", {
                     "class": "izh-quick-block-selAll",
                     html: "无",
-                    href: "javascript:void(0);"
+                    href: "javascript:void(0);",
+                    title: "无一选中"
                 }).css({
                     "margin-left": "3em"
                 }).click(function() {
@@ -2185,12 +2190,59 @@ function QuickBlock(iZhihu) {
                 $("<a>", {
                     "class": "izh-quick-block-notAll",
                     html: "全",
-                    href: "javascript:void(0);"
+                    href: "javascript:void(0);",
+                    title: "全部选中"
                 }).css({}).click(function() {
                     var $quickBlock = $(this).closest(".izh-quick-block"), $users = $(".zm-item-vote-info input.izh-quick-block-sel", $quickBlock.parent());
                     $users.attr("checked", "checked");
                     $quickBlock.attr("izh_num2B", $users.length);
                 }).prependTo($quickBlock);
+            }
+        };
+        this.addQuickBlockInComment = function($cm) {
+            // Region: 快速屏蔽
+            var $u = $(".zm-comment-hd", $cm);
+            $u.each(function(i, e) {
+                $("<a>", {
+                    "class": "izh-quick-block-do",
+                    html: "候审",
+                    href: "javascript:void(0);",
+                    title: "将此人列入候审名单以待收监"
+                }).css({
+                    //$.extend(css_QuickBlock,{
+                    position: "absolute",
+                    left: 0,
+                    top: 40
+                }).click(function() {
+                    iZhihu.QuickBlock.in2BlockCart($(this).next());
+                }).prependTo(e).hide();
+            });
+            var $btnQuickBlock = $("<a>", {
+                "class": "izh-quick-block-switch",
+                html: "快速屏蔽",
+                href: "javascript:void(0);",
+                title: "开始从评论者中选择屏蔽对象"
+            }).css({
+                position: "absolute",
+                left: 70,
+                top: 70
+            }).prependTo($cm).click(function() {
+                if (this.getAttribute("on") == "1") {
+                    $(".zm-comment-hd .izh-quick-block-do").hide();
+                    $(this).attr({
+                        title: "开始从评论者中选择屏蔽对象",
+                        on: "0"
+                    });
+                } else {
+                    $(".zm-comment-hd .izh-quick-block-do").show();
+                    $(this).attr({
+                        title: "结束从评论者中选择屏蔽对象",
+                        on: "1"
+                    });
+                }
+            });
+            if ($cm.is(".empty")) {
+                $btnQuickBlock.hide();
             }
         };
     }
