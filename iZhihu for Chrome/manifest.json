@@ -3,7 +3,7 @@
   , "converted_from_user_script": true
 
   , "name"           : "iZhihu"
-  , "version"        : "2.2.1.318"
+  , "version"        : "2.3.0.319"
   , "description"    : ""
   , "permissions"    : [
         "http://*.zhihu.com/"

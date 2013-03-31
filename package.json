@@ -1,6 +1,6 @@
 {
     "name": "izhihu",
-    "version": "2.2.1",
+    "version": "2.3.0",
     "root": "#",
     "license": "MIT",
     "dependencies": {
@@ -8,7 +8,7 @@
     "output": {
       "izhihu.js": {
         "main": "./izhihu.js",
-        "includes": ["./meta.js","./import/*.js","./lib/*.js","./izhihu.js", "./modules/*.js"]
+        "includes": ["./meta.js","./import/*.js","./lib/*.js","./version.js","./izhihu.js", "./modules/*.js"]
       }
     }
 }

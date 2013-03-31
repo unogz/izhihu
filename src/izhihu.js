@@ -1,6 +1,3 @@
-var version='2.2.1.318';
-var updateDate='2013-3-26';
-
 var $ = unsafeWindow.$;
 var _ = this._;
 var purl = window.purl||$.url;
