@@ -26,10 +26,9 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     $questionWrap.children('.panel-container').bind('DOMNodeInserted',function(event){
         window.iZhihu.Comment.processComment($(event.target));
     });
-    if(window.iZhihu.Comment.on){
-        $questionWrap.children('.meta-item[name=addcomment]')
-        	.css({'display':'block','float':'right','margin-left':7})
-        	.insertBefore($questionWrap.children().first());
+    if(window.iZhihu.Comment.RightComment){
+        //$questionWrap.children('.meta-item[name=addcomment]').prependTo($questionWrap);
+        window.iZhihu.Comment.processCommentButton($questionWrap);
         if(!$('#izh_QuestionShadow').length){
             $('<div>',{'class':'izh_boxShadow',id:'izh_QuestionShadow'}).css({
                 'z-index': '-1'

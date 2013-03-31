@@ -134,8 +134,8 @@ if(izhHomeLayout){
            ,'.feed-item .avatar { display:none!important }'
            ,'.feed-main,.feed-item.combine { margin-left:0!important }'
            ,'.feed-item-q { margin-left:-30px!important;padding-left:0!important }'
-           ,_Comment.on?'':'.feed-item-a .zm-comment-box { max-width:602px!important }'
-           ,_Comment.on?'':'.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }'
+           ,window.iZhihu.Comment.RightComment ? '' : '.feed-item-a .zm-comment-box { max-width:602px!important }'
+           ,window.iZhihu.Comment.RightComment ? '' : '.feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }'
            ,'.zm-tag-editor,'
            ,'#zh-question-title,'
            ,'#zh-question-detail,'
@@ -206,14 +206,14 @@ if(izhHomeLayout){
            ,'.unpin{ display:inline-block!important }'
            ,''].join('\n');
 }
-if(_Comment.on){
-    css += _Comment.css;
+if(window.iZhihu.Comment.RightComment){
+    css += window.iZhihu.Comment.css;
 }
-if(_QuickFavo.on){
-    css += _QuickFavo.css;
+if(window.iZhihu.QuickFavo){
+    css += window.iZhihu.QuickFavo.css;
 }
-if(_QuickBlock.on){
-    css += _QuickBlock.css;
+if(window.iZhihu.QuickBlock){
+    css += window.iZhihu.QuickBlock.css;
 }
 var heads = _doc.getElementsByTagName("head");
 if (heads.length > 0) {
@@ -249,12 +249,12 @@ var _e=null
         var $c=$a.children().last()
           , $p=$a.find('.zm-item-answer-author-info')
           , $v=$a.find('.meta-item[name=favo]');
-        if(_QuickBlock.on){
+        if(window.iZhihu.QuickBlock){
             // Region: 快速屏蔽
             var $voteInfo=$('.zm-item-vote-info',$a);
             if($('[name=more]',$voteInfo).length){
                 $voteInfo.parent().bind('DOMNodeInserted',function(event){
-                    _QuickBlock.addQuickBlock($(event.target),_QuickBlock);
+                    window.iZhihu.QuickBlock.addQuickBlock($(event.target),window.iZhihu.QuickBlock);
                 });
             }
             // Region end
@@ -385,20 +385,15 @@ var _e=null
             }
         }
 
-        if(_QuickFavo.on)
-            _QuickFavo.addQuickFavo($v,$a);
+        if(window.iZhihu.QuickFavo)
+            window.iZhihu.QuickFavo.addQuickFavo($v,$a);
 
         $c.bind('DOMNodeInserted',function(event){
             window.iZhihu.Comment.processComment($(event.target));
         });
-        if(window.iZhihu.Comment.on){
-            var $bc=$a.find('.zu-question-answer-meta-comment');
-            $bc.css({
-                'display':'block'
-              , 'float':'right'
-              , 'margin-left':7
-            }).prependTo($bc.parent());
-        }
+        
+        window.iZhihu.Comment.processCommentButton($a);
+
         window.iZhihu.Comment.processComment($('.zm-comment-box',$a));
         $a.attr('izh_processed','1');
     }
