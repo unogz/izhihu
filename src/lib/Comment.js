@@ -218,26 +218,48 @@ function Comment(iZhihu) {
             var $btnCC=$('<a>',{
                     'class':'zu-question-answer-meta-comment'
                   , html:'收起'
-                }).click(function(){
-                    var $item=getItem($cm)
-                      , $itemMeta=$cm.closest('.zm-item-meta');
-                    iZhihu.Comment.hideComment($item);
-                    $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
+                  , click:function(){
+                        var $item=getItem($cm)
+                          , $itemMeta=$cm.closest('.zm-item-meta');
+                        iZhihu.Comment.hideComment($item);
+                        $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
+                    }
                 });
             if(iZhihu.Comment.RightComment){
-                $btnCC.css({
+                $btnCC.prepend('<i class="z-icon-izh-fold"/>')
+                .add(
+                    $('<div>',{
+                    	'class':'izh-cm-buttons'
+                      , style:'right:1em;'
+                    }).append(
+                        $('<a>',{
+                            'class':''
+                          , html:'返回顶部'
+                          , click:function(){
+                                $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
+                            }
+                        }).add('<a>',{
+                            'class':''
+                          , html:'人气妙评'//先来后到
+                          , click:function(){
+                            }
+                        }).css({
+                            'float':'right'
+                          , 'margin-left':7
+                        })
+                    )
+                ).css({
                     'cursor':'pointer'
                   , 'position':'absolute'
                   , 'top':70
-                }).insertBefore($cm.children(':first'))
-                .prepend('<i class="z-icon-izh-fold"></i>');
+                }).insertBefore($cm.children(':first'));
             }else{
-                $btnCC.css({
+                $btnCC.prepend('<i class="z-icon-fold"/>')
+                .css({
                     'float':'right'
                   , 'cursor':'pointer'
                   , 'margin-right':5
-                }).appendTo($cm)
-                .prepend('<i class="z-icon-fold"/>');
+                }).appendTo($cm);
             }
         }
     };
