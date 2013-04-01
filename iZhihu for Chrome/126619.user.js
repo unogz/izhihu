@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.2.1
+// @version      2.3.0
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
@@ -2709,9 +2709,9 @@ utils.getParamInQuery = function(queryStr, paramName) {
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
 
-var version = "2.2.1.318";
+var version = "2.3.0.319";
 
-var updateDate = "2013-3-26";
+var updateDate = "2013-3-31";
 
 var $ = unsafeWindow.$;
 
