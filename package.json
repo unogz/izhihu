@@ -8,7 +8,7 @@
     "output": {
       "izhihu.js": {
         "main": "./izhihu.js",
-        "includes": ["./meta.js","./import/*.js","./lib/*.js","./version.js","./izhihu.js", "./modules/*.js"]
+        "includes": ["./meta.js","./import/*.js","./lib/*.js","./izhihu.js", "./modules/*.js"]
       }
     }
 }
