@@ -7,3 +7,6 @@
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
 // ==/UserScript==
 
+var version='2.3.0.319';
+var updateDate='2013-3-31';
+
