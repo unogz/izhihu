@@ -2843,6 +2843,7 @@ if (window.iZhihu.QuickBlock) {
 
 if (window.iZhihu.Noti7) {
     css += window.iZhihu.Noti7.css;
+    window.iZhihu.Noti7.enhance();
 }
 
 var heads = _doc.getElementsByTagName("head");
@@ -2857,8 +2858,6 @@ if (heads.length > 0) {
 if (!$(".modal-dialog-bg").length) {
     $body.append('<div id="izh-dlg-bg" class="modal-dialog-bg" style="opacity:0.5;position:fixed;top:0;bottom:0;left:0;right:0;display:none;"></div>');
 }
-
-_Noti7.enhance();
 
 var _e = null, ppWidth = 0, ppHeight = 400, getItem = function($c) {
     var $item = $(null);
