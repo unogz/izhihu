@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.3.0
+// @version      2.4.0
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
 // ==/UserScript==
+var version = "2.4.0.320";
 
+var updateDate = "2013-4-3";
 
 /*!
  * Casper is a navigation utility for PhantomJS.
@@ -1842,6 +1844,50 @@ function Comment(iZhihu) {
 }
 
 /**
+ * @class Noti7
+ */
+function Noti7(iZhihu) {
+    if (typeof iZhihu === "undefined" || !iZhihu || !iZhihu.config["Noti7"]) {
+        return null;
+    }
+    iZhihu.Noti7 = this;
+    this.$noti7 = $("#zh-top-nav-live-new");
+    this.$frame = $(".zm-noti7-frame", this.$noti7);
+    this.$content = $(".zm-noti7-content-body", this.$noti7);
+    this.$footer = $(".zm-noti7-popup-footer", this.$noti7);
+    this.$tab = $(".zm-noti7-popup-tab-container", "#zh-top-nav-live-new-inner");
+    this.css = [ '#zh-top-nav-live-new .zm-noti7-popup-footer a[unreadonly="1"]{color:#225599 !important;text-shadow:0 0 1px #225599;}', "" ].join("\n");
+    this.enhance = function() {
+        iZhihu.Noti7.$tab.bind("DOMSubtreeModified", function(event) {
+            if ($(event.target).is(".zm-noti7-popup-tab-item.current")) $(".izh-filter-read", iZhihu.Noti7.$footer).attr("unreadOnly", "");
+        });
+        iZhihu.Noti7.$footer.append($("<a>", {
+            "class": "izh-filter-read",
+            html: "隐藏已读",
+            href: "javascript:void(0);",
+            unreadOnly: "",
+            click: function() {
+                var unreadOnly = this.getAttribute("unreadOnly") == "1", $contentVisible = iZhihu.Noti7.$content.filter(":visible"), $scroller = $contentVisible.closest(".zh-scroller-inner"), $items = $contentVisible.find(".zm-noti7-content-item");
+                unreadOnly = !unreadOnly;
+                this.setAttribute("unreadOnly", unreadOnly ? "1" : "");
+                if (unreadOnly) {
+                    $scroller.attr("scrollTop", $scroller[0].scrollTop);
+                    $items.not(".unread").hide();
+                    var scrollTop = parseInt($scroller.attr("scrollTop_unread"));
+                    if (!isNaN(scrollTop)) $scroller.scrollTop(scrollTop);
+                } else {
+                    $scroller.attr("scrollTop_unread", $scroller[0].scrollTop);
+                    $items.not(".unread").show();
+                    var scrollTop = parseInt($scroller.attr("scrollTop"));
+                    if (!isNaN(scrollTop)) $scroller.scrollTop(scrollTop);
+                }
+            }
+        }));
+    };
+    return this;
+}
+
+/**
  * @class QuickBlock
  */
 function QuickBlock(iZhihu) {
@@ -2605,7 +2651,8 @@ var cfgDefault = {
     QuickFavo: true,
     AuthorRear: false,
     HomeNoti: false,
-    QuickBlock: false
+    QuickBlock: false,
+    Noti7: true
 };
 
 /**
@@ -2709,10 +2756,6 @@ utils.getParamInQuery = function(queryStr, paramName) {
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
 
-var version = "2.3.0.319";
-
-var updateDate = "2013-3-31";
-
 var $ = unsafeWindow.$;
 
 var _ = this._;
@@ -2768,7 +2811,7 @@ window.iZhihu.$body.attr({
     izhQuickBlock: izhQuickBlock ? "1" : ""
 });
 
-var _QuickBlock = new QuickBlock(window.iZhihu), _QuickFavo = new QuickFavo(window.iZhihu), _Comment = new Comment(window.iZhihu);
+var _QuickBlock = new QuickBlock(window.iZhihu), _QuickFavo = new QuickFavo(window.iZhihu), _Comment = new Comment(window.iZhihu), _Noti7 = new Noti7(window.iZhihu);
 
 if (pageIs.Question && izhAuthorList) {
     css += [ "div.uno{position:absolute;left:0;border:1px solid #0771C1;border-right-width:0;border-top-right-radius:6px}", "div.uno .frame{overflow-x:hidden;overflow-y:auto;direction:rtl}", "div.uno span.meT,div.uno span.meB,div.uno ul.pp li span.me{position:absolute;right:0;display:block;height:1px;width:1px;line-height:1px;background-color:transparent;border-style:solid;border-color:transparent;}", "div.uno span.meT{border-width:6px 4px;border-top-width:0px;border-bottom-color:#fff;}", "div.uno span.meB{border-width:6px 4px;border-bottom-width:0px;border-top-color:#fff;margin-top:-7px;}", "div.uno ul{background-color:#0771C1;padding:0;margin:0;direction:ltr}", "div.uno ul li{display:block;list-style-type:none;margin:0;padding:0;white-space:nowrap;}", "div.uno ul li a{display:block;}div.uno li a.sel{text-decoration:none;}", "div.uno ul li a{" + css_AuthorListItemA + "}", "div.uno ul.pp li span.me{position:static;margin:6px -8px;border-width:4px 6px;border-right-color:#fff;float:right;}", "div.uno li a span.name{text-align:right;display:block;" + css_AuthorListItemA_name + "background-color:#fff;}div.uno li a.sel span.name{color:#fff;background-color:#0771C1;}", "div.uno li a span.name.noname{color:#000;}", "div.uno li a span.name.collapsed{color:#999999;}", "div.uno li a span.name.friend{font-style:italic;}", "div.uno li span.hp{background-color:#999999;position:relative;float:right;margin-top:-2px;line-height:2px;height:2px;}", "div.uno table.plus{float:right;margin:7px -9px;height:7px;border-collapse:collapse;border-style:hidden;}div.uno table.plus td{border:1px solid #fff;width:1px;height:1px;}", "div.uno a.sel table.plus{}div.uno a.sel table.plus td{}", "div.uno li a span.func{text-align:center;}", "div.izh-answer-preview{position:fixed;margin-top:1px;background-color:#fff;border:1px solid #0771C1;border-top-width:22px;border-top-right-radius:6px;box-shadow:5px 5px 5px #777;}", "div.izh-answer-preview .zm-editable-content{top:0;bottom:0;left:0;right:0;overflow-y:auto;padding:10px;}", "div.izh-answer-preview img.zm-list-avatar{position:absolute;right:10px;top:-35px;border:1px solid #0771C1;border-radius:6px;}", "div.izh-answer-preview span.comment{position:absolute;top:-18px;line-height:18px;border-top-right-radius:3px;background-color:#fff;padding:0 5px;}", "" ].join("\n");
@@ -2794,6 +2837,11 @@ if (window.iZhihu.QuickFavo) {
 
 if (window.iZhihu.QuickBlock) {
     css += window.iZhihu.QuickBlock.css;
+}
+
+if (window.iZhihu.Noti7) {
+    css += window.iZhihu.Noti7.css;
+    window.iZhihu.Noti7.enhance();
 }
 
 var heads = _doc.getElementsByTagName("head");

@@ -14,6 +14,7 @@ var cfgDefault = {
   , 'AuthorRear':false
   , 'HomeNoti':false
   , 'QuickBlock':false
+  , 'Noti7':true
 };
   
 /**

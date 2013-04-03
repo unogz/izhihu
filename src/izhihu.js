@@ -71,6 +71,7 @@ window.iZhihu.$body.attr({
 var _QuickBlock = new QuickBlock(window.iZhihu)
   , _QuickFavo = new QuickFavo(window.iZhihu)
   , _Comment = new Comment(window.iZhihu)
+  , _Noti7 = new Noti7(window.iZhihu)
 ;
 
 if(pageIs.Question&&izhAuthorList){
@@ -211,6 +212,10 @@ if(window.iZhihu.QuickFavo){
 }
 if(window.iZhihu.QuickBlock){
     css += window.iZhihu.QuickBlock.css;
+}
+if(window.iZhihu.Noti7){
+    css += window.iZhihu.Noti7.css;
+    window.iZhihu.Noti7.enhance();
 }
 var heads = _doc.getElementsByTagName("head");
 if (heads.length > 0) {
