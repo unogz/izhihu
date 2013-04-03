@@ -126,3 +126,21 @@ utils.getParamInQuery=function(queryStr,paramName){
       , end=queryStr.indexOf('&',start);
     return end<start?queryStr.substring(start):queryStr.substring(start,end);
 };
+
+utils.observeDOMAttrModified = (function(){
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+        eventListenerSupported = window.addEventListener;
+
+    return function(obj, callback){
+        if( MutationObserver ){
+            // define a new observer
+            var obs = new MutationObserver(function(mutations, observer){
+                if( mutations[0].type == 'attributes' )
+                    callback(mutations[0]);
+            });
+            obs.observe( obj, { attributes:true });
+        }else if( eventListenerSupported ){
+            obj.addEventListener('DOMAttrModified', callback, false);
+        }
+    }
+})();

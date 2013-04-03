@@ -17,9 +17,12 @@ function Noti7(iZhihu) {
         ['#zh-top-nav-live-new .zm-noti7-popup-footer a[unreadonly="1"]{color:#225599 !important;text-shadow:0 0 1px #225599;}'
         ,''].join('\n');
     this.enhance = function(){
-        iZhihu.Noti7.$tab.bind('DOMSubtreeModified',function(event){
-            if($(event.target).is('.zm-noti7-popup-tab-item.current'))
-            	$('.izh-filter-read',iZhihu.Noti7.$footer).attr('unreadOnly','');
+        iZhihu.Noti7.$tab.find('.zm-noti7-popup-tab-item').each(function(i,e){
+            utils.observeDOMAttrModified(e,function(event){
+                if($(event.target).is('.zm-noti7-popup-tab-item.current')){
+                	$('.izh-filter-read',iZhihu.Noti7.$footer).attr('unreadOnly','');
+                }
+            });
         });
         iZhihu.Noti7.$footer.append(
             $('<a>',{

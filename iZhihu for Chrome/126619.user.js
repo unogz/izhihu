@@ -1858,8 +1858,12 @@ function Noti7(iZhihu) {
     this.$tab = $(".zm-noti7-popup-tab-container", "#zh-top-nav-live-new-inner");
     this.css = [ '#zh-top-nav-live-new .zm-noti7-popup-footer a[unreadonly="1"]{color:#225599 !important;text-shadow:0 0 1px #225599;}', "" ].join("\n");
     this.enhance = function() {
-        iZhihu.Noti7.$tab.bind("DOMSubtreeModified", function(event) {
-            if ($(event.target).is(".zm-noti7-popup-tab-item.current")) $(".izh-filter-read", iZhihu.Noti7.$footer).attr("unreadOnly", "");
+        iZhihu.Noti7.$tab.find(".zm-noti7-popup-tab-item").each(function(i, e) {
+            utils.observeDOMAttrModified(e, function(event) {
+                if ($(event.target).is(".zm-noti7-popup-tab-item.current")) {
+                    $(".izh-filter-read", iZhihu.Noti7.$footer).attr("unreadOnly", "");
+                }
+            });
         });
         iZhihu.Noti7.$footer.append($("<a>", {
             "class": "izh-filter-read",
@@ -2755,6 +2759,23 @@ utils.getParamInQuery = function(queryStr, paramName) {
     var param = paramName + "=", start = queryStr.indexOf(param) + param.length, end = queryStr.indexOf("&", start);
     return end < start ? queryStr.substring(start) : queryStr.substring(start, end);
 };
+
+utils.observeDOMAttrModified = function() {
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver, eventListenerSupported = window.addEventListener;
+    return function(obj, callback) {
+        if (MutationObserver) {
+            // define a new observer
+            var obs = new MutationObserver(function(mutations, observer) {
+                if (mutations[0].type == "attributes") callback(mutations[0]);
+            });
+            obs.observe(obj, {
+                attributes: true
+            });
+        } else if (eventListenerSupported) {
+            obj.addEventListener("DOMAttrModified", callback, false);
+        }
+    };
+}();
 
 var $ = unsafeWindow.$;
 
