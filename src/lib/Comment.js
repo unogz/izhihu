@@ -14,17 +14,29 @@ function Comment(iZhihu) {
           , 'z-index':'9999'
           , 'right':10
           , 'border-radius':'0 6px 0 0'
-          , 'padding':'100px 0px 0px 10px'
+          , 'padding':'100px 0px 0px 7px'
         }
     ;
     this.RightComment = iZhihu.config['ShowComment'];
     if (!this.RightComment){
-        this.css = '';
+        this.css = ['.zm-comment-box.empty .izh-button-cc{display:none;}'
+                   ,''].join('\n');
     } else {
         this.css = 
             ['.mention-popup{z-index:10000 !important;}'
             ,'.zm-item-meta .meta-item[name=addcomment],'
             ,'.zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}'
+            ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
+            ,'.zm-comment-box.empty{padding-top:10px !important;}'
+            ,'.zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}'
+            ,'.zm-comment-box .izh-cm-buttons-L,'
+            ,'.zm-comment-box .izh-cm-buttons-R{position:absolute;top:70px;}'
+            ,'.zm-comment-box .izh-cm-buttons-L{left:0;}'
+            ,'.zm-comment-box .izh-cm-buttons-L > a{margin-right:7px;}'
+            ,'.zm-comment-box .izh-cm-buttons-R{right:1em;}'
+            ,'.zm-comment-box .izh-cm-buttons-R > a{margin-left:7px;}'
+            ,'.zm-comment-box.empty .izh-cm-buttons-L,'
+            ,'.zm-comment-box.empty .izh-cm-buttons-R{top:auto;bottom:7px;}'
             ,''].join('\n');
     }
     this.processCommentButton = function($a){
@@ -159,9 +171,6 @@ function Comment(iZhihu) {
                 }
             });
 */
-            if(iZhihu.QuickBlock){
-                iZhihu.QuickBlock.addQuickBlockInComment($cm);
-            }
             if(iZhihu.Comment.RightComment){
                 $cm.addClass('izh_boxShadow').css(css_comment).closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]').click(function(event){
                     var $cm=$(this).closest('.zm-item-meta').find('.zm-comment-box');
@@ -208,58 +217,67 @@ function Comment(iZhihu) {
                         iZhihu.Comment.showComment($item,$cm);
                     }
                 });
-                $('.zm-comment-form.zm-comment-box-ft',$cm).css({
-                    'position':'absolute'
-                  , 'top':0
-                  , 'left':0
-                  , 'right':0
-                });
             }
             var $btnCC=$('<a>',{
-                    'class':'zu-question-answer-meta-comment'
+                    'class':'zu-question-answer-meta-comment izh-button-cc'
+                  , href:'javascript:void(0);'
                   , html:'收起'
                   , click:function(){
-                        var $item=getItem($cm)
-                          , $itemMeta=$cm.closest('.zm-item-meta');
+                        var $cm=$(this).closest('.zm-comment-box')
+                          , $item=getItem($cm)
+                          , $itemMeta=$cm.closest('.zm-item-meta')
+                        ;
                         iZhihu.Comment.hideComment($item);
                         $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
                     }
-                });
+                })
+              , $buttonsL=$('<div>',{
+                	'class':'izh-cm-buttons-L'
+                }).prependTo($cm)
+              , $buttonsR=$('<div>',{
+                	'class':'izh-cm-buttons-R'
+                })
+            ;
             if(iZhihu.Comment.RightComment){
-                $btnCC.prepend('<i class="z-icon-izh-fold"/>')
-                .add(
-                    $('<div>',{
-                    	'class':'izh-cm-buttons'
-                      , style:'right:1em;'
-                    }).append(
-                        $('<a>',{
-                            'class':''
-                          , html:'返回顶部'
-                          , click:function(){
-                                $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
-                            }
-                        }).add('<a>',{
-                            'class':''
-                          , html:'人气妙评'//先来后到
-                          , click:function(){
-                            }
-                        }).css({
-                            'float':'right'
-                          , 'margin-left':7
-                        })
-                    )
-                ).css({
-                    'cursor':'pointer'
-                  , 'position':'absolute'
-                  , 'top':70
-                }).insertBefore($cm.children(':first'));
+                $buttonsR.prependTo($cm);
+                $btnCC.css({
+                    'float':'left'
+                  , 'margin-left':7
+                }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
+                if(!$cm.is('.empty')){
+                    $('<a>',{
+                        'class':''
+                      , href:'javascript:void(0);'
+                      , html:'返回顶部'
+                      , click:function(){
+                            $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
+                        }
+                    }).add('<a>',{
+                        'class':''
+                      , href:'javascript:void(0);'
+                      , html:'人气妙评'//先来后到
+                      , click:function(){
+                        }
+                    }).css({
+                        'float':'right'
+                    }).appendTo($buttonsR);
+                }
             }else{
                 $btnCC.prepend('<i class="z-icon-fold"/>')
                 .css({
-                    'float':'right'
+                    'position':'absolute'
                   , 'cursor':'pointer'
-                  , 'margin-right':5
-                }).appendTo($cm);
+                  , 'margin-left':-1
+                  , 'left':0
+                  , 'background-color':'#fbfbfb'
+                  , 'padding':'2px 5px'
+                  , 'bottom':-22
+                  , 'border':'1px solid #ddd'
+                  , 'border-radius':'4px'
+                }).insertBefore($cm.find('.zm-comment-box-ft'));
+            }
+            if(iZhihu.QuickBlock&&!$cm.is('.empty')){
+                iZhihu.QuickBlock.addQuickBlockInComment($buttonsL);
             }
         }
     };

@@ -1616,13 +1616,13 @@ function Comment(iZhihu) {
         "z-index": "9999",
         right: 10,
         "border-radius": "0 6px 0 0",
-        padding: "100px 0px 0px 10px"
+        padding: "100px 0px 0px 7px"
     };
     this.RightComment = iZhihu.config["ShowComment"];
     if (!this.RightComment) {
-        this.css = "";
+        this.css = [ ".zm-comment-box.empty .izh-button-cc{display:none;}", "" ].join("\n");
     } else {
-        this.css = [ ".mention-popup{z-index:10000 !important;}", ".zm-item-meta .meta-item[name=addcomment],", ".zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}", "" ].join("\n");
+        this.css = [ ".mention-popup{z-index:10000 !important;}", ".zm-item-meta .meta-item[name=addcomment],", ".zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}", ".zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}", ".zm-comment-box.empty{padding-top:10px !important;}", ".zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}", ".zm-comment-box .izh-cm-buttons-L,", ".zm-comment-box .izh-cm-buttons-R{position:absolute;top:70px;}", ".zm-comment-box .izh-cm-buttons-L{left:0;}", ".zm-comment-box .izh-cm-buttons-L > a{margin-right:7px;}", ".zm-comment-box .izh-cm-buttons-R{right:1em;}", ".zm-comment-box .izh-cm-buttons-R > a{margin-left:7px;}", ".zm-comment-box.empty .izh-cm-buttons-L,", ".zm-comment-box.empty .izh-cm-buttons-R{top:auto;bottom:7px;}", "" ].join("\n");
     }
     this.processCommentButton = function($a) {
         if (iZhihu.Comment.RightComment) {
@@ -1761,9 +1761,6 @@ function Comment(iZhihu) {
                 }
             });
 */
-            if (iZhihu.QuickBlock) {
-                iZhihu.QuickBlock.addQuickBlockInComment($cm);
-            }
             if (iZhihu.Comment.RightComment) {
                 $cm.addClass("izh_boxShadow").css(css_comment).closest(".zm-item-meta").find("[name=addcomment],[name=add-q-comment]").click(function(event) {
                     var $cm = $(this).closest(".zm-item-meta").find(".zm-comment-box");
@@ -1810,50 +1807,59 @@ function Comment(iZhihu) {
                         iZhihu.Comment.showComment($item, $cm);
                     }
                 });
-                $(".zm-comment-form.zm-comment-box-ft", $cm).css({
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0
-                });
             }
             var $btnCC = $("<a>", {
-                "class": "zu-question-answer-meta-comment",
+                "class": "zu-question-answer-meta-comment izh-button-cc",
+                href: "javascript:void(0);",
                 html: "收起",
                 click: function() {
-                    var $item = getItem($cm), $itemMeta = $cm.closest(".zm-item-meta");
+                    var $cm = $(this).closest(".zm-comment-box"), $item = getItem($cm), $itemMeta = $cm.closest(".zm-item-meta");
                     iZhihu.Comment.hideComment($item);
                     $itemMeta.find("[name=addcomment],[name=add-q-comment]")[0].click();
                 }
+            }), $buttonsL = $("<div>", {
+                "class": "izh-cm-buttons-L"
+            }).prependTo($cm), $buttonsR = $("<div>", {
+                "class": "izh-cm-buttons-R"
             });
             if (iZhihu.Comment.RightComment) {
-                $btnCC.prepend('<i class="z-icon-izh-fold"/>').add($("<div>", {
-                    "class": "izh-cm-buttons",
-                    style: "right:1em;"
-                }).append($("<a>", {
-                    "class": "",
-                    html: "回到顶部",
-                    click: function() {
-                        $(this.parentNode).nextAll(".zm-comment-list").scrollTop(0);
-                    }
-                }).add("<a>", {
-                    "class": "",
-                    html: "test",
-                    click: function() {}
-                }).css({
-                    "float": "right",
+                $buttonsR.prependTo($cm);
+                $btnCC.css({
+                    "float": "left",
                     "margin-left": 7
-                }))).css({
-                    cursor: "pointer",
-                    position: "absolute",
-                    top: 70
-                }).insertBefore($cm.children(":first"));
+                }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
+                if (!$cm.is(".empty")) {
+                    $("<a>", {
+                        "class": "",
+                        href: "javascript:void(0);",
+                        html: "返回顶部",
+                        click: function() {
+                            $(this.parentNode).nextAll(".zm-comment-list").scrollTop(0);
+                        }
+                    }).add("<a>", {
+                        "class": "",
+                        href: "javascript:void(0);",
+                        html: "人气妙评",
+                        click: function() {}
+                    }).css({
+                        "float": "right"
+                    }).appendTo($buttonsR);
+                }
             } else {
                 $btnCC.prepend('<i class="z-icon-fold"/>').css({
-                    "float": "right",
+                    position: "absolute",
                     cursor: "pointer",
-                    "margin-right": 5
-                }).appendTo($cm);
+                    "margin-left": -1,
+                    left: 0,
+                    "background-color": "#fbfbfb",
+                    padding: "2px 5px",
+                    bottom: -22,
+                    border: "1px solid #ddd",
+                    "border-radius": "4px"
+                }).insertBefore($cm.find(".zm-comment-box-ft"));
+            }
+            if (iZhihu.QuickBlock && !$cm.is(".empty")) {
+                iZhihu.QuickBlock.addQuickBlockInComment($buttonsL);
             }
         }
     };
@@ -2291,9 +2297,9 @@ function QuickBlock(iZhihu) {
             }).prependTo($quickBlock);
         }
     };
-    this.addQuickBlockInComment = function($cm) {
+    this.addQuickBlockInComment = function($where) {
         // Region: 快速屏蔽
-        var $u = $(".zm-comment-hd", $cm);
+        var $cm = $where.is(".zm-comment-box") ? $where : $where.closest(".zm-comment-box"), $u = $(".zm-comment-hd", $cm);
         $u.each(function(i, e) {
             $("<a>", {
                 "class": "izh-quick-block-pend",
@@ -2309,13 +2315,9 @@ function QuickBlock(iZhihu) {
             html: "快速屏蔽",
             href: "javascript:void(0);",
             title: "开始从评论者中选择屏蔽对象"
-        }).css(iZhihu.Comment.RightComment ? {
-            position: "absolute",
-            left: 70,
-            top: 70
-        } : {
+        }).css({
             "margin-left": 7
-        }).prependTo($cm).click(function() {
+        }).prependTo($where).click(function() {
             if (this.getAttribute("on") == "1") {
                 $(".zm-comment-hd .izh-quick-block-pend").hide();
                 $(this).attr({
@@ -2865,9 +2867,7 @@ if (izhHomeLayout) {
     css += [ "#zh-question-list { padding-left:30px!important }", "#zh-main-feed-fresh-button { margin-left:-30px!important }", ".feed-item {", "    border-bottom:1px solid #EEE!important;", "    margin-top:-1px!important", "}", ".feed-item .avatar { display:none!important }", ".feed-main,.feed-item.combine { margin-left:0!important }", ".feed-item-q { margin-left:-30px!important;padding-left:0!important }", window.iZhihu.Comment.RightComment ? "" : ".feed-item-a .zm-comment-box { max-width:602px!important }", window.iZhihu.Comment.RightComment ? "" : ".feed-item-q .zm-comment-box { max-width:632px!important; width:632px!important }", ".zm-tag-editor,", "#zh-question-title,", "#zh-question-detail,", "#zh-question-meta-wrap,", ".zh-answers-title,", "#zh-question-filter-wrap {", "    margin-left:-32px!important", "}", "#zh-question-log-page-wrap .zm-tag-editor,", "#zh-question-log-page-wrap #zh-question-title {", "    margin-left:0 !important", "}", ".zh-answers-title,", "#zh-question-filter-wrap {", "    border-bottom:1px solid #EEE!important;", "    z-index:1000!important", "}", "#zh-question-meta-wrap {", "    margin-bottom:0!important;", "    padding-bottom:10px!important;", "    border-bottom:1px solid #EEE!important", "}", "#zh-question-answer-wrap { margin-top:-1px!important }", "#zh-question-collapsed-wrap,#zh-question-answer-wrap { border:none!important }", ".zu-question-collap-title { border-top:1px solid #EEE!important }", "#zh-question-collapsed-wrap>div:last-child,.zm-item-answer:last-child { border-bottom:1px solid #EEE!important }", ".zu-autohide,", ".zm-comment-op-link,", ".zm-side-trend-del,", ".unpin {", "    visibility:visible!important;", "    opacity:0;", "}", ".feed-item:hover .zu-autohide,", ".zm-item-answer .zu-autohide,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-nav-li:hover .unpin {", "    opacity:1;", "}", ".zm-item-vote-count:hover,.zm-votebar button:hover{", "    background:#a6ce56!important;", "    color:#3E5E00 !important", "}", "a,a:hover,", "i,", ".zu-autohide,", ".zm-votebar button,", ".zm-item-comment:hover .zm-comment-op-link,", ".zm-comment-op-link,", ".zm-side-trend-row:hover .zm-side-trend-del,", ".zm-side-trend-del,", ".zm-side-nav-li,", ".zu-main-feed-fresh-button,", ".zg-icon,", ".zm-side-nav-li:hover .zg-icon,", ".zm-side-nav-li:hover i,", ".unpin,", ".zm-side-nav-li:hover .unpin {", "    -moz-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    -webkit-transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "    transition:color .2s linear,opacity .15s linear,background-color .2s linear,background-position .2s linear .1s;", "}", "h3{ line-height:25px }", ".zu-footer-inner {padding:15px 0!important}", ".zm-side-pinned-topics .zm-side-nav-li{float:left;padding-right:30px!important}", ".zm-side-list-content{clear:both}", ".unpin{ display:inline-block!important }", "" ].join("\n");
 }
 
-if (window.iZhihu.Comment.RightComment) {
-    css += window.iZhihu.Comment.css;
-}
+css += window.iZhihu.Comment.css;
 
 if (window.iZhihu.QuickFavo) {
     css += window.iZhihu.QuickFavo.css;

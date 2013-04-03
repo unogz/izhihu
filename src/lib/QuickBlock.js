@@ -444,9 +444,11 @@ function QuickBlock(iZhihu) {
             }).prependTo($quickBlock);
         }
     };
-    this.addQuickBlockInComment = function($cm){
+    this.addQuickBlockInComment = function($where){
         // Region: 快速屏蔽
-        var $u=$('.zm-comment-hd',$cm);
+        var $cm=$where.is('.zm-comment-box')?$where:$where.closest('.zm-comment-box')
+          , $u=$('.zm-comment-hd',$cm)
+        ;
         $u.each(function(i,e){
             $('<a>',{
                 'class':'izh-quick-block-pend'
@@ -462,7 +464,7 @@ function QuickBlock(iZhihu) {
               , html:'快速屏蔽'
               , href:'javascript:void(0);'
               , title:'开始从评论者中选择屏蔽对象'
-            }).css(iZhihu.Comment.RightComment?{'position':'absolute', 'left':70, 'top':70}:{'margin-left':7}).prependTo($cm).click(function(){
+            }).css({'margin-left':7}).prependTo($where).click(function(){
                 if(this.getAttribute('on')=='1'){
                     $('.zm-comment-hd .izh-quick-block-pend').hide();
                     $(this).attr({title:'开始从评论者中选择屏蔽对象','on':'0'});

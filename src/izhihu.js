@@ -204,9 +204,9 @@ if(izhHomeLayout){
            ,'.unpin{ display:inline-block!important }'
            ,''].join('\n');
 }
-if(window.iZhihu.Comment.RightComment){
-    css += window.iZhihu.Comment.css;
-}
+
+css += window.iZhihu.Comment.css;
+
 if(window.iZhihu.QuickFavo){
     css += window.iZhihu.QuickFavo.css;
 }
