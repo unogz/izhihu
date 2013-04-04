@@ -1622,7 +1622,7 @@ function Comment(iZhihu) {
     if (!this.RightComment) {
         this.css = [ ".zm-comment-box.empty .izh-button-cc{display:none;}", "" ].join("\n");
     } else {
-        this.css = [ ".mention-popup{z-index:10000 !important;}", ".zm-item-meta .meta-item[name=addcomment],", ".zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}", ".zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}", ".zm-comment-box.empty{padding-top:10px !important;}", ".zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}", ".zm-comment-box .izh-cm-buttons-L,", ".zm-comment-box .izh-cm-buttons-R{position:absolute;top:70px;}", ".zm-comment-box .izh-cm-buttons-L{left:0;}", ".zm-comment-box .izh-cm-buttons-L > a{margin-right:7px;}", ".zm-comment-box .izh-cm-buttons-R{right:1em;}", ".zm-comment-box .izh-cm-buttons-R > a{margin-left:7px;}", ".zm-comment-box.empty .izh-cm-buttons-L,", ".zm-comment-box.empty .izh-cm-buttons-R{top:auto;bottom:7px;}", "" ].join("\n");
+        this.css = [ ".mention-popup{z-index:10000 !important;}", ".zm-item-meta .meta-item[name=addcomment],", ".zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}", ".zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}", ".zm-comment-box.empty{padding-top:10px !important;}", ".zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}", ".zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}", ".zm-comment-box .izh-buttons-cm-L{left:0;}", ".zm-comment-box .izh-buttons-cm-L > a{margin-right:7px;}", ".zm-comment-box .izh-buttons-cm-R{right:1em;}", ".zm-comment-box .izh-buttons-cm-R > a{margin-left:7px;}", ".zm-comment-box a.izh-button.on{color:#225599;text-shadow:0 0 1px #225599;}", ".zm-comment-box a.izh-button.off{color:#eee;}", ".zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}", "" ].join("\n");
     }
     this.processCommentButton = function($a) {
         if (iZhihu.Comment.RightComment) {
@@ -1761,6 +1761,12 @@ function Comment(iZhihu) {
                 }
             });
 */
+            var $list = $cm.find(".zm-comment-list").bind("DOMNodeInserted", function(event) {
+                var $icm = $(event.target);
+                if ($icm.is(".zm-item-comment") && iZhihu.QuickBlock) {
+                    iZhihu.QuickBlock.addQuickBlockInOneComment($icm);
+                }
+            });
             if (iZhihu.Comment.RightComment) {
                 $cm.addClass("izh_boxShadow").css(css_comment).closest(".zm-item-meta").find("[name=addcomment],[name=add-q-comment]").click(function(event) {
                     var $cm = $(this).closest(".zm-item-meta").find(".zm-comment-box");
@@ -1776,7 +1782,7 @@ function Comment(iZhihu) {
                 var $item = getItem($cm);
                 iZhihu.Comment.showComment($item, $cm);
                 $("i.zm-comment-bubble", $cm).hide();
-                $(".zm-comment-list", $cm).css({
+                $list.css({
                     height: "100%",
                     overflow: "auto"
                 }).bind("DOMNodeInserted", function(event) {
@@ -1818,9 +1824,9 @@ function Comment(iZhihu) {
                     $itemMeta.find("[name=addcomment],[name=add-q-comment]")[0].click();
                 }
             }), $buttonsL = $("<div>", {
-                "class": "izh-cm-buttons-L"
+                "class": "izh-buttons-cm-L"
             }).prependTo($cm), $buttonsR = $("<div>", {
-                "class": "izh-cm-buttons-R"
+                "class": "izh-buttons-cm-R"
             });
             if (iZhihu.Comment.RightComment) {
                 $buttonsR.prependTo($cm);
@@ -1830,20 +1836,47 @@ function Comment(iZhihu) {
                 }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
                 if (!$cm.is(".empty")) {
                     $("<a>", {
-                        "class": "",
+                        "class": "izh-button izh-back-top",
                         href: "javascript:void(0);",
                         html: "返回顶部",
                         click: function() {
                             $(this.parentNode).nextAll(".zm-comment-list").scrollTop(0);
                         }
                     }).add("<a>", {
-                        "class": "",
+                        "class": "izh-button izh-show-good",
                         href: "javascript:void(0);",
                         html: "人气妙评",
-                        click: function() {}
+                        click: function() {
+                            var $e = $(this), $l = $e.closest(".zm-comment-box").find(".zm-comment-list"), $n = $l.find(".zm-item-comment").has("span.like-num.nil");
+                            if ($e.hasClass("on")) {
+                                $e.attr("scrollTop_showgood", $l[0].scrollTop);
+                                $n.show();
+                                $e.removeClass("on");
+                                var scrollTop = parseInt($e.attr("scrollTop"));
+                                if (!isNaN(scrollTop)) $l.scrollTop(scrollTop);
+                            } else {
+                                $e.attr("scrollTop", $l[0].scrollTop);
+                                $n.hide();
+                                $e.addClass("on");
+                                var scrollTop = parseInt($e.attr("scrollTop_showgood"));
+                                if (!isNaN(scrollTop)) $l.scrollTop(scrollTop);
+                            }
+                        }
                     }).css({
                         "float": "right"
                     }).appendTo($buttonsR);
+                    $list.scroll(function() {
+                        var $e = $(this), $b = $e.closest(".zm-comment-box").find(".izh-back-top");
+                        if ($e.height() < this.scrollTop) {
+                            $b.removeClass("off");
+                        } else {
+                            $b.addClass("off");
+                        }
+                    }).scroll();
+                    $list.find(".zm-item-comment span.like-num").each(function(i, e) {
+                        var tip = e.getAttribute("data-tip").replace("s$r$", "s$l$");
+                        if (tip != "") e.setAttribute("data-tip", tip);
+                    });
                 }
             } else {
                 $btnCC.prepend('<i class="z-icon-fold"/>').css({
@@ -1859,7 +1892,7 @@ function Comment(iZhihu) {
                 }).insertBefore($cm.find(".zm-comment-box-ft"));
             }
             if (iZhihu.QuickBlock && !$cm.is(".empty")) {
-                iZhihu.QuickBlock.addQuickBlockInComment($buttonsL);
+                iZhihu.QuickBlock.addQuickBlockInCommentList($buttonsL);
             }
         }
     };
@@ -2297,21 +2330,26 @@ function QuickBlock(iZhihu) {
             }).prependTo($quickBlock);
         }
     };
-    this.addQuickBlockInComment = function($where) {
+    this.addQuickBlockInOneComment = function($cmItem) {
+        var $where = $(".zm-comment-hd", $cmItem);
+        if ($where.find(".izh-quick-block-pend").length) return;
+        $("<a>", {
+            "class": "izh-quick-block-pend izh-button",
+            html: "候审",
+            href: "javascript:void(0);",
+            title: "将此人列入候审名单以待收监"
+        }).click(function() {
+            iZhihu.QuickBlock.in2BlockCart($(this).next());
+        }).prependTo($where).hide();
+    };
+    this.addQuickBlockInCommentList = function($where) {
         // Region: 快速屏蔽
-        var $cm = $where.is(".zm-comment-box") ? $where : $where.closest(".zm-comment-box"), $u = $(".zm-comment-hd", $cm);
+        var $cm = $where.is(".zm-comment-box") ? $where : $where.closest(".zm-comment-box"), $u = $(".zm-item-comment", $cm);
         $u.each(function(i, e) {
-            $("<a>", {
-                "class": "izh-quick-block-pend",
-                html: "候审",
-                href: "javascript:void(0);",
-                title: "将此人列入候审名单以待收监"
-            }).click(function() {
-                iZhihu.QuickBlock.in2BlockCart($(this).next());
-            }).prependTo(e).hide();
+            iZhihu.QuickBlock.addQuickBlockInOneComment($(e));
         });
         var $btnQuickBlock = $("<a>", {
-            "class": "izh-quick-block-switch",
+            "class": "izh-quick-block-switch izh-button",
             html: "快速屏蔽",
             href: "javascript:void(0);",
             title: "开始从评论者中选择屏蔽对象"
@@ -2323,13 +2361,13 @@ function QuickBlock(iZhihu) {
                 $(this).attr({
                     title: "开始从评论者中选择屏蔽对象",
                     on: "0"
-                });
+                }).removeClass("on");
             } else {
                 $(".zm-comment-hd .izh-quick-block-pend").show();
                 $(this).attr({
                     title: "结束从评论者中选择屏蔽对象",
                     on: "1"
-                });
+                }).addClass("on");
             }
         });
         if ($cm.is(".empty")) {

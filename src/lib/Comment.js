@@ -19,8 +19,9 @@ function Comment(iZhihu) {
     ;
     this.RightComment = iZhihu.config['ShowComment'];
     if (!this.RightComment){
-        this.css = ['.zm-comment-box.empty .izh-button-cc{display:none;}'
-                   ,''].join('\n');
+        this.css = 
+            ['.zm-comment-box.empty .izh-button-cc{display:none;}'
+            ,''].join('\n');
     } else {
         this.css = 
             ['.mention-popup{z-index:10000 !important;}'
@@ -29,14 +30,14 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
             ,'.zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}'
-            ,'.zm-comment-box .izh-cm-buttons-L,'
-            ,'.zm-comment-box .izh-cm-buttons-R{position:absolute;top:70px;}'
-            ,'.zm-comment-box .izh-cm-buttons-L{left:0;}'
-            ,'.zm-comment-box .izh-cm-buttons-L > a{margin-right:7px;}'
-            ,'.zm-comment-box .izh-cm-buttons-R{right:1em;}'
-            ,'.zm-comment-box .izh-cm-buttons-R > a{margin-left:7px;}'
-            ,'.zm-comment-box.empty .izh-cm-buttons-L,'
-            ,'.zm-comment-box.empty .izh-cm-buttons-R{top:auto;bottom:7px;}'
+            ,'.zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}'
+            ,'.zm-comment-box .izh-buttons-cm-L{left:0;}'
+            ,'.zm-comment-box .izh-buttons-cm-L > a{margin-right:7px;}'
+            ,'.zm-comment-box .izh-buttons-cm-R{right:1em;}'
+            ,'.zm-comment-box .izh-buttons-cm-R > a{margin-left:7px;}'
+            ,'.zm-comment-box a.izh-button.on{color:#225599;text-shadow:0 0 1px #225599;}'
+            ,'.zm-comment-box a.izh-button.off{color:#eee;}'
+            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
             ,''].join('\n');
     }
     this.processCommentButton = function($a){
@@ -171,6 +172,12 @@ function Comment(iZhihu) {
                 }
             });
 */
+            var $list=$cm.find('.zm-comment-list').bind('DOMNodeInserted',function(event){
+                var $icm=$(event.target);
+                if($icm.is('.zm-item-comment')&&iZhihu.QuickBlock){
+                    iZhihu.QuickBlock.addQuickBlockInOneComment($icm);
+                }
+            });
             if(iZhihu.Comment.RightComment){
                 $cm.addClass('izh_boxShadow').css(css_comment).closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]').click(function(event){
                     var $cm=$(this).closest('.zm-item-meta').find('.zm-comment-box');
@@ -186,7 +193,7 @@ function Comment(iZhihu) {
                 var $item=getItem($cm);
                 iZhihu.Comment.showComment($item,$cm);
                 $('i.zm-comment-bubble',$cm).hide();
-                $('.zm-comment-list',$cm).css({
+                $list.css({
                     'height':'100%'
                   , 'overflow':'auto'
                 }).bind('DOMNodeInserted',function(event){
@@ -232,10 +239,10 @@ function Comment(iZhihu) {
                     }
                 })
               , $buttonsL=$('<div>',{
-                	'class':'izh-cm-buttons-L'
+                	'class':'izh-buttons-cm-L'
                 }).prependTo($cm)
               , $buttonsR=$('<div>',{
-                	'class':'izh-cm-buttons-R'
+                	'class':'izh-buttons-cm-R'
                 })
             ;
             if(iZhihu.Comment.RightComment){
@@ -246,21 +253,54 @@ function Comment(iZhihu) {
                 }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
                 if(!$cm.is('.empty')){
                     $('<a>',{
-                        'class':''
+                        'class':'izh-button izh-back-top'
                       , href:'javascript:void(0);'
                       , html:'返回顶部'
                       , click:function(){
                             $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
                         }
                     }).add('<a>',{
-                        'class':''
+                        'class':'izh-button izh-show-good'
                       , href:'javascript:void(0);'
                       , html:'人气妙评'//先来后到
                       , click:function(){
+                           var $e=$(this)
+                             , $l=$e.closest('.zm-comment-box').find('.zm-comment-list')
+                             , $n=$l.find('.zm-item-comment').has('span.like-num.nil')
+                           ;
+                           if($e.hasClass('on')){
+                               $e.attr('scrollTop_showgood',$l[0].scrollTop);
+                               $n.show();
+                               $e.removeClass('on');
+                               var scrollTop = parseInt($e.attr('scrollTop'));
+                               if(!isNaN(scrollTop))
+                                   $l.scrollTop(scrollTop);
+                           }else{
+                               $e.attr('scrollTop',$l[0].scrollTop);
+                               $n.hide();
+                               $e.addClass('on');
+                               var scrollTop = parseInt($e.attr('scrollTop_showgood'));
+                               if(!isNaN(scrollTop))
+                                   $l.scrollTop(scrollTop);
+                           }
                         }
                     }).css({
                         'float':'right'
                     }).appendTo($buttonsR);
+                    $list.scroll(function(){
+                        var $e=$(this)
+                          , $b=$e.closest('.zm-comment-box').find('.izh-back-top')
+                        ;
+                        if($e.height() < this.scrollTop){
+                            $b.removeClass('off');
+                        }else{
+                            $b.addClass('off');
+                        }
+                    }).scroll();
+                    $list.find('.zm-item-comment span.like-num').each(function(i,e){
+                        var tip=e.getAttribute('data-tip').replace('s$r$','s$l$');
+                        if(tip!='')e.setAttribute('data-tip',tip);
+                    });
                 }
             }else{
                 $btnCC.prepend('<i class="z-icon-fold"/>')
@@ -277,7 +317,7 @@ function Comment(iZhihu) {
                 }).insertBefore($cm.find('.zm-comment-box-ft'));
             }
             if(iZhihu.QuickBlock&&!$cm.is('.empty')){
-                iZhihu.QuickBlock.addQuickBlockInComment($buttonsL);
+                iZhihu.QuickBlock.addQuickBlockInCommentList($buttonsL);
             }
         }
     };

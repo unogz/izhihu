@@ -444,34 +444,39 @@ function QuickBlock(iZhihu) {
             }).prependTo($quickBlock);
         }
     };
-    this.addQuickBlockInComment = function($where){
+    this.addQuickBlockInOneComment = function($cmItem){
+        var $where=$('.zm-comment-hd',$cmItem);
+        if($where.find('.izh-quick-block-pend').length)return;
+        $('<a>',{
+            'class':'izh-quick-block-pend izh-button'
+          , html:'候审'
+          , href:'javascript:void(0);'
+          , title:'将此人列入候审名单以待收监'
+        }).click(function(){
+            iZhihu.QuickBlock.in2BlockCart($(this).next());
+        }).prependTo($where).hide();
+    };
+    this.addQuickBlockInCommentList = function($where){
         // Region: 快速屏蔽
         var $cm=$where.is('.zm-comment-box')?$where:$where.closest('.zm-comment-box')
-          , $u=$('.zm-comment-hd',$cm)
+          , $u=$('.zm-item-comment',$cm)
         ;
         $u.each(function(i,e){
-            $('<a>',{
-                'class':'izh-quick-block-pend'
-              , html:'候审'
-              , href:'javascript:void(0);'
-              , title:'将此人列入候审名单以待收监'
-            }).click(function(){
-                iZhihu.QuickBlock.in2BlockCart($(this).next());
-            }).prependTo(e).hide();
+            iZhihu.QuickBlock.addQuickBlockInOneComment($(e));
         });
         var $btnQuickBlock=$('<a>',{
-                'class':'izh-quick-block-switch'
+                'class':'izh-quick-block-switch izh-button'
               , html:'快速屏蔽'
               , href:'javascript:void(0);'
               , title:'开始从评论者中选择屏蔽对象'
             }).css({'margin-left':7}).prependTo($where).click(function(){
                 if(this.getAttribute('on')=='1'){
                     $('.zm-comment-hd .izh-quick-block-pend').hide();
-                    $(this).attr({title:'开始从评论者中选择屏蔽对象','on':'0'});
+                    $(this).attr({title:'开始从评论者中选择屏蔽对象','on':'0'}).removeClass('on');
                 }
                 else{
                     $('.zm-comment-hd .izh-quick-block-pend').show();
-                    $(this).attr({title:'结束从评论者中选择屏蔽对象','on':'1'});
+                    $(this).attr({title:'结束从评论者中选择屏蔽对象','on':'1'}).addClass('on');
                 }
             })
         ;
