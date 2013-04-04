@@ -19,8 +19,13 @@ function Noti7(iZhihu) {
     this.enhance = function(){
         iZhihu.Noti7.$tab.find('.zm-noti7-popup-tab-item').each(function(i,e){
             utils.observeDOMAttrModified(e,function(event){
-                if($(event.target).is('.zm-noti7-popup-tab-item.current')){
-                	$('.izh-filter-read',iZhihu.Noti7.$footer).attr('unreadOnly','');
+                var $e=$(event.target);
+                if($e.is('.zm-noti7-popup-tab-item.current')){
+                	var currentClass=$e.attr('class')
+                	  , $bFilterRead=$('.izh-filter-read',iZhihu.Noti7.$footer);
+                	if(currentClass!=$bFilterRead.attr('currentClass')){
+                	    $bFilterRead.attr({'unreadOnly':'','currentClass':currentClass});
+                	}
                 }
             });
         });
