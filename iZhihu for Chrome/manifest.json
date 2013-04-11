@@ -3,7 +3,7 @@
   , "converted_from_user_script": true
 
   , "name"           : "iZhihu"
-  , "version"        : "2.5.0.322"
+  , "version"        : "2.6.0.323"
   , "description"    : ""
   , "permissions"    : [
         "http://*.zhihu.com/"
@@ -16,7 +16,8 @@
             "http://www.zhihu.com/*"
         ]
       , "js"           : [
-            "jquery.min.js"
+            "init4CRX.js"
+          , "jquery.min.js"
           , "126619.user.js"
         ]
     } ]

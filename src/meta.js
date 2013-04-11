@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.5.0
+// @version      2.6.0
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
+// @grant GM_xmlhttpRequest
+// @grant GM_registerMenuCommand
 // ==/UserScript==
 
-var version='2.5.0';
-var updateDate='2013-4-4';
+var version='2.6.0';
+var updateDate='2013-4-12';
 
