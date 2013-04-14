@@ -123,12 +123,9 @@ if(typeof window.iZhihu4CRX === 'undefined' || !window.iZhihu4CRX){
     	    $(this).closest('.modal-dialog').hide();
             $('.modal-dialog-bg').hide();
     	});
-        $dlg.find('.izh-update').click(function(){
+        $dlg.find('.izh-update')[0].onclick=function(){
             GM_openInTab(p_scripturl);
-            //GM_openInTab(p_weburl);
-    	    //$(this).closest('.modal-dialog').hide();
-            //$('.modal-dialog-bg').hide();
-    	});
+    	};
         $('.modal-dialog-bg').show();
         $dlg.css({
             'z-index':'123'
