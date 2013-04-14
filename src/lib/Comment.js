@@ -52,7 +52,8 @@ function Comment(iZhihu) {
                 if(!$cm.length||e!=$cm.get(0))
                     $(e).closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
-        var $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
+        var currTop=_doc.body.scrollTop
+          , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
           , t=$ac.offset().top-iZhihu.$main.offset().top
           , b=$ac.offset().top-iZhihu.$main.offset().top
           , w=$ac.width()
@@ -118,7 +119,7 @@ function Comment(iZhihu) {
         //$ac.css('border-color','#999999');
         //$n.css('border-color','#999999');
         $('.zh-backtotop').css('visibility','hidden');
-        //iZhihu.$body.scrollTop(t);
+        iZhihu.$body.scrollTop(currTop);
     };
     this.hideComment = function($ac,$cm){
         var $n=$ac.next()

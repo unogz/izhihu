@@ -57,11 +57,11 @@ if(typeof window.iZhihu4CRX === 'undefined' || !window.iZhihu4CRX){
               var isOldVersion = false;
               for(var i=0;i<verList1.length;i++){
                 if(i<verList2.length){
-                  if(parseInt(verList1[i])>parseInt(verList2[i])){
-                    isOldVersion = true;
+                  var v1=parseInt(verList1[i])
+                    , v2=parseInt(verList2[i])
+                  if(v1!=v2){
+                    isOldVersion = v1>v2;
                     break;
-                  }else{
-                    
                   }
                 }else{
                   break;
