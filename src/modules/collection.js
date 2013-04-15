@@ -44,4 +44,10 @@ $(function(){
       allLinksAnswers.start();
     });
   }
+
+  if(pageIs.MyCollection&&window.iZhihu.QuickFavo){
+    var $favItems=$('#zh-favlists-wrap').children('.zm-item');
+    $favItems.each(function(i,e){
+    });
+  }
 })

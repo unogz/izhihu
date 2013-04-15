@@ -10,7 +10,9 @@ function QuickFavo(iZhihu) {
     this.DefaultCount = 4;
     this.PinnedList = {'177961':true};
     this.css = 
-        ['div.izh_fav{position:absolute;z-index:9999;display:none;border:1px solid #999999;background-color:#fff;border-radius:5px 5px 0 0;margin-left:-1px;}'
+        ['.izh-Pin4QuickFavo{float:none;display:block;margin:-31px 0 20px 160px;}'
+        ,'.izh-Pin4QuickFavo > span{padding:0 5px;}'
+        ,'div.izh_fav{position:absolute;z-index:9999;display:none;border:1px solid #999999;background-color:#fff;border-radius:5px 5px 0 0;margin-left:-1px;}'
         ,'div.izh_fav .title{padding:0 5px;background-color:#0874c4;color:#fff;font-weight:bold;font-size:15px;text-align:center;border-radius:3px 3px 0 0;}'
         ,'div.izh_fav a.fav{display:block;clear:both;float;left;padding:0 36px 0 24px;line-height:2;}'
         ,'div.izh_fav a.fav i.z-icon-collect{visibility:hidden;background-position:-56px -36px;position:absolute;left:10px;margin-top:0.5em;}'
