@@ -33,16 +33,16 @@ if(typeof window.iZhihu4CRX === 'undefined' || !window.iZhihu4CRX){
         var DoS_PREVENTION_TIME = 2 * 60 * 1000;
         var isSomeoneChecking = utils.getValue('izh-CHECKING', null);
         var now = new Date().getTime();
-        //utils.setValue('izh-CHECKING', now.toString());
+        utils.setValue('izh-CHECKING', now.toString());
     
-        //if (!SCRIPT.forceUpdate && isSomeoneChecking && (now - isSomeoneChecking) < DoS_PREVENTION_TIME) return;
+        if (!SCRIPT.forceUpdate && isSomeoneChecking && (now - isSomeoneChecking) < DoS_PREVENTION_TIME) return;
     
         // check daily
         var ONE_DAY = 24 * 60 * 60 * 1000;
         //var ONE_WEEK = 7 * ONE_DAY;
         //var TWO_WEEKS = 2 * ONE_WEEK;
         var lastChecked = utils.getValue('izh-LAST_CHECKED', null);
-        //if (!SCRIPT.forceUpdate && lastChecked && (now - lastChecked) < ONE_DAY) return;
+        if (!SCRIPT.forceUpdate && lastChecked && (now - lastChecked) < ONE_DAY) return;
     
     GM_xmlhttpRequest({
       method: 'GET',
@@ -68,26 +68,26 @@ if(typeof window.iZhihu4CRX === 'undefined' || !window.iZhihu4CRX){
                 }
               }
               if (!isOldVersion)
-            {
-              // no updates or older version on userscripts.orge site
-              if(SCRIPT.forceUpdate)
               {
-                alert("您当前所安装的 v" + SCRIPT.version + " 是最新版本，无需更新。")
+                // no updates or older version on userscripts.orge site
+                if(SCRIPT.forceUpdate)
+                {
+                  alert("您当前所安装的 v" + SCRIPT.version + " 是最新版本，无需更新。")
+                }
+                return;
               }
-              return;
-            }
-            //find the name of the script
-            result.responseText.match(/@name\s+(.+)/);
-            var scriptName = RegExp.$1;
-            result.responseText.match(/@updateinfo\s+(.+)/);
-            var updateInfo = RegExp.$1;
-            updateInfo = updateInfo.replace(/\|/g,'<br>');
-            _ShowUpdate(scriptName,SCRIPT.version,theOtherVersion,updateInfo,SCRIPT.web,SCRIPT.url);
+              //find the name of the script
+              result.responseText.match(/@name\s+(.+)/);
+              var scriptName = RegExp.$1;
+              result.responseText.match(/@updateinfo\s+(.+)/);
+              var updateInfo = RegExp.$1;
+              updateInfo = updateInfo.replace(/\|/g,'<br>');
+              _ShowUpdate(scriptName,SCRIPT.version,theOtherVersion,updateInfo,SCRIPT.web,SCRIPT.url);
            }
         });
-        //utils.setValue('izh-LAST_CHECKED', now.toString());
+        utils.setValue('izh-LAST_CHECKED', now.toString());
       } catch (ex) {
-          console.log(ex);
+        console.log(ex);
       }
     }
     
