@@ -224,27 +224,6 @@ css += window.iZhihu.Comment.css;
 
 if(window.iZhihu.QuickFavo){
     css += window.iZhihu.QuickFavo.css;
-    $body.bind('DOMNodeInserted',function(event){
-      var $e=$(event.target);
-      if($e.is('.modal-dialog')){
-        $e.bind('DOMNodeInserted',function(event){
-          var $e=$(event.target);
-          var $favList=$e.find('.zm-favo-list-content');
-          if($favList.length){
-            var $favItems=$favList.children('.zm-favo-list-item-link[data-lid]');
-            $favItems.each(function(i,e){
-              var $pin=$('<input/>',{type:'checkbox'});
-              $('<span/>',{'class':'izh-Pin4QuickFavo'})
-                .append($('<span/>',{html:'置顶'}))
-                .append($pin)
-              .insertAfter(e);
-              $pin.click(function(event){
-              }).checkbox({cls:'t_jchkbox',empty:cbemptyimg});
-            });
-          }
-        });
-      }
-    });
 }
 if(window.iZhihu.QuickBlock){
     css += window.iZhihu.QuickBlock.css;

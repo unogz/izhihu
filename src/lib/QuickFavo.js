@@ -8,7 +8,7 @@ function QuickFavo(iZhihu) {
     iZhihu.QuickFavo = this;
     
     this.DefaultCount = 4;
-    this.PinnedList = {'177961':true};
+    this.PinnedList = new Array();
     this.css = 
         ['.izh-Pin4QuickFavo{float:none;display:block;margin:-31px 0 20px 160px;}'
         ,'.izh-Pin4QuickFavo > span{padding:0 5px;}'
@@ -127,6 +127,87 @@ function QuickFavo(iZhihu) {
             });
         }
     };
+
+    iZhihu.$body.bind('DOMNodeInserted',function(event){
+		var $e=$(event.target);
+		if($e.is('.modal-dialog')){
+			$e.bind('DOMNodeInserted',function(event){
+				var $e=$(event.target)
+                  , $favList=$e.find('.zm-favo-list-content');
+				if($favList.length){
+					var $favItems=$favList.children('.zm-favo-list-item-link[data-lid]');
+					$favItems.each(function(i,e){
+						var $pin=$('<input/>',{
+                                type:'checkbox'
+                              , title:'保持在「快速收藏」菜单顶部显示'
+                            });
+						$('<span/>',{
+                            'class':'izh-Pin4QuickFavo'
+                          , 'lid':e.getAttribute('data-lid')
+                          }).append($('<span/>',{html:'置顶'}))
+							.append($pin)
+    						.insertAfter(e).attr('index',i);
+						$pin.click(function(event){
+                            var pinned=this.checked
+                              , $e=$(this.parentNode)
+                              , $f=$e.prev('.zm-favo-list-item-link')
+                            ;if(!$f.length)return;
+                            var time=50
+                              , cssStart={position:'relative','background-color':'#0874C4','z-index':'100'}
+                              , cssEnd={position:'','background-color':'','z-index':''}
+                              , funcRollUp=function($a,$b){
+                                    $b.animate({bottom:$a.outerHeight()},{
+                                        duration:time
+                                      , step:function(now){$b.css(cssStart);}
+                                      , complete:function(){
+                                            $b.css($.extend({bottom:0},cssEnd));
+                                            $b.insertBefore($a).after($e);
+                                        }
+                                    });
+                                }
+                              , funcRollDown=function($a,$b){
+                                    $a.animate({top:$b.outerHeight()},{
+                                        duration:time
+                                      , step:function(now){$a.css(cssStart);}
+                                      , complete:function(){
+                                            $a.css($.extend({top:0},cssEnd));
+                                            $a.insertAfter($b).after($e);
+                                        }
+                                    });
+                                }
+                            ;
+                            if(pinned){
+                                $e.removeClass('pinned').nextAll('.izh-Pin4QuickFavo').each(function(i,e){
+                                    var $t=$(e);
+                                    if($t.hasClass('pinned')||parseInt($t.attr('index'))<parseInt($e.attr('index'))){
+                                        //$f.insertAfter($t).after($e);
+                                        funcRollDown($f,$t);
+                                    }else{
+                                        return false;
+                                    }
+                                    return true;
+                                });
+                                iZhihu.QuickFavo.PinnedList[$e.attr('lid')]=false;
+                            }else{
+                                $e.addClass('pinned').prevAll('.izh-Pin4QuickFavo').each(function(i,e){
+                                    var $t=$(e);
+                                    if(!$t.hasClass('pinned')){
+                                        //$f.insertBefore($t.prev('.zm-favo-list-item-link')).after($e);
+                                        funcRollUp($t.prev('.zm-favo-list-item-link'),$f);
+                                    }else{
+                                        return false;
+                                    }
+                                    return true;
+                                });
+                                iZhihu.QuickFavo.PinnedList[$e.attr('lid')]=true;
+                            }
+						}).checkbox({cls:'t_jchkbox',empty:cbemptyimg});
+                        e.setAttribute('index',i);
+					});
+				}
+			});
+		}
+	});
 
     return this;
 }
