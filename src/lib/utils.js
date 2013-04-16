@@ -11,6 +11,7 @@ var cfgDefault = {
   , 'ShowComment':true
   , 'HomeLayout':false
   , 'QuickFavo':true
+  , 'QuickFavoPinned':{}
   , 'AuthorRear':false
   , 'HomeNoti':false
   , 'QuickBlock':false

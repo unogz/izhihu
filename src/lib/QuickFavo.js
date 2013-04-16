@@ -8,7 +8,7 @@ function QuickFavo(iZhihu) {
     iZhihu.QuickFavo = this;
     
     this.DefaultCount = 4;
-    this.PinnedList = new Array();
+    this.PinnedList = iZhihu.config['QuickFavoPinned'];
     this.css = 
         ['.izh-Pin4QuickFavo{float:none;display:block;margin:-31px 0 20px 160px;}'
         ,'.izh-Pin4QuickFavo > span{padding:0 5px;}'
@@ -152,55 +152,78 @@ function QuickFavo(iZhihu) {
                               , $e=$(this.parentNode)
                               , $f=$e.prev('.zm-favo-list-item-link')
                             ;if(!$f.length)return;
-                            var time=50
+                            var lid=$e.attr('lid')
+                              , $checks=$e.closest('.zm-favo-list-content').find('.izh-Pin4QuickFavo .t_jchkbox')
+                              , time=50
                               , cssStart={position:'relative','background-color':'#0874C4','z-index':'100'}
                               , cssEnd={position:'','background-color':'','z-index':''}
-                              , funcRollUp=function($a,$b){
+                              , nextRollUp=function(){
+                                    if($t.length&&!$t.hasClass('pinned')){
+                                        $e.dequeue('rollUp');
+                                    }
+                                }
+                              , funcRollUp=function(){
+                                    var $b=$e.prev()
+                                      , $a=$b.prev().prev()
+                                    ;
+                                    if(!$a.length||($a.hasClass('pinned')&&parseInt($a.attr('data-lid'))<parseInt($b.attr('data-lid')))){
+                                        return;
+                                    }
                                     $b.animate({bottom:$a.outerHeight()},{
                                         duration:time
                                       , step:function(now){$b.css(cssStart);}
                                       , complete:function(){
                                             $b.css($.extend({bottom:0},cssEnd));
                                             $b.insertBefore($a).after($e);
+                                            //nextStep();
+                                            funcRollUp();
                                         }
                                     });
                                 }
-                              , funcRollDown=function($a,$b){
+                              , funcRollDown=function(){
+                                    var $a=$e.prev()
+                                      , $b=$a.next().next()
+                                    ;
+                                    if(!$b.length||(!$b.hasClass('pinned')&&parseInt($b.attr('index'))>parseInt($a.attr('index')))){
+                                        return;
+                                    }
                                     $a.animate({top:$b.outerHeight()},{
                                         duration:time
                                       , step:function(now){$a.css(cssStart);}
                                       , complete:function(){
                                             $a.css($.extend({top:0},cssEnd));
-                                            $a.insertAfter($b).after($e);
+                                            $a.insertAfter($b.next()).after($e);
+                                            //nextStep();
+                                            funcRollDown();
                                         }
                                     });
                                 }
                             ;
                             if(pinned){
-                                $e.removeClass('pinned').nextAll('.izh-Pin4QuickFavo').each(function(i,e){
+                                $f.removeClass('pinned')/*.nextAll('.izh-Pin4QuickFavo').each(function(i,e){
                                     var $t=$(e);
                                     if($t.hasClass('pinned')||parseInt($t.attr('index'))<parseInt($e.attr('index'))){
                                         //$f.insertAfter($t).after($e);
-                                        funcRollDown($f,$t);
+                                        funcRollDown();
                                     }else{
                                         return false;
                                     }
                                     return true;
-                                });
-                                iZhihu.QuickFavo.PinnedList[$e.attr('lid')]=false;
+                                })*/;funcRollDown();
                             }else{
-                                $e.addClass('pinned').prevAll('.izh-Pin4QuickFavo').each(function(i,e){
+                                $f.addClass('pinned')/*.prevAll('.izh-Pin4QuickFavo').each(function(i,e){
                                     var $t=$(e);
                                     if(!$t.hasClass('pinned')){
                                         //$f.insertBefore($t.prev('.zm-favo-list-item-link')).after($e);
-                                        funcRollUp($t.prev('.zm-favo-list-item-link'),$f);
+                                        funcRollUp();
                                     }else{
                                         return false;
                                     }
                                     return true;
-                                });
-                                iZhihu.QuickFavo.PinnedList[$e.attr('lid')]=true;
+                                })*/;funcRollUp();
                             }
+                            iZhihu.QuickFavo.PinnedList[lid]=!pinned;
+                            utils.setCfg('QuickFavoPinned',iZhihu.QuickFavo.PinnedList);
 						}).checkbox({cls:'t_jchkbox',empty:cbemptyimg});
                         e.setAttribute('index',i);
 					});
