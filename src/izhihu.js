@@ -300,7 +300,7 @@ var _e=null
             if ($pp && bAuthorList){
                 // Region: 回答目录项
                 var $ppla=$('<a>',{
-                            href:'#'+$a.attr('data-aid')
+                            href:'#answer-'+$a.attr('data-aid')
                           , target:'_self'
                           , style:css_AuthorListItemA
                         })
@@ -344,7 +344,7 @@ var _e=null
                     // Region: 回答预览
                     var nam=$('span.name',this);
                     if(!nam.length)return;
-                    var aid=$(this).attr('href').slice(1)
+                    var aid=$(this).attr('href').replace('#answer-','')
                       , prv=$uno.next('.izh-answer-preview')
                       , top=$(this).position().top+$uno.position().top
                       , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
