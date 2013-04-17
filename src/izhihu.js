@@ -121,6 +121,7 @@ css+=['.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif !i
      ,'.t_jchkbox-checked .t_jchkbox-hover img{background-position:0 -45px}'
      ,'.t_jchkbox-disabled img{background-position:0 -60px}'
      ,'.t_jchkbox-checked .t_jchkbox-disabled img{background-position:0 -75px}'
+     ,'.t_set_tb td .icon-help{float:left;}'
      ,''].join('\n');
 css+=['.izh_boxShadow{box-shadow: 5px 5px 3px 0px #999 !important;}'
      ,'#zh-question-meta-wrap.izh_noBorder{border-bottom-color:transparent !important;}'
