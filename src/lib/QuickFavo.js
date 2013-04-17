@@ -10,8 +10,8 @@ function QuickFavo(iZhihu) {
     this.DefaultCount = 4;
     this.PinnedList = iZhihu.config['QuickFavoPinned'];
     this.css = 
-        ['.izh-Pin4QuickFavo{float:none;display:block;margin:-31px 0 20px 160px;}'
-        ,'.izh-Pin4QuickFavo > span{padding:0 5px;}'
+        ['.izh-Pin4QuickFavo{padding:0 5px;float:right;display:block;margin-top:4px;margin-right:2em;line-height:1.25;}'
+        ,'.izh-Pin4QuickFavo .zm-item-top-btn{visibility:visible;margin:0 4px;float:right;}'
         ,'div.izh_fav{position:absolute;z-index:9999;display:none;border:1px solid #999999;background-color:#fff;border-radius:5px 5px 0 0;margin-left:-1px;}'
         ,'div.izh_fav .title{padding:0 5px;background-color:#0874c4;color:#fff;font-weight:bold;font-size:15px;text-align:center;border-radius:3px 3px 0 0;}'
         ,'div.izh_fav a.fav{display:block;clear:both;float;left;padding:0 36px 0 24px;line-height:2;}'
@@ -40,7 +40,7 @@ function QuickFavo(iZhihu) {
                 $a.children('.izh_fav').css({
                     'bottom':$(this).offsetParent().innerHeight()-$(this).position().top
                   , 'left':$(this).position().left
-                }).show();
+                }).html('loading...').show();
                 $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:aid}),function(result,status,xhr){
                     var aid=this.url.substr(this.url.indexOf('answer_id=')+10)
                       , sel=pageIs.Question?'.zm-item-answer'
@@ -71,7 +71,7 @@ function QuickFavo(iZhihu) {
                         }
                     });
                     num -= fav.length;
-                    if(num){
+                    if(num > 0){
                         fav=fav.concat(favNormal.slice(0,num));
                     }
                     favNormal.length=0;
@@ -133,38 +133,23 @@ function QuickFavo(iZhihu) {
 		if($e.is('.modal-dialog')){
 			$e.bind('DOMNodeInserted',function(event){
 				var $e=$(event.target)
-                  , $favList=$e.find('.zm-favo-list-content');
+                  , $favList=$e.find('.zm-favo-list-content')
+                ;
 				if($favList.length){
-					var $favItems=$favList.children('.zm-favo-list-item-link[data-lid]');
-					$favItems.each(function(i,e){
-						var $pin=$('<input/>',{
-                                type:'checkbox'
-                              , title:'保持在「快速收藏」菜单顶部显示'
-                            });
-						$('<span/>',{
-                            'class':'izh-Pin4QuickFavo'
-                          , 'lid':e.getAttribute('data-lid')
-                          }).append($('<span/>',{html:'置顶'}))
-							.append($pin)
-    						.insertAfter(e).attr('index',i);
-						$pin.click(function(event){
-                            var pinned=this.checked
-                              , $e=$(this.parentNode)
-                              , $f=$e.prev('.zm-favo-list-item-link')
+					var $favItems=$favList.children('.zm-favo-list-item-link[data-lid]')
+                      , funcPin=function(e){
+                            var pinned=e.checked
+                              , $e=$(e)
+                              , $f=$e.closest('.zm-favo-list-item-link')
                             ;if(!$f.length)return;
                             var lid=$e.attr('lid')
                               , $checks=$e.closest('.zm-favo-list-content').find('.izh-Pin4QuickFavo .t_jchkbox')
                               , time=50
                               , cssStart={position:'relative','background-color':'#0874C4','z-index':'100'}
                               , cssEnd={position:'','background-color':'','z-index':''}
-                              , nextRollUp=function(){
-                                    if($t.length&&!$t.hasClass('pinned')){
-                                        $e.dequeue('rollUp');
-                                    }
-                                }
                               , funcRollUp=function(){
-                                    var $b=$e.prev()
-                                      , $a=$b.prev().prev()
+                                    var $b=$e.closest('.zm-favo-list-item-link')
+                                      , $a=$b.prev()
                                     ;
                                     if(!$a.length||($a.hasClass('pinned')&&parseInt($a.attr('data-lid'))<parseInt($b.attr('data-lid')))){
                                         return;
@@ -174,15 +159,14 @@ function QuickFavo(iZhihu) {
                                       , step:function(now){$b.css(cssStart);}
                                       , complete:function(){
                                             $b.css($.extend({bottom:0},cssEnd));
-                                            $b.insertBefore($a).after($e);
-                                            //nextStep();
+                                            $b.insertBefore($a);
                                             funcRollUp();
                                         }
                                     });
                                 }
                               , funcRollDown=function(){
-                                    var $a=$e.prev()
-                                      , $b=$a.next().next()
+                                    var $a=$e.closest('.zm-favo-list-item-link')
+                                      , $b=$a.next()
                                     ;
                                     if(!$b.length||(!$b.hasClass('pinned')&&parseInt($b.attr('index'))>parseInt($a.attr('index')))){
                                         return;
@@ -192,40 +176,55 @@ function QuickFavo(iZhihu) {
                                       , step:function(now){$a.css(cssStart);}
                                       , complete:function(){
                                             $a.css($.extend({top:0},cssEnd));
-                                            $a.insertAfter($b.next()).after($e);
-                                            //nextStep();
+                                            $a.insertAfter($b);
                                             funcRollDown();
                                         }
                                     });
                                 }
                             ;
                             if(pinned){
-                                $f.removeClass('pinned')/*.nextAll('.izh-Pin4QuickFavo').each(function(i,e){
-                                    var $t=$(e);
-                                    if($t.hasClass('pinned')||parseInt($t.attr('index'))<parseInt($e.attr('index'))){
-                                        //$f.insertAfter($t).after($e);
-                                        funcRollDown();
-                                    }else{
-                                        return false;
-                                    }
-                                    return true;
-                                })*/;funcRollDown();
+                                $f.addClass('pinned');
+                                funcRollUp();
                             }else{
-                                $f.addClass('pinned')/*.prevAll('.izh-Pin4QuickFavo').each(function(i,e){
-                                    var $t=$(e);
-                                    if(!$t.hasClass('pinned')){
-                                        //$f.insertBefore($t.prev('.zm-favo-list-item-link')).after($e);
-                                        funcRollUp();
-                                    }else{
-                                        return false;
-                                    }
-                                    return true;
-                                })*/;funcRollUp();
+                                $f.removeClass('pinned');
+                                funcRollDown();
                             }
-                            iZhihu.QuickFavo.PinnedList[lid]=!pinned;
+                            iZhihu.QuickFavo.PinnedList[lid]=pinned;
                             utils.setCfg('QuickFavoPinned',iZhihu.QuickFavo.PinnedList);
-						}).checkbox({cls:'t_jchkbox',empty:cbemptyimg});
+                        }
+                    ;
+					$favItems.each(function(i,e){
+						var lid=e.getAttribute('data-lid')
+                          , $pin=$('<a/>',{
+                                href:'javascript:void(0);'
+                              , 'class':'izh-Pin4QuickFavo'
+                              , 'lid':lid
+                              , 'data-tip':'s$b$保持在「快速收藏」菜单顶部显示'
+                            }).append($('<span/>',{html:'置顶'}).add('<i/>',{'class':'zm-item-top-btn'}))
+                              .appendTo($('.zg-gray',e)).attr('index',i)
+                        ;
                         e.setAttribute('index',i);
+                        $pin.bind('click',function(event){
+                            this.checked=!this.checked;
+                            funcPin(this);
+                            if(this.checked){
+                                $(this).children('span').html('取消置顶');
+                                $(this).children('i').addClass('zm-item-top-btn-cancel');
+                            }else{
+                                $(this).children('span').html('置顶');
+                                $(this).children('i').removeClass('zm-item-top-btn-cancel');
+                            }
+                            if(event.preventDefault)
+                                event.preventDefault();
+                            else if(event.stopPropagation)
+                                event.stopPropagation();
+                            else
+                                event.cancelBubble=true;
+                            return false;
+                        })[0].checked=false;
+                        if(iZhihu.QuickFavo.PinnedList[lid]){
+                            $pin.click();
+                        }
 					});
 				}
 			});
