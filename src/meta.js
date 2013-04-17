@@ -6,7 +6,7 @@
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
-// @updateinfo   发布日期 2013-04-15|# 修复错误：无法在新版 Chrome 上运行
+// @updateinfo   发布日期 2013-04-15|# 修复错误：在新版 Chrome 上无法使用 iZhihu 扩展
 // @grant GM_xmlhttpRequest
 // @grant GM_registerMenuCommand
 // @grant GM_openInTab
