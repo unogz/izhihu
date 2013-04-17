@@ -30,6 +30,7 @@ pageIs.Question=!pageIs.Answer&&0==_path.indexOf('/question/');
 pageIs.Answers=0<iPathAnswers&&_path.substr(iPathAnswers)=='/answers';
 pageIs.Collection=0==iPathCollection;
 pageIs.Debuts=0==_path.indexOf('/debuts/');
+pageIs.MyCollection=0==_path.indexOf('/collections/mine');
 
 var i=0
   , $user=$('.zu-top-nav-userinfo')//user_avater
@@ -38,6 +39,7 @@ var i=0
   , $main=$('[role=main]')//main
   , css_AuthorListItemA='padding:0 10px 0 0;'
   , css_AuthorListItemA_name='padding:0 5px;'
+  , cbemptyimg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII=';
 ;
 
 window.iZhihu = {
@@ -58,7 +60,7 @@ var izhHomeLayout = window.iZhihu.config['HomeLayout']
 
 utils.transferOldCfg();
 
-window.iZhihu.$body.attr({
+$body.attr({
     'izhHomeLayout' : izhHomeLayout?'1':''
   , 'izhAuthorList' : izhAuthorList?'1':''
   , 'izhRightComment' : izhRightComment?'1':''
