@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.6.0
+// @version      2.6.1
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
-// @updateinfo   发布日期 2013-04-17|# 改进「快速收藏」：在「添加到收藏夹」时提供「置顶」选项，置顶条目将保持在「快速收藏」菜单顶部显示
+// @updateinfo   发布日期 2013-04-18|# 修复错误：「快速屏蔽」在评论列表中的「候审」按钮工作不正常
 // @grant GM_xmlhttpRequest
 // @grant GM_registerMenuCommand
 // @grant GM_openInTab
 // ==/UserScript==
 
-var version='2.6.0';
-var updateDate='2013-4-17';
+var version='2.6.1';
+var updateDate='2013-4-18';
 
 var bGreasemonkeyServiceDefined = false;
 
