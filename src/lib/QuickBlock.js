@@ -86,7 +86,7 @@ function QuickBlock(iZhihu) {
     this.doQuickBlock = function($e){
         var blocking = iZhihu.QuickBlock.Blocking
           , href = $e.attr('href')
-          , who = href.replace('/people/','')+','
+          , who = href.split('/').pop()+','
         ;
         if(typeof blocking === 'undefined' || !blocking){
             blocking = iZhihu.QuickBlock.Blocking = { Users:',', Count:0 };
@@ -102,7 +102,7 @@ function QuickBlock(iZhihu) {
           , _xsrf:$('input[name=_xsrf]').val() 
         }),function(r){
             var href=this.url.replace('http://www.zhihu.com','').replace('/block','')
-              , userID=href.replace('/people/','')
+              , userID=href.split('/').pop()
               , who=','+userID+','
               , blocking=iZhihu.QuickBlock.Blocking
             ;
@@ -114,7 +114,7 @@ function QuickBlock(iZhihu) {
               
             blocking.Users = blocking.Users.replace(who,',');
             $('#izh_blockCart .user2B[href="'+href+'"]').find('.del')[0].click();
-            $('a[href="'+href+'"]').css('text-decoration','line-through');
+            $('a[href$="'+href+'"]').css('text-decoration','line-through');
         });
   	};
   	this.resizeBlockCart = function($cartDIV){
@@ -132,7 +132,7 @@ function QuickBlock(iZhihu) {
     this.in2BlockCart = function($e){
         var pending = iZhihu.QuickBlock.Pending
           , href = $e.attr('href')
-          , who = href.replace('/people/','')+','
+          , who = href.split('/').pop()+','
         ;
         if( typeof pending === 'undefined' || !pending){
             pending = iZhihu.QuickBlock.Pending = { Users:',', Count:0 };
@@ -278,7 +278,7 @@ function QuickBlock(iZhihu) {
         pending.Users += who;
         pending.Count ++;
 
-        $.get('http://www.zhihu.com'+href+'/json','',function(r){
+        $.get(href+'/json','',function(r){
             var user=r.msg[0]
               , userName=user[0]
               , userID=user[1]
