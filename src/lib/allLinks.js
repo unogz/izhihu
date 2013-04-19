@@ -101,7 +101,7 @@ var processNode = function(content,$dlg){
     var dom = $(item)
       , parent = dom.parent()
       , lnkTitle = $("a", dom.closest(".zm-item").children().first())
-      , hrefQuestion = url.data.attr["base"] + lnkTitle.attr("href")
+      , hrefQuestion = url.data.attr["base"] + lnkTitle.attr("href").replace(url.data.attr["base"],'')
     ;//console.log(dom);
     var obj = {
         title: lnkTitle.text(),
