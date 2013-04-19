@@ -33,12 +33,13 @@ function QuickFavo(iZhihu) {
             $v.bind('mouseenter',function(){
                 var $a=getItem($(this))
                   , $m=$(this).addClass('on').closest('.zm-item-meta')
-                  //, mBottom=parseInt($a.css('margin-bottom'))
-                  //, pBottom=parseInt($a.css('padding-bottom'))
                   , aid=$a.attr('data-aid')
+                  , $op=$(this).offsetParent()
+                  , bottom1=parseInt($op.css('margin-bottom'))
+                  , bottom2=parseInt($a.css('padding-bottom'))
                 ;
                 $a.children('.izh_fav').css({
-                    'bottom':$(this).offsetParent().innerHeight()-$(this).position().top
+                    'bottom':(isNaN(bottom1)?0:bottom1)+(isNaN(bottom2)?0:bottom2)+$op.height()-$(this).position().top
                   , 'left':$(this).position().left
                 }).html('loading...').show();
                 $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:aid}),function(result,status,xhr){
