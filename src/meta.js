@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.6.2
+// @version      2.6.3
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
-// @updateinfo   发布日期 2013-04-19|# 修复：「快速收藏」菜单位置异常|# 修复：用户回答「地址清单」链接地址异常
+// @updateinfo   发布日期 2013-05-06|# 修复：开启「右显评论」后某些页面内评论列表不正常（目前除首页、问题、回答外，其余页面的评论列表恢复至知乎原有样式）
 // @grant GM_xmlhttpRequest
 // @grant GM_registerMenuCommand
 // @grant GM_openInTab
 // ==/UserScript==
 
-var version='2.6.2';
-var updateDate='2013-4-19';
+var version='2.6.3';
+var updateDate='2013-5-6';
 
 var bGreasemonkeyServiceDefined = false;
 
