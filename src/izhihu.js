@@ -221,7 +221,9 @@ if(izhHomeLayout){
            ,''].join('\n');
 }
 
-css += window.iZhihu.Comment.css;
+if(pageIs.Home||pageIs.Question||pageIs.Answer){
+    css += window.iZhihu.Comment.css;
+}
 
 if(window.iZhihu.QuickFavo){
     css += window.iZhihu.QuickFavo.css;
