@@ -188,20 +188,21 @@ function Comment(iZhihu) {
                 //console.log($icm);
                 if(!$icm.is('.zm-item-comment'))return;
                 if(iZhihu.QuickBlock){
-                    //console.log('Adding QuickBlock');
+                    console.log('Adding QuickBlock');
                     iZhihu.QuickBlock.addQuickBlockInOneComment($icm);
                 }
                 if(iZhihu.Comment.RightComment){
                     var $cm=$icm.closest('.zm-comment-box:visible');
                     if($cm.length){
-                        //console.log('Refresh comment list');
+                        console.log('Refreshing comment list');
                         $('.izh-quick-block-switch,.izh-buttons-cm-R',$cm).show();
                         var $item=getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
                         $icm.bind('DOMNodeRemoved',function(event){
-                            var $list=$(this).closest('.zm-comment-list')
+                            var $list=$(event.target).closest('.zm-comment-list')
                               , $cm=$list.closest('.zm-comment-box:visible');
                             if($cm.length){
+                                console.log('Refreshing comment list');
                                 if($list.children().length==1){
                                     $('.izh-quick-block-switch,.izh-buttons-cm-R',$cm).hide();
                                 }
@@ -257,57 +258,55 @@ function Comment(iZhihu) {
                     'float':'left'
                   , 'margin-left':7
                 }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
-                if(!$cm.is('.empty')){
-                    $('<a>',{
-                        'class':'izh-button izh-back-top'
-                      , href:'javascript:void(0);'
-                      , html:'返回顶部'
-                      , click:function(){
-                            $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
-                        }
-                    }).add('<a>',{
-                        'class':'izh-button izh-show-good'
-                      , href:'javascript:void(0);'
-                      , html:'人气妙评'//先来后到
-                      , click:function(){
-                           var $e=$(this)
-                             , $l=$e.closest('.zm-comment-box').find('.zm-comment-list')
-                             , $n=$l.find('.zm-item-comment').has('span.like-num.nil')
-                           ;
-                           if($e.hasClass('on')){
-                               $e.attr('scrollTop_showgood',$l[0].scrollTop);
-                               $n.show();
-                               $e.removeClass('on');
-                               var scrollTop = parseInt($e.attr('scrollTop'));
-                               if(!isNaN(scrollTop))
-                                   $l.scrollTop(scrollTop);
-                           }else{
-                               $e.attr('scrollTop',$l[0].scrollTop);
-                               $n.hide();
-                               $e.addClass('on');
-                               var scrollTop = parseInt($e.attr('scrollTop_showgood'));
-                               if(!isNaN(scrollTop))
-                                   $l.scrollTop(scrollTop);
-                           }
-                        }
-                    }).css({
-                        'float':'right'
-                    }).appendTo($buttonsR);
-                    $list.scroll(function(){
-                        var $e=$(this)
-                          , $b=$e.closest('.zm-comment-box').find('.izh-back-top')
-                        ;
-                        if($e.height() < this.scrollTop){
-                            $b.removeClass('off');
-                        }else{
-                            $b.addClass('off');
-                        }
-                    }).scroll();
-                    $list.find('.zm-item-comment span.like-num').each(function(i,e){
-                        var tip=e.getAttribute('data-tip').replace('s$r$','s$l$');
-                        if(tip!='')e.setAttribute('data-tip',tip);
-                    });
-                }
+                $('<a>',{
+                    'class':'izh-button izh-back-top'
+                  , href:'javascript:void(0);'
+                  , html:'返回顶部'
+                  , click:function(){
+                        $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
+                    }
+                }).add('<a>',{
+                    'class':'izh-button izh-show-good'
+                  , href:'javascript:void(0);'
+                  , html:'人气妙评'//先来后到
+                  , click:function(){
+                       var $e=$(this)
+                         , $l=$e.closest('.zm-comment-box').find('.zm-comment-list')
+                         , $n=$l.find('.zm-item-comment').has('span.like-num.nil')
+                       ;
+                       if($e.hasClass('on')){
+                           $e.attr('scrollTop_showgood',$l[0].scrollTop);
+                           $n.show();
+                           $e.removeClass('on');
+                           var scrollTop = parseInt($e.attr('scrollTop'));
+                           if(!isNaN(scrollTop))
+                               $l.scrollTop(scrollTop);
+                       }else{
+                           $e.attr('scrollTop',$l[0].scrollTop);
+                           $n.hide();
+                           $e.addClass('on');
+                           var scrollTop = parseInt($e.attr('scrollTop_showgood'));
+                           if(!isNaN(scrollTop))
+                               $l.scrollTop(scrollTop);
+                       }
+                    }
+                }).css({
+                    'float':'right'
+                }).appendTo($buttonsR).hide();
+                $list.scroll(function(){
+                    var $e=$(this)
+                      , $b=$e.closest('.zm-comment-box').find('.izh-back-top')
+                    ;
+                    if($e.height() < this.scrollTop){
+                        $b.removeClass('off');
+                    }else{
+                        $b.addClass('off');
+                    }
+                }).scroll();
+                $list.find('.zm-item-comment span.like-num').each(function(i,e){
+                    var tip=e.getAttribute('data-tip').replace('s$r$','s$l$');
+                    if(tip!='')e.setAttribute('data-tip',tip);
+                });
             }else{
                 $btnCC.prepend('<i class="z-icon-fold"/>')
                 .css({
@@ -322,7 +321,7 @@ function Comment(iZhihu) {
                   , 'border-radius':'4px'
                 }).insertBefore($cm.find('.zm-comment-box-ft'));
             }
-            if(iZhihu.QuickBlock&&!$cm.is('.empty')){
+            if(iZhihu.QuickBlock){
                 iZhihu.QuickBlock.addQuickBlockInCommentList($buttonsL);
             }
         }
