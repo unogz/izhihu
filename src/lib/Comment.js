@@ -185,36 +185,39 @@ function Comment(iZhihu) {
             if($cm.is(':empty')) return;
             var $list=$cm.find('.zm-comment-list').bind('DOMNodeInserted',function(event){
                 var $icm=$(event.target);
-                if($icm.is('.zm-item-comment')&&iZhihu.QuickBlock){
+                //console.log($icm);
+                if(!$icm.is('.zm-item-comment'))return;
+                if(iZhihu.QuickBlock){
+                    //console.log('Adding QuickBlock');
                     iZhihu.QuickBlock.addQuickBlockInOneComment($icm);
                 }
-            });
-            if(iZhihu.Comment.RightComment){
-                $cm.addClass('izh_boxShadow').css(css_comment);
-                var $item=getItem($cm);
-                iZhihu.Comment.showComment($item,$cm);
-                $('i.zm-comment-bubble',$cm).hide();
-                $list.css({
-                    'height':'100%'
-                  , 'overflow':'auto'
-                }).bind('DOMNodeInserted',function(event){
-                    var $cm=$(this).parent('.zm-comment-box:visible');
+                if(iZhihu.Comment.RightComment){
+                    var $cm=$icm.closest('.zm-comment-box:visible');
                     if($cm.length){
-                        $('.izh-quick-block-switch',$cm).show();
+                        //console.log('Refresh comment list');
+                        $('.izh-quick-block-switch,.izh-buttons-cm-R',$cm).show();
                         var $item=getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
-                        var $icm=$(event.target);
                         $icm.bind('DOMNodeRemoved',function(event){
-                            var $cm=$(this).closest('.zm-comment-box:visible');
+                            var $list=$(this).closest('.zm-comment-list')
+                              , $cm=$list.closest('.zm-comment-box:visible');
                             if($cm.length){
-                                if($(this).closest('.zm-comment-list').children().length==1){
-                                    $('.izh-quick-block-switch',$cm).hide();
+                                if($list.children().length==1){
+                                    $('.izh-quick-block-switch,.izh-buttons-cm-R',$cm).hide();
                                 }
                                 var $item=getItem($cm);
                                 iZhihu.Comment.showComment($item,$cm);
                             }
                         });
                     }
+                }
+            });
+            if(iZhihu.Comment.RightComment){
+                $cm.addClass('izh_boxShadow').css(css_comment);
+                $('i.zm-comment-bubble',$cm).hide();
+                $list.css({
+                    'height':'100%'
+                  , 'overflow':'auto'
                 }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
                     var $cm=$(this).closest('.zm-comment-box:visible');
                     if($cm.length){
@@ -225,6 +228,8 @@ function Comment(iZhihu) {
                         iZhihu.Comment.showComment($item,$cm);
                     }
                 });
+                var $item=getItem($cm);
+                iZhihu.Comment.showComment($item,$cm);
             }
             var $btnCC=$('<a>',{
                     'class':'zu-question-answer-meta-comment izh-button-cc'
