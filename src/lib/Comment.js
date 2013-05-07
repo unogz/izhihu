@@ -195,7 +195,7 @@ function Comment(iZhihu) {
                     var $cm=$icm.closest('.zm-comment-box:visible');
                     if($cm.length){
                         console.log('Refreshing comment list');
-                        $('.izh-quick-block-switch,.izh-buttons-cm-R',$cm).show();
+                        $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).show();
                         var $item=getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
                         $icm.bind('DOMNodeRemoved',function(event){
@@ -204,7 +204,7 @@ function Comment(iZhihu) {
                             if($cm.length){
                                 console.log('Refreshing comment list');
                                 if($list.children().length==1){
-                                    $('.izh-quick-block-switch,.izh-buttons-cm-R',$cm).hide();
+                                    $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
                                 }
                                 var $item=getItem($cm);
                                 iZhihu.Comment.showComment($item,$cm);
@@ -223,7 +223,7 @@ function Comment(iZhihu) {
                     var $cm=$(this).closest('.zm-comment-box:visible');
                     if($cm.length){
                         if($(this).closest('.zm-comment-list').children().length==1){
-                            $('.izh-quick-block-switch',$cm).hide();
+                            $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
                         }
                         var $item=getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
@@ -254,6 +254,9 @@ function Comment(iZhihu) {
             ;
             if(iZhihu.Comment.RightComment){
                 $buttonsR.prependTo($cm);
+                if($list.children().length==0){
+                    $buttonsR.hide();
+                }
                 $btnCC.css({
                     'float':'left'
                   , 'margin-left':7
@@ -292,7 +295,7 @@ function Comment(iZhihu) {
                     }
                 }).css({
                     'float':'right'
-                }).appendTo($buttonsR).hide();
+                }).appendTo($buttonsR);
                 $list.scroll(function(){
                     var $e=$(this)
                       , $b=$e.closest('.zm-comment-box').find('.izh-back-top')
