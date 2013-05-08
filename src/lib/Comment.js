@@ -90,7 +90,7 @@ function Comment(iZhihu) {
             }).show();
             var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo(iZhihu.$body).show();
             $cm.css({'left':$ac.offset().left+$ac.width()-1});
-            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
+            var th=$t.children('.zm-comment-list').css({'position':'','height':'','top':'','bottom':''}).height()+100;
             if(th<iZhihu.$win.height()-iZhihu.$main.offset().top){
                 var top=inQuestion?0:$cm.parent().offset().top-$(document).scrollTop();
                 if(top+th>iZhihu.$win.height()){
@@ -183,36 +183,54 @@ function Comment(iZhihu) {
                 });
             }
             if($cm.is(':empty')) return;
-            var $list=$cm.find('.zm-comment-list').bind('DOMNodeInserted',function(event){
+            var $list=$cm.find('.zm-comment-list');
+            $list.bind('DOMNodeInserted',function(event){
+            //utils.observeDOMNodeAdded($list[0],function(event){
+            	/*if(!event.addedNodes)return;
+                console.log('Nodes '+event.addedNodes.length+' inserted');
+            	for(var i=0;i<event.addedNodes.length;i++){
+            		var $icm=$(event.addedNodes[i]);
+                }*/
                 var $icm=$(event.target);
-                //console.log($icm);
                 if(!$icm.is('.zm-item-comment'))return;
+                //console.log($icm);
                 if(iZhihu.QuickBlock){
-                    console.log('Adding QuickBlock');
+                    //console.log('Adding QuickBlock');
                     iZhihu.QuickBlock.addQuickBlockInOneComment($icm);
                 }
                 if(iZhihu.Comment.RightComment){
-                    var $cm=$icm.closest('.zm-comment-box:visible');
+                    $icm.bind('DOMNodeRemoved',function(event){
+                        var $list=$(event.target).closest('.zm-comment-list')
+                          , $cm=$list.closest('.zm-comment-box:visible');
+                        if($cm.length){
+                            //console.log('Refreshing comment list');
+                            if($list.children().length==1){
+                                $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
+                            }
+                            var $item=getItem($cm);
+                            iZhihu.Comment.showComment($item,$cm);
+                        }
+                    });
+                }
+            
+	            var countNow=$(this).children().length;
+	            //console.log(countNow);
+                if(iZhihu.Comment.RightComment){
+                    var $cm=$(event.target).closest('.zm-comment-box:visible');
                     if($cm.length){
-                        console.log('Refreshing comment list');
+                    	var countAll=parseInt($cm.attr('data-count'));
+        	            //console.log(countAll);
+                        if(countAll-countNow>1){
+                        	return;
+                        }
+                        //console.log('Refreshing comment list');
                         $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).show();
                         var $item=getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
-                        $icm.bind('DOMNodeRemoved',function(event){
-                            var $list=$(event.target).closest('.zm-comment-list')
-                              , $cm=$list.closest('.zm-comment-box:visible');
-                            if($cm.length){
-                                console.log('Refreshing comment list');
-                                if($list.children().length==1){
-                                    $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
-                                }
-                                var $item=getItem($cm);
-                                iZhihu.Comment.showComment($item,$cm);
-                            }
-                        });
                     }
                 }
             });
+
             if(iZhihu.Comment.RightComment){
                 $cm.addClass('izh_boxShadow').css(css_comment);
                 $('i.zm-comment-bubble',$cm).hide();
