@@ -35,5 +35,14 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
               , false);
         });
     }
+
+    $('#zh-question-answer-wrap').bind('DOMNodeInserted',function(event){
+        var $na=$(event.target).filter('.zm-item-answer');
+        if($na.length){
+            processAnswer($na,null
+                , izhAuthorRear
+                , false);
+        }
+    });
   }
 })
