@@ -26,7 +26,7 @@ $(function(){
     }
     if(pageIs.Home||pageIs.Debuts){
         $feedList.find('.feed-item').each(function(i,e){
-            processAnswer($(e),null
+            window.iZhihu.Answer.processAnswer($(e),null
               , izhAuthorRear
               , izhAuthorList
             );
@@ -34,7 +34,7 @@ $(function(){
         $feedList.bind('DOMNodeInserted',function(event){
             var $item=$(event.target);
             if($item.is('.feed-item')){
-                processAnswer($item,null
+                window.iZhihu.Answer.processAnswer($item,null
                   , $body.attr('izhAuthorRear')=='1'
                   , $body.attr('izhAuthorList')=='1'
                 );

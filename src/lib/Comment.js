@@ -173,7 +173,7 @@ function Comment(iZhihu) {
                 $cm.closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]').click(function(event){
                     var $cm=$(this).closest('.zm-item-meta').find('.zm-comment-box');
                     if($cm.length){
-                        var $item=getItem($cm);
+                        var $item=iZhihu.getItem($cm);
                         if($cm.is(':hidden')){
                             iZhihu.Comment.showComment($item,$cm);
                         }else{
@@ -207,7 +207,7 @@ function Comment(iZhihu) {
                             if($list.children().length==1){
                                 $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
                             }
-                            var $item=getItem($cm);
+                            var $item=iZhihu.getItem($cm);
                             iZhihu.Comment.showComment($item,$cm);
                         }
                     });
@@ -225,7 +225,7 @@ function Comment(iZhihu) {
                         }
                         //console.log('Refreshing comment list');
                         $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).show();
-                        var $item=getItem($cm);
+                        var $item=iZhihu.getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
                     }
                 }
@@ -243,11 +243,11 @@ function Comment(iZhihu) {
                         if($(this).closest('.zm-comment-list').children().length==1){
                             $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
                         }
-                        var $item=getItem($cm);
+                        var $item=iZhihu.getItem($cm);
                         iZhihu.Comment.showComment($item,$cm);
                     }
                 });
-                var $item=getItem($cm);
+                var $item=iZhihu.getItem($cm);
                 iZhihu.Comment.showComment($item,$cm);
             }
             var $btnCC=$('<a>',{
@@ -256,7 +256,7 @@ function Comment(iZhihu) {
                   , html:'收起'
                   , click:function(){
                         var $cm=$(this).closest('.zm-comment-box')
-                          , $item=getItem($cm)
+                          , $item=iZhihu.getItem($cm)
                           , $itemMeta=$cm.closest('.zm-item-meta')
                         ;
                         iZhihu.Comment.hideComment($item);
