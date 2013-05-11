@@ -223,8 +223,9 @@ if(izhHomeLayout){
            ,''].join('\n');
 }
 
+var css_comment='';
 if(pageIs.Home||pageIs.Question||pageIs.Answer){
-    css += window.iZhihu.Comment.css;
+    css_comment = window.iZhihu.Comment.css;
 }
 
 if(window.iZhihu.QuickFavo){
@@ -241,8 +242,16 @@ var heads = _doc.getElementsByTagName("head");
 if (heads.length > 0) {
     var node = _doc.createElement("style");
     node.type = "text/css";
+    node.id = "izhCSS_main";
     node.appendChild(_doc.createTextNode(css));
     heads[0].appendChild(node); 
+    if(css_comment!=''){
+        node = _doc.createElement("style")
+        node.type = "text/css";
+        node.id = "izhCSS_comment";
+        node.appendChild(_doc.createTextNode(css_comment));
+        heads[0].appendChild(node);
+    }
 }
 
 if(!$('.modal-dialog-bg').length){

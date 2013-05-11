@@ -5,6 +5,16 @@
 $(function(){
   if(pageIs.Question){
 
+$(function(){
+var numAnswersCount=$('#zh-question-answer-wrap').children().length
+  , $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
+  , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text())
+  , numAnswersCountTotal=numAnswersCount+numCollapsedCount
+;
+if(numAnswersCountTotal>100&&!confirm('加载 iZhihu 可能耗时过长令页面失去响应，是否继续？')){
+    $('#izhCSS_comment').remove();
+    return;
+}
 var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
   , $lblAnswersCount=$('#zh-question-answer-num')//answers_count
   , $reply=$('#zh-question-answer-form-wrap')//reply_form
@@ -98,8 +108,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         }
         $f.width(width);
     };
-    var $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
-      , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text());
     if(isNaN(numCollapsedCount))numCollapsedCount=0;
     if($listAnswers.length||numCollapsedCount){
         if(izhAuthorList){
@@ -151,5 +159,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                 , false);
         }
     });
+});
   }
 })
