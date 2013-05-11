@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.6.5
+// @version      2.6.6
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
-// @updateinfo   发布日期 2013-05-10|# 修复：回答的 iZhihu 特性会在提交修改后消失的问题
+// @updateinfo   发布日期 2013-05-11|# 改进「问题页」：当回答总数（含折叠区）超过 100 时，将提示是否加载 iZhihu
 // @grant GM_xmlhttpRequest
 // @grant GM_registerMenuCommand
 // @grant GM_openInTab
 // ==/UserScript==
 
-var version='2.6.5';
-var updateDate='2013-5-10';
+var version='2.6.6';
+var updateDate='2013-5-11';
 
 var bGreasemonkeyServiceDefined = false;
 
