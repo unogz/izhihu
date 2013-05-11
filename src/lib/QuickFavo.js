@@ -31,7 +31,7 @@ function QuickFavo(iZhihu) {
                 }).appendTo($a);
             }
             $v.bind('mouseenter',function(){
-                var $a=getItem($(this))
+                var $a=iZhihu.getItem($(this))
                   , $m=$(this).addClass('on').closest('.zm-item-meta')
                   , aid=$a.attr('data-aid')
                   , $op=$(this).offsetParent()
@@ -123,7 +123,7 @@ function QuickFavo(iZhihu) {
                 });
             });
             $v.bind('mouseleave',function(){
-                var $a=getItem($(this).removeClass('on'));
+                var $a=iZhihu.getItem($(this).removeClass('on'));
                 $a.children('.izh_fav').hide();
             });
         }

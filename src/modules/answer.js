@@ -30,7 +30,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     var $listAnswers=$('.zm-item-answer','#zh-single-question');
     if($listAnswers&&$listAnswers.length){
         $listAnswers.each(function(i,e){
-            processAnswer($(e),null
+            window.iZhihu.Answer.processAnswer($(e),null
               , izhAuthorRear
               , false);
         });
@@ -39,7 +39,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     $('#zh-question-answer-wrap').bind('DOMNodeInserted',function(event){
         var $na=$(event.target).filter('.zm-item-answer');
         if($na.length){
-            processAnswer($na,null
+            window.iZhihu.Answer.processAnswer($na,null
                 , izhAuthorRear
                 , false);
         }
