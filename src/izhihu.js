@@ -1,3 +1,5 @@
+//console.log((new Date()).getTime());
+
 var $ = unsafeWindow.$;
 var _ = this._;
 var purl = window.purl||$.url;
@@ -10,8 +12,9 @@ var page = url.segment(1);
 
 //主入口
 $(function main(){
-	console.log('izhihu started.');
-	console.log(window.iZhihu);
+	console.log('iZhihu '+version+' started.');
+	//console.log(window.iZhihu);
+	//console.log((new Date()).getTime());
 });
 
 var pageIs={}

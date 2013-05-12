@@ -5,29 +5,55 @@
 $(function(){
   if(pageIs.Question){
 
-$(function(){
-var numAnswersCount=$('#zh-question-answer-wrap').children().length
-  , $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
-  , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text())
-  , numAnswersCountTotal=numAnswersCount+numCollapsedCount
-;
-if(numAnswersCountTotal>100&&!confirm('加载 iZhihu 可能耗时过长令页面失去响应，是否继续？')){
-    $('#izhCSS_comment').remove();
-    return;
-}
-var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
-  , $lblAnswersCount=$('#zh-question-answer-num')//answers_count
-  , $reply=$('#zh-question-answer-form-wrap')//reply_form
-  , $uno=$('<div>',{'class':'uno',style:'float:left'})//izh_AuthorsList
-  , $ppT=$('<span>',{'class':'meT',style:'display:none'})//izh_AuthorsList_TopSelfIndicator
-  , $frm=$('<div>',{'class':'frame'})//izh_AuthorsList_frame
-  , $ppB=$('<span>',{'class':'meB',style:'display:none'})//izh_AuthorsList_BottomSelfIndicator
-  , $pp=$('<ul>',{'class':'pp'})//izh_AuthorsList_UL
-  , $ppI=$('<div>')
+    var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
+      , $listAnswers=$('#zh-question-answer-wrap').children()//$('.zm-item-answer','#zh-single-question')
+      , numAnswersCount=$listAnswers.length
+      , $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
+      , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text())
+      , numAnswersCountTotal=numAnswersCount+numCollapsedCount
+      , $reply=$('#zh-question-answer-form-wrap')//reply_form
+    ;
+    if($lblQuestionMeta.length){
+        var s=new Array()
+          , $a=$('<a>')
+          , $c=$('<span>',{'class':'zg-bull',html:'•'})
+          , $p=$lblQuestionMeta.children('a.meta-item:last')
+          , $m=$('.zu-answer-form-disabled-wrap:visible > a','#zh-question-answer-form-wrap')
+        ;
+        if($m.length){
+            s.push($m.attr('href'));
+            $a.html('我的回答');
+        }else if($reply.length){
+            var id='new_answer'
+              , $b=$('<a>',{name:id}).before($reply.children().first());
+            s.push('#draft');
+            $a.html('我要回答');
+        }
+        $c.insertAfter($p);
+        $a.attr('href',s.join('')).attr('target','_self')
+            .insertAfter($c);
+    }
+    if (izhAuthorList&&
+        numAnswersCountTotal>100&&
+        confirm('这个问题的回答数较多，是否暂时关闭「iZhihu 回答目录」？')){
+        //$('#izhCSS_comment').remove();
+        //return;
+        izhAuthorList=false;
+        $body.attr('izhAuthorList','0');
+    }
+    console.log((new Date()).getTime());
+    
+    var $lblAnswersCount=$('#zh-question-answer-num')//answers_count
+      , $uno=$('<div>',{'class':'uno',style:'float:left'})//izh_AuthorsList
+      , $ppT=$('<span>',{'class':'meT',style:'display:none'})//izh_AuthorsList_TopSelfIndicator
+      , $frm=$('<div>',{'class':'frame'})//izh_AuthorsList_frame
+      , $ppB=$('<span>',{'class':'meB',style:'display:none'})//izh_AuthorsList_BottomSelfIndicator
+      , $pp=$('<ul>',{'class':'pp'})//izh_AuthorsList_UL
+      , $ppI=$('<div>')
+    
+    ;
 
-;
-
-//答案按时间排序
+    //答案按时间排序
     if(utils.getCfg('answer_orderByTime')){
       client.click('.zh-answers-filter-popup div[data-key=added_time]');
     }
@@ -51,7 +77,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     window.iZhihu.Comment.processComment($('.zm-comment-box',$questionWrap));
 
     //process each answer
-    var $listAnswers=$('.zm-item-answer','#zh-single-question');
     if($listAnswers&&$listAnswers.length){
         if(izhAuthorList){
             $uno.appendTo($banner);
@@ -62,9 +87,11 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             //uno.appendChild(ppI);
         }
         $listAnswers.each(function(i,e){
-            window.iZhihu.Answer.processAnswer($(e),$pp
-              , izhAuthorRear
-              , izhAuthorList);
+            //setTimeout(function(){
+                window.iZhihu.Answer.processAnswer($(e),$pp
+                  , izhAuthorRear
+                  , izhAuthorList);
+            //},1000);
         });
         if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
             var $ppla=$('<a>',{href:'#draft',target:'_self'})
@@ -75,24 +102,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                 .appendTo($pp)
             ;
         }
-    }
-    if($lblQuestionMeta.length){
-        var s=new Array()
-          , $a=$('<a>')
-          , $c=$('<span>',{'class':'zg-bull',html:'•'})
-          , $p=$lblQuestionMeta.children('a.meta-item:last');
-        if(window.iZhihu.Answer._e){
-            s.push($(window.iZhihu.Answer._e).attr('href'));
-            $a.html('我的回答');
-        }else if($reply.length){
-            var id='new_answer'
-              , $b=$('<a>',{name:id}).before($reply.children().first());
-            s.push('#draft');
-            $a.html('我要回答');
-        }
-        $c.insertAfter($p);
-        $a.attr('href',s.join('')).attr('target','_self')
-            .insertAfter($c);
     }
     var resizeAuthorList=function($f){
         // Adjust AuthorList's size and locate its position
@@ -159,6 +168,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                 , false);
         }
     });
-});
+    console.log((new Date()).getTime());
   }
 })
