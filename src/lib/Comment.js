@@ -47,12 +47,14 @@ function Comment(iZhihu) {
         }
     };
     this.showComment = function($ac,$cm){
+        var noCommentOpening = iZhihu.Comment.Opening == null;
+        iZhihu.Comment.Opening = $cm.get(0);
         $('.zm-comment-box:visible')
             .each(function(i,e){
                 if(!$cm.length||e!=$cm.get(0))
                     $(e).closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
-        $ac.parent().css({'position':'relative','left':0}).animate({left:-100},function(){
+        var o=function(){
             
         var currTop=_doc.body.scrollTop
           , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
@@ -124,26 +126,39 @@ function Comment(iZhihu) {
         //$n.css('border-color','#999999');
         $('.zh-backtotop').css('visibility','hidden');
         iZhihu.$body.scrollTop(currTop);
-        });
+        };
+
+        if(noCommentOpening){
+            $ac.parent().css({'position':'relative','left':0}).animate({left:-100},o);
+        }else{
+            o();
+        }	
     };
     this.hideComment = function($ac,$cm){
         var $n=$ac.next()
           , $n=$n.length?$n:$ac.parent().next()
           , inQuestion=$ac.is('#zh-question-detail');
         if(!$cm)$cm=$ac.find('.zm-comment-box');
-        $ac.parent().animate({left:0},function(){
+        var o=function(){
             $(this).css('position','');
-        if(inQuestion){
-            $('#izh_QuestionShadow').hide();
-            $('#zh-question-meta-wrap').next(':visible').andSelf().removeClass('izh_noBorder');
+            if(inQuestion){
+                $('#izh_QuestionShadow').hide();
+                $('#zh-question-meta-wrap').next(':visible').andSelf().removeClass('izh_noBorder');
+            }else{
+                $ac.removeClass('izh_boxShadow');
+            }
+            //$ac.css('border-color','#DDDDDD');
+            //$n.css('border-color','#DDDDDD');
+            $('.izh_tape_a:visible,.izh_tape_b:visible').hide();
+            $('.zh-backtotop').css('visibility','visible');
+        };
+
+        if(iZhihu.Comment.Opening == $cm.get(0)){
+            iZhihu.Comment.Opening = null;
+            $ac.parent().animate({left:0},o);
         }else{
-            $ac.removeClass('izh_boxShadow');
-        }
-        //$ac.css('border-color','#DDDDDD');
-        //$n.css('border-color','#DDDDDD');
-        $('.izh_tape_a:visible,.izh_tape_b:visible').hide();
-        $('.zh-backtotop').css('visibility','visible');
-        });
+            o();
+        }	
     };
     this.processComment = function($cm){
         if($cm.is('.zm-comment-box')){
@@ -179,7 +194,10 @@ function Comment(iZhihu) {
 */
             if(iZhihu.Comment.RightComment){
                 $cm.closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]').click(function(event){
-                    var $cm=$(this).closest('.zm-item-meta').find('.zm-comment-box');
+                    var $openedBy=$(this)
+                      , $ac=$openedBy.closest('.zm-item-meta')
+                      , $cm=$ac.find('.zm-comment-box')
+                    ;
                     if($cm.length){
                         var $item=iZhihu.getItem($cm);
                         if($cm.is(':hidden')){
@@ -267,7 +285,7 @@ function Comment(iZhihu) {
                           , $item=iZhihu.getItem($cm)
                           , $itemMeta=$cm.closest('.zm-item-meta')
                         ;
-                        iZhihu.Comment.hideComment($item);
+                        //iZhihu.Comment.hideComment($item);
                         $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
                     }
                 })
