@@ -7,7 +7,6 @@ function Comment(iZhihu) {
     }
     iZhihu.Comment = this;
 
-    iZhihu.$win.scroll(function(event){console.log(event);});
     var css_comment={
             'position':'absolute'
           , 'background-color':'#fff'
@@ -28,6 +27,7 @@ function Comment(iZhihu) {
             ['.mention-popup{z-index:10000 !important;}'
             ,'.zm-item-meta .meta-item[name=addcomment],'
             ,'.zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}'
+            ,'.zm-comment-box{position:fixed;}'
             ,'.zm-comment-box .icon-spike{display:none !important;}'
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
@@ -41,12 +41,41 @@ function Comment(iZhihu) {
             ,'.zm-comment-box a.izh-button.off{color:#eee;}'
             ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
             ,''].join('\n');
+        /*iZhihu.$win.scroll(function(event){
+            var scrollTop = parseInt(iZhihu.$win.attr('scrollTop'));
+            if(isNaN(scrollTop))scrollTop=0;
+            if(iZhihu.Comment.Opening){
+                $(iZhihu.Comment.Opening).animate({top:'+='+(document.documentElement.scrollTop-scrollTop)},function(){
+                    iZhihu.$win.attr('scrollTop',document.documentElement.scrollTop);
+                });
+            }
+        });*/
     }
     this.processCommentButton = function($a){
         if(iZhihu.Comment.RightComment){
             var $bc=$a.find('.meta-item[name="addcomment"],.meta-item[name="add-q-comment"]');
             $bc.prependTo($bc.parent());
         }
+    };
+    this.putCommentBox = function($cm,cmLeft,cmWidth,inQuestion){
+        var $t=$cm.css({'left':cmLeft,'width':cmWidth})
+                .clone().css({'position':'absolute','z-index':'-1'}).appendTo(iZhihu.$body).show()
+          , th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100
+          , offsetTop=document.documentElement.scrollTop-$cm.closest('.zm-item-meta').offset().top
+          , offsetBottom=-offsetTop-iZhihu.$win.height()//-$cm.parent().height()
+        ;
+        if(th<iZhihu.$win.height()-iZhihu.$main.offset().top){
+            var top=inQuestion?0:$cm.parent().offset().top-document.documentElement.scrollTop;
+            if(top+th>iZhihu.$win.height()){
+                $cm.css({'top':'','bottom':offsetBottom});
+            }else{
+                $cm.css({'top':offsetTop+(top>iZhihu.$main.offset().top?top:iZhihu.$main.offset().top),'bottom':''});
+            }
+        }else{
+            $cm.css({'top':offsetTop+iZhihu.$main.offset().top,'bottom':offsetBottom});
+        }
+        $t.remove();
+        $t=null;
     };
     this.showComment = function($ac,$cm){
         var noCommentOpening = iZhihu.Comment.Opening == null;
@@ -69,7 +98,7 @@ function Comment(iZhihu) {
           , h=inQuestion?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-iZhihu.$main.offset().top
                              :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
           , cmLeft=$ac.width()-1
-          , cmWidth=$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
+          , cmWidth=540//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
         ;
         if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
             $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
@@ -96,24 +125,7 @@ function Comment(iZhihu) {
               , 'z-index':'10000'
               , 'background-color':'#fff'
             }).show();
-            var $t=$cm.css('width',cmWidth).clone().css({'position':'absolute','z-index':'-1'}).appendTo(iZhihu.$body).show();
-            $cm.css({'left':cmLeft});
-            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100
-              , offsetTop=document.documentElement.scrollTop-$cm.parent().offset().top
-              , offsetBottom=-offsetTop-iZhihu.$win.height()//-$cm.parent().height()
-            ;
-            if(th<iZhihu.$win.height()-iZhihu.$main.offset().top){
-                var top=inQuestion?0:$cm.parent().offset().top-document.documentElement.scrollTop;
-                if(top+th>iZhihu.$win.height()){
-                    $cm.css({'top':'','bottom':offsetBottom});
-                }else{
-                    $cm.css({'top':offsetTop+(top>iZhihu.$main.offset().top?top:iZhihu.$main.offset().top),'bottom':''});
-                }
-            }else{
-                $cm.css({'top':offsetTop+iZhihu.$main.offset().top,'bottom':offsetBottom});
-            }
-            $t.remove();
-            $t=null;
+            iZhihu.Comment.putCommentBox($cm,cmLeft,cmWidth,inQuestion);
             $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
         }else{
             $ac.find('.zu-question-answer-meta-comment')[0].click();
@@ -134,7 +146,7 @@ function Comment(iZhihu) {
         };
 
         if(noCommentOpening){
-            $ac.parent().css({'position':'relative','left':0}).animate({left:-100},o);
+            $ac.closest('.zu-main-content-inner').css({'position':'relative','left':0}).animate({left:-100},o);
         }else{
             o();
         }	
@@ -160,13 +172,13 @@ function Comment(iZhihu) {
 
         if(iZhihu.Comment.Opening == $cm.get(0)){
             iZhihu.Comment.Opening = null;
-            $ac.parent().animate({left:0},o);
+            $ac.closest('.zu-main-content-inner').animate({left:0},o);
         }else{
             o();
         }	
     };
     this.processComment = function($cm){
-        if($cm.is('.zm-comment-box')){
+        if($cm.has('.zm-comment-list').is('.zm-comment-box')){
 /* Collections for comment
             $cm.find('.zm-comment-editable').bind('DOMNodeInserted',function(event){
                 var $c=$(event.target),$cm=$c.closest('.zm-comment-box');
