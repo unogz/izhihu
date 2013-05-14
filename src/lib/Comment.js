@@ -7,8 +7,9 @@ function Comment(iZhihu) {
     }
     iZhihu.Comment = this;
 
+    iZhihu.$win.scroll(function(event){console.log(event);});
     var css_comment={
-            'position':'fixed'
+            'position':'absolute'
           , 'background-color':'#fff'
           , 'outline':'none'
           , 'z-index':'9999'
@@ -27,6 +28,7 @@ function Comment(iZhihu) {
             ['.mention-popup{z-index:10000 !important;}'
             ,'.zm-item-meta .meta-item[name=addcomment],'
             ,'.zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}'
+            ,'.zm-comment-box .icon-spike{display:none !important;}'
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
             ,'.zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}'
@@ -66,7 +68,7 @@ function Comment(iZhihu) {
           , $questionMeta=$('#zh-question-meta-wrap')//question_meta
           , h=inQuestion?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-iZhihu.$main.offset().top
                              :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
-          , cmLeft=$ac.offset().left+$ac.width()-1
+          , cmLeft=$ac.width()-1
           , cmWidth=$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
         ;
         if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
@@ -96,16 +98,19 @@ function Comment(iZhihu) {
             }).show();
             var $t=$cm.css('width',cmWidth).clone().css({'position':'absolute','z-index':'-1'}).appendTo(iZhihu.$body).show();
             $cm.css({'left':cmLeft});
-            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
+            var th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100
+              , offsetTop=document.documentElement.scrollTop-$cm.parent().offset().top
+              , offsetBottom=-offsetTop-iZhihu.$win.height()//-$cm.parent().height()
+            ;
             if(th<iZhihu.$win.height()-iZhihu.$main.offset().top){
-                var top=inQuestion?0:$cm.parent().offset().top-$(document).scrollTop();
+                var top=inQuestion?0:$cm.parent().offset().top-document.documentElement.scrollTop;
                 if(top+th>iZhihu.$win.height()){
-                    $cm.css({'top':'','bottom':0});
+                    $cm.css({'top':'','bottom':offsetBottom});
                 }else{
-                    $cm.css({'top':top>iZhihu.$main.offset().top?top:iZhihu.$main.offset().top,'bottom':''});
+                    $cm.css({'top':offsetTop+(top>iZhihu.$main.offset().top?top:iZhihu.$main.offset().top),'bottom':''});
                 }
             }else{
-                $cm.css({'top':iZhihu.$main.offset().top,'bottom':0});
+                $cm.css({'top':offsetTop+iZhihu.$main.offset().top,'bottom':offsetBottom});
             }
             $t.remove();
             $t=null;
