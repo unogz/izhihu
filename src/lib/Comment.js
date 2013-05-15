@@ -61,7 +61,8 @@ function Comment(iZhihu) {
     };
     this.putCommentBox = function($cm,keepSize){if(!$cm||!$cm.length)return;
         var th=keepSize?parseInt($cm.attr('izh_cmHeight')):0
-          , offsetTop=document.documentElement.scrollTop-$cm.closest('.zm-item-meta').offset().top
+          , scrollTop=iZhihu.$win.scrollTop()
+          , offsetTop=scrollTop-$cm.closest('.zm-item-meta').offset().top
           , offsetBottom=-offsetTop-iZhihu.$win.height()
           , inQuestion=$cm.attr('izh_inQuestion')=='1'
         ;
@@ -70,9 +71,9 @@ function Comment(iZhihu) {
             th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
             $t.remove();$t=null;
         }
-        $cm.attr('izh_cmHeight',th)
+        $cm.attr('izh_cmHeight',th);
         if(th<iZhihu.$win.height()-iZhihu.$main.offset().top){
-            var top=inQuestion?0:$cm.parent().offset().top-document.documentElement.scrollTop;
+            var top=inQuestion?0:$cm.parent().offset().top-scrollTop;
             if(top+th>iZhihu.$win.height()){
                 $cm.css({'top':'','bottom':offsetBottom});
             }else{
