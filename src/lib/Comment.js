@@ -47,6 +47,11 @@ function Comment(iZhihu) {
                 iZhihu.Comment.putCommentBox($(iZhihu.Comment.Opening),true);
             }
         });
+        iZhihu.$win.resize(function(event){
+            if(iZhihu.Comment.Opening){
+                iZhihu.Comment.putCommentBox($(iZhihu.Comment.Opening),true);
+            }
+        });
     }
     this.processCommentButton = function($a){
         if(iZhihu.Comment.RightComment){
@@ -86,73 +91,84 @@ function Comment(iZhihu) {
                 if(!$cm.length||e!=$cm.get(0))
                     $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
-        var o=function(){
+        var $ct=$ac.closest('.zu-main-content-inner')
+          , ctWidth=$ct.width()
+          , cmWidth=540>ctWidth?ctWidth:540//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
+          , o=function(){
             
-        var currTop=_doc.body.scrollTop
-          , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
-          , t=$ac.offset().top-iZhihu.$main.offset().top
-          , b=$ac.offset().top-iZhihu.$main.offset().top
-          , w=$ac.width()
-          , inAnswer=$ac.is('.zm-item-answer')
-          , inQuestion=$ac.is('#zh-question-detail')
-          , $questionMeta=$('#zh-question-meta-wrap')//question_meta
-          , h=inQuestion?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-iZhihu.$main.offset().top
-                             :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
-          , cmWidth=540//$item.width()//iZhihu.$main.width()-$item.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
-        ;
-        if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
-            $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
-        if(!$cm)$cm=$ac.find('.zm-comment-box');
-        if($cm.length){
-            if(!$cm.attr('tabindex')){
-                $cm.attr('tabindex','-1').focus();
-            }
-            if(inQuestion){
-                $('#izh_QuestionShadow').css({
-                    'height':h
-                  , 'margin-bottom':-h
+            var currTop=_doc.body.scrollTop
+              , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
+              , t=$ac.offset().top-iZhihu.$main.offset().top
+              , b=$ac.offset().top-iZhihu.$main.offset().top
+              , w=$ac.width()
+              , inAnswer=$ac.is('.zm-item-answer')
+              , inQuestion=$ac.is('#zh-question-detail')
+              , $questionMeta=$('#zh-question-meta-wrap')//question_meta
+              , h=inQuestion?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-iZhihu.$main.offset().top
+                                 :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
+            ;
+            if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
+                $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
+            if(!$cm)$cm=$ac.find('.zm-comment-box');
+            if($cm.length){
+                if(!$cm.attr('tabindex')){
+                    $cm.attr('tabindex','-1').focus();
+                }
+                if(inQuestion){
+                    $('#izh_QuestionShadow').css({
+                        'height':h
+                      , 'margin-bottom':-h
+                    }).show();
+                    $questionMeta.next(':visible').andSelf().addClass('izh_noBorder');
+                }else{
+                    $ac.addClass('izh_boxShadow');
+                }
+                $ac.find('.izh_tape_a').css({
+                    'position':'absolute'
+                  , 'width':1
+                  , 'height':h
+                  , 'top':0
+                  , 'margin-left':w-1
+                  , 'z-index':'10000'
+                  , 'background-color':'#fff'
                 }).show();
-                $questionMeta.next(':visible').andSelf().addClass('izh_noBorder');
+    
+                iZhihu.Comment.putCommentBox(
+                    $cm.css({'left':w-1,'width':cmWidth}).attr('izh_inQuestion',inQuestion?'1':'0')
+                );
+                
+                $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
             }else{
-                $ac.addClass('izh_boxShadow');
+                $ac.find('.zu-question-answer-meta-comment')[0].click();
             }
-            $ac.find('.izh_tape_a').css({
+            $ac.find('.izh_tape_b').css({
                 'position':'absolute'
               , 'width':1
               , 'height':h
               , 'top':0
-              , 'margin-left':w-1
-              , 'z-index':'10000'
-              , 'background-color':'#fff'
+              , 'margin-left':w
+              , 'z-index':'9998'
+              , 'background-color':'#eee'
             }).show();
-
-            iZhihu.Comment.putCommentBox(
-                $cm.css({'width':cmWidth}).attr('izh_inQuestion',inQuestion?'1':'0')
-            );
-            
-            $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
-        }else{
-            $ac.find('.zu-question-answer-meta-comment')[0].click();
-        }
-        $ac.find('.izh_tape_b').css({
-            'position':'absolute'
-          , 'width':1
-          , 'height':h
-          , 'top':0
-          , 'margin-left':w
-          , 'z-index':'9998'
-          , 'background-color':'#eee'
-        }).show();
-        //$ac.css('border-color','#999999');
-        //$n.css('border-color','#999999');
-        $('.zh-backtotop').css('visibility','hidden');
-        iZhihu.$body.scrollTop(currTop);
+            //$ac.css('border-color','#999999');
+            //$n.css('border-color','#999999');
+            $('.zh-backtotop').css('visibility','hidden');
+            iZhihu.$body.scrollTop(currTop);
         };
 
         $cm.addClass('izh_boxShadow').css(css_comment);
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
-            $ac.closest('.zu-main-content-inner').css({'position':'relative','left':0}).animate({left:-100},o);
+            var cmWidthOver=cmWidth+8-iZhihu.$win.width()
+              , ctLeft=$ct.offset().left
+              , shiftLeft=cmWidthOver+ctWidth+ctLeft;
+            if(shiftLeft>0){
+                if(shiftLeft>ctLeft){shiftLeft=ctLeft;}
+                else if(cmWidthOver>0){shiftLeft-=cmWidthOver;}
+                $ct.css({'position':'relative','left':0}).animate({left:-shiftLeft},o);
+            }else{
+                o();
+            }
         }else{
             o();
         }	
