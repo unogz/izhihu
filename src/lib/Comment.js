@@ -8,14 +8,13 @@ function Comment(iZhihu) {
     iZhihu.Comment = this;
 
     var css_comment={
-            'position':'fixed'
-          , 'background-color':'#fff'
+            'background-color':'#fff'
           , 'outline':'none'
           , 'z-index':'9999'
           , 'border-radius':'0 6px 0 0'
           , 'padding':'100px 0px 0px 7px'
           , 'visibility':'hidden'
-          , 'top':'0'
+          //, 'top':'0'
         }
     ;
     this.RightComment = iZhihu.config['ShowComment'];
@@ -41,6 +40,7 @@ function Comment(iZhihu) {
             ,'.zm-comment-box a.izh-button.on{color:#225599;text-shadow:0 0 1px #225599;}'
             ,'.zm-comment-box a.izh-button.off{color:#eee;}'
             ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
+            ,'.zm-comment-box.empty .zm-comment-list{display:none;}'
             ,''].join('\n');
         iZhihu.$win.scroll(function(event){
             if(iZhihu.Comment.Opening){
@@ -49,7 +49,7 @@ function Comment(iZhihu) {
         });
         iZhihu.$win.resize(function(event){
             if(iZhihu.Comment.Opening){
-                iZhihu.Comment.putCommentBox($(iZhihu.Comment.Opening),true);
+                iZhihu.Comment.putCommentBox($(iZhihu.Comment.Opening));
             }
         });
     }
@@ -62,31 +62,43 @@ function Comment(iZhihu) {
     this.putCommentBox = function($cm,keepSize){if(!$cm||!$cm.length)return;
         $cm.stop();
         var winHeight=iZhihu.$win.height()
-          , navHeight=iZhihu.$main.offset().top
           , th=keepSize?parseInt($cm.attr('izh_cmHeight')):0
           , scrollTop=document.documentElement.scrollTop+document.body.scrollTop
-          , offsetTop=scrollTop-$cm.closest('.zm-item-meta').offset().top
+          , navHeight=iZhihu.$body.children().first().height()
+          , bar=$('.zu-global-notify.zu-global-notify-info:visible')
+          , barHeight=!bar.length?0:bar.outerHeight()
+          , baseTop=((barHeight&&bar.css('position')=='fixed')?barHeight:(scrollTop>barHeight?0:barHeight-scrollTop))+navHeight
+          , $meta=$cm.closest('.zm-item-meta')
+          , offsetTop=scrollTop-$meta.offset().top
           , offsetBottom=-offsetTop-winHeight
         ;
         if(!th||isNaN(th)){
-            var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo(document.body).show();
-            th=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''}).height()+100;
+            var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo(document.body).show()
+              , $l=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''})
+            ;
+            th=$l.height()+100;
             $t.remove();$t=null;//console.log(th);
+            $cm.css('height',th<=100?100:th-100);
         }
-        $cm.attr('izh_cmHeight',th);//.css({'top':'','bottom':''})
-        var target={};
-        if(th<winHeight-navHeight){
+        $cm.attr('izh_cmHeight',th).css({'visibility':'visible'});
+        var target={},other={'height':''};
+        if(th<winHeight-baseTop){
             var top=-offsetTop;
             if(top+th>winHeight){
-                target={'bottom':offsetBottom};
+                target={'top':-offsetBottom-th-$meta.height(),'bottom':offsetBottom};
             }else{
-                target={'top':offsetTop+(top>navHeight?top:navHeight)};
+                offsetTop+=(top>baseTop?top:baseTop);
+                target={'top':offsetTop,'bottom':-offsetTop-th-$meta.height()};
             }
         }else{
-            target={'top':offsetTop+navHeight,'bottom':offsetBottom};
+            target={'top':offsetTop+baseTop,'bottom':offsetBottom};
         }
-        (window.iZhihu4CRX?$cm.animate:$cm.css)(target);
-        $cm.css({'visibility':'visible','position':'absolute'});
+        //if(window.iZhihu4CRX){
+            $cm.animate(target,function(){$cm.css(other);});
+        //}else{
+            //$cm.css($.extend(target,other));
+        //}
+        $cm;
     };
     this.showComment = function($ac,$cm){
         var noCommentOpening = iZhihu.Comment.Opening == null;
@@ -139,7 +151,7 @@ function Comment(iZhihu) {
                 }).show();
     
                 iZhihu.Comment.putCommentBox(
-                    $cm.css({'left':w-1,'width':cmWidth}).attr('izh_inQuestion',inQuestion?'1':'0')
+                    $cm.css({'left':w-1}).attr('izh_inQuestion',inQuestion?'1':'0')
                 );
                 
                 $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
@@ -161,7 +173,7 @@ function Comment(iZhihu) {
             iZhihu.$body.scrollTop(currTop);
         };
 
-        $cm.addClass('izh_boxShadow').css(css_comment);
+        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth}));
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
             var cmWidthOver=cmWidth+8-iZhihu.$win.width()
@@ -276,7 +288,8 @@ function Comment(iZhihu) {
                 }
                 if(iZhihu.Comment.RightComment){
                     $icm.bind('DOMNodeRemoved',function(event){
-                        var $list=$(event.target).closest('.zm-comment-list')
+                        var $icm=$(event.target).hide()
+                          , $list=$icm.closest('.zm-comment-list')
                           , $cm=$list.closest('.zm-comment-box:visible');
                         if($cm.length){
                             //console.log('Refreshing comment list');
@@ -311,7 +324,8 @@ function Comment(iZhihu) {
                     'height':'100%'
                   , 'overflow':'auto'
                 }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
-                    var $cm=$(this).closest('.zm-comment-box:visible');
+                    var $icm=$(event.target).hide()
+                      , $cm=$(this).closest('.zm-comment-box:visible');
                     if($cm.length){
                         if($(this).closest('.zm-comment-list').children().length==1){
                             $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
