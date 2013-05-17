@@ -15,7 +15,7 @@ function Comment(iZhihu) {
           , 'border-radius':'0 6px 0 0'
           , 'padding':'100px 0px 0px 7px'
           , 'visibility':'hidden'
-          //, 'top':'0'
+          , 'top':-70
         }
     ;
     this.RightComment = iZhihu.config['ShowComment'];
@@ -40,7 +40,7 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .izh-buttons-cm-R > a{margin-left:7px;}'
             ,'.zm-comment-box a.izh-button.on{color:#225599;text-shadow:0 0 1px #225599;}'
             ,'.zm-comment-box a.izh-button.off{color:#eee;}'
-            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
+            //,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
             ,'.zm-comment-box.empty .zm-comment-list{display:none;}'
             ,''].join('\n');
         iZhihu.$win.scroll(function(event){
@@ -86,17 +86,17 @@ function Comment(iZhihu) {
             th=$l.height();
             th+=th==0?minHeight:100;
             $t.remove();$t=null;//console.log(th);
-            $cm.css('height',th<=minHeight?minHeight:(th<maxHeight?th-92:maxHeight-80));
+            $cm.css('height',th<=minHeight?minHeight:(th<maxHeight?th-100:maxHeight-80));
         }
         var target={},other={'height':''};
         $cm.attr('izh_cmHeight',th).css({'visibility':'visible','position':'absolute'});
         if(th<=maxHeight){
-            var top=-offsetTop;
+            var top=-offsetTop-70,fixHeight=(th<=minHeight?-1:7);
             if(!tooSmall&&top+th>winHeight){
-                target={'top':-offsetBottom-th-metaHeight-1,'bottom':offsetBottom};
+                target={'top':-offsetBottom-th-metaHeight+fixHeight,'bottom':offsetBottom};
             }else{
                 offsetTop+=((!tooSmall)&&top>baseTop?top:baseTop);
-                target={'top':offsetTop,'bottom':-offsetTop-th-metaHeight-1};
+                target={'top':offsetTop,'bottom':-offsetTop-th-metaHeight+fixHeight};
             }
         }else{
             target={'top':offsetTop+baseTop,'bottom':offsetBottom};
@@ -121,65 +121,65 @@ function Comment(iZhihu) {
           , cmWidth=540>ctWidth?ctWidth:540//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
           , o=function(){
             
-            var currTop=_doc.body.scrollTop
-              , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
-              , t=$ac.offset().top-iZhihu.$main.offset().top
-              , b=$ac.offset().top-iZhihu.$main.offset().top
-              , w=$ac.width()
-              , inAnswer=$ac.is('.zm-item-answer')
-              , inQuestion=$ac.is('#zh-question-detail')
-              , $questionMeta=$('#zh-question-meta-wrap')//question_meta
-              , h=inQuestion?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-iZhihu.$main.offset().top
-                                 :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
-            ;
-            if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
-                $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
-            if(!$cm)$cm=$ac.find('.zm-comment-box');
-            if($cm.length){
-                if(!$cm.attr('tabindex')){
-                    $cm.attr('tabindex','-1').focus();
-                }
-                if(inQuestion){
-                    $('#izh_QuestionShadow').css({
-                        'height':h
-                      , 'margin-bottom':-h
+                var currTop=_doc.body.scrollTop
+                  , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
+                  , t=$ac.offset().top-iZhihu.$main.offset().top
+                  , b=$ac.offset().top-iZhihu.$main.offset().top
+                  , w=$ac.width()
+                  , inAnswer=$ac.is('.zm-item-answer')
+                  , inQuestion=$ac.is('#zh-question-detail')
+                  , $questionMeta=$('#zh-question-meta-wrap')//question_meta
+                  , h=inQuestion?$questionMeta.offset().top+$questionMeta.height()+parseInt($questionMeta.css('padding-bottom'))-iZhihu.$main.offset().top
+                                     :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
+                ;
+                if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
+                    $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
+                if(!$cm)$cm=$ac.find('.zm-comment-box');
+                if($cm.length){
+                    if(!$cm.attr('tabindex')){
+                        $cm.attr('tabindex','-1').focus();
+                    }
+                    if(inQuestion){
+                        $('#izh_QuestionShadow').css({
+                            'height':h
+                          , 'margin-bottom':-h
+                        }).show();
+                        $questionMeta.next(':visible').andSelf().addClass('izh_noBorder');
+                    }else{
+                        $ac.addClass('izh_boxShadow');
+                    }
+                    $ac.find('.izh_tape_a').css({
+                        'position':'absolute'
+                      , 'width':1
+                      , 'height':h
+                      , 'top':0
+                      , 'margin-left':w-1
+                      , 'z-index':'10000'
+                      , 'background-color':'#fff'
                     }).show();
-                    $questionMeta.next(':visible').andSelf().addClass('izh_noBorder');
+        
+                    iZhihu.Comment.box(
+                        $cm.css({'left':w-1}).attr('izh_inQuestion',inQuestion?'1':'0')
+                    );
+                    
+                    $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
                 }else{
-                    $ac.addClass('izh_boxShadow');
+                    $ac.find('.zu-question-answer-meta-comment')[0].click();
                 }
-                $ac.find('.izh_tape_a').css({
+                $ac.find('.izh_tape_b').css({
                     'position':'absolute'
                   , 'width':1
                   , 'height':h
                   , 'top':0
-                  , 'margin-left':w-1
-                  , 'z-index':'10000'
-                  , 'background-color':'#fff'
+                  , 'margin-left':w
+                  , 'z-index':'9998'
+                  , 'background-color':'#eee'
                 }).show();
-    
-                iZhihu.Comment.box(
-                    $cm.css({'left':w-1}).attr('izh_inQuestion',inQuestion?'1':'0')
-                );
-                
-                $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
-            }else{
-                $ac.find('.zu-question-answer-meta-comment')[0].click();
-            }
-            $ac.find('.izh_tape_b').css({
-                'position':'absolute'
-              , 'width':1
-              , 'height':h
-              , 'top':0
-              , 'margin-left':w
-              , 'z-index':'9998'
-              , 'background-color':'#eee'
-            }).show();
-            //$ac.css('border-color','#999999');
-            //$n.css('border-color','#999999');
-            $('.zh-backtotop').css('visibility','hidden');
-            iZhihu.$body.scrollTop(currTop);
-        };
+                //$ac.css('border-color','#999999');
+                //$n.css('border-color','#999999');
+                $('.zh-backtotop').css('visibility','hidden');
+                iZhihu.$body.scrollTop(currTop);
+            };
 
         $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth}));
         $('i.zm-comment-bubble',$cm).hide();
@@ -278,7 +278,7 @@ function Comment(iZhihu) {
                     }
                 });
             }
-            if($cm.is(':empty')) return;
+            //if($cm.is('.empty')) return;
             var $list=$cm.find('.zm-comment-list');
             $list.bind('DOMNodeInserted',function(event){
             //utils.observeDOMNodeAdded($list[0],function(event){
@@ -384,12 +384,14 @@ function Comment(iZhihu) {
                   , html:'人气妙评'//先来后到
                   , click:function(){
                        var $e=$(this)
-                         , $l=$e.closest('.zm-comment-box').find('.zm-comment-list')
+                         , $c=$e.closest('.zm-comment-box')
+                         , $l=$c.find('.zm-comment-list')
                          , $n=$l.find('.zm-item-comment').has('span.like-num.nil')
                        ;
                        if($e.hasClass('on')){
                            $e.attr('scrollTop_showgood',$l[0].scrollTop);
                            $n.show();
+                           iZhihu.Comment.box($c,false,false);
                            $e.removeClass('on');
                            var scrollTop = parseInt($e.attr('scrollTop'));
                            if(!isNaN(scrollTop))
@@ -397,6 +399,7 @@ function Comment(iZhihu) {
                        }else{
                            $e.attr('scrollTop',$l[0].scrollTop);
                            $n.hide();
+                           iZhihu.Comment.box($c,false,false);
                            $e.addClass('on');
                            var scrollTop = parseInt($e.attr('scrollTop_showgood'));
                            if(!isNaN(scrollTop))
