@@ -50,7 +50,7 @@ function Comment(iZhihu) {
         });
         iZhihu.$win.resize(function(event){
             if(iZhihu.Comment.Opening){
-                iZhihu.Comment.box($(iZhihu.Comment.Opening));
+                iZhihu.Comment.box($(iZhihu.Comment.Opening),false,false);
             }
         });
     }
@@ -69,29 +69,34 @@ function Comment(iZhihu) {
           , bar=$('.zu-global-notify.zu-global-notify-info:visible')
           , barHeight=!bar.length?0:bar.outerHeight()
           , baseTop=((barHeight&&bar.css('position')=='fixed')?barHeight:(scrollTop>barHeight?0:barHeight-scrollTop))+navHeight
+          , minHeight=112
+          , maxHeight=winHeight-baseTop-35
+          , tooSmall=maxHeight<minHeight
           , $meta=$cm.closest('.zm-item-meta')
+          , metaHeight=2*$meta.height()-$meta.innerHeight()
           , offsetTop=scrollTop-$meta.offset().top
           , offsetBottom=-offsetTop-winHeight
-        ;
+        ;if(tooSmall)maxHeight=minHeight;
         if(typeof animate === 'undefined')
             animate=true;
         if(!th||isNaN(th)){
             var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo(document.body).show()
               , $l=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''})
             ;
-            th=$l.height()+100;
+            th=$l.height();
+            th+=th==0?minHeight:100;
             $t.remove();$t=null;//console.log(th);
-            $cm.css('height',th<=100?100:th-100);
+            $cm.css('height',th<=minHeight?minHeight:(th<maxHeight?th-92:maxHeight-80));
         }
-        $cm.attr('izh_cmHeight',th).css({'visibility':'visible','position':'absolute'});
         var target={},other={'height':''};
-        if(th<winHeight-baseTop){
+        $cm.attr('izh_cmHeight',th).css({'visibility':'visible','position':'absolute'});
+        if(th<=maxHeight){
             var top=-offsetTop;
-            if(top+th>winHeight){
-                target={'top':-offsetBottom-th-$meta.height(),'bottom':offsetBottom};
+            if(!tooSmall&&top+th>winHeight){
+                target={'top':-offsetBottom-th-metaHeight-1,'bottom':offsetBottom};
             }else{
-                offsetTop+=(top>baseTop?top:baseTop);
-                target={'top':offsetTop,'bottom':-offsetTop-th-$meta.height()};
+                offsetTop+=((!tooSmall)&&top>baseTop?top:baseTop);
+                target={'top':offsetTop,'bottom':-offsetTop-th-metaHeight-1};
             }
         }else{
             target={'top':offsetTop+baseTop,'bottom':offsetBottom};
@@ -291,7 +296,7 @@ function Comment(iZhihu) {
                 }
                 if(iZhihu.Comment.RightComment){
                     $icm.bind('DOMNodeRemoved',function(event){
-                        var $icm=$(event.target).hide()
+                        var $icm=$(this).filter('.zm-item-comment').hide()
                           , $list=$icm.closest('.zm-comment-list')
                           , $cm=$list.closest('.zm-comment-box:visible');
                         if($cm.length){
@@ -299,7 +304,7 @@ function Comment(iZhihu) {
                             if($list.children().length==1){
                                 $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
                             }
-                            iZhihu.Comment.box($cm);
+                            iZhihu.Comment.box($cm,false,false);
                         }
                     });
 
@@ -316,7 +321,7 @@ function Comment(iZhihu) {
                         }
                         //console.log('Refreshing comment list');
                         $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).show();
-                        iZhihu.Comment.box($cm);
+                        iZhihu.Comment.box($cm,false,false);
                         if(notAll||countRest<0)$list.scrollTop($icm.get(0).offsetTop);
                     }
                 }
@@ -327,13 +332,13 @@ function Comment(iZhihu) {
                     'height':'100%'
                   , 'overflow':'auto'
                 }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
-                    var $icm=$(event.target).hide()
-                      , $cm=$(this).closest('.zm-comment-box:visible');
+                    var $icm=$(this).filter('.zm-item-comment').hide()
+                      , $cm=$icm.closest('.zm-comment-box:visible');
                     if($cm.length){
                         if($(this).closest('.zm-comment-list').children().length==1){
                             $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
                         }
-                        iZhihu.Comment.box($cm);
+                        iZhihu.Comment.box($cm,false,false);
                     }
                 });
                 iZhihu.Comment.open($item,$cm);
