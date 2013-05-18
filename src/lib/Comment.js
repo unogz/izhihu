@@ -296,7 +296,7 @@ function Comment(iZhihu) {
                 }
                 if(iZhihu.Comment.RightComment){
                     $icm.bind('DOMNodeRemoved',function(event){
-                        var $icm=$(this).filter('.zm-item-comment').hide()
+                        var $icm=$(event.target).filter('.zm-item-comment').hide()
                           , $list=$icm.closest('.zm-comment-list')
                           , $cm=$list.closest('.zm-comment-box:visible');
                         if($cm.length){
@@ -332,7 +332,7 @@ function Comment(iZhihu) {
                     'height':'100%'
                   , 'overflow':'auto'
                 }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
-                    var $icm=$(this).filter('.zm-item-comment').hide()
+                    var $icm=$(event.target).filter('.zm-item-comment').hide()
                       , $cm=$icm.closest('.zm-comment-box:visible');
                     if($cm.length){
                         if($(this).closest('.zm-comment-list').children().length==1){
