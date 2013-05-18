@@ -60,6 +60,22 @@ function Comment(iZhihu) {
             $bc.prependTo($bc.parent());
         }
     };
+    this.metaScrollToViewBottom = function($itemMeta,doEnd){
+        var winHeight=iZhihu.$win.height()
+          , scrollTop=document.documentElement.scrollTop+document.body.scrollTop
+          , navHeight=iZhihu.$body.children().first().height()
+          , bar=$('.zu-global-notify.zu-global-notify-info:visible')
+          , barHeight=!bar.length?0:bar.outerHeight()
+          , metaHeight=$itemMeta.innerHeight()
+          , offsetTop=$itemMeta.offset().top
+          , offsetBottom=offsetTop+metaHeight
+        ;
+        if(offsetTop<scrollTop||offsetBottom>scrollTop+winHeight){
+        	$(document.documentElement).animate({'scrollTop':offsetBottom-winHeight},doEnd);
+        }else{
+            doEnd();
+        }
+    };
     this.box = function($cm,keepSize,animate){if(!$cm||!$cm.length)return;
         $cm.stop();
         var winHeight=iZhihu.$win.height()
@@ -349,10 +365,12 @@ function Comment(iZhihu) {
                   , html:'收起'
                   , click:function(){
                         var $cm=$(this).closest('.zm-comment-box')
-                          , $item=iZhihu.getItem($cm).attr('tabindex','-1').focus().removeAttr('tabindex')
+                          , $item=iZhihu.getItem($cm)//.attr('tabindex','-1').focus().removeAttr('tabindex')
                           , $itemMeta=$cm.closest('.zm-item-meta')
                         ;
-                        $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
+                        iZhihu.Comment.metaScrollToViewBottom($itemMeta,function(){
+                            $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
+                        });
                     }
                 })
               , $buttonsL=$('<div>',{

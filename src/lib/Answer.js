@@ -162,7 +162,13 @@ function Answer(iZhihu) {
         
         iZhihu.Comment.processCommentButton($a);
 
-        iZhihu.Comment.processComment($('.zm-comment-box',$a));
+        var $cm=$('.zm-comment-box',$a);
+        if($cm.length){
+            iZhihu.Comment.metaScrollToViewBottom($cm.closest('.zm-item-meta'),function(){
+                iZhihu.Comment.processComment($cm);
+            });
+        }
+        
         $a.attr('izh_processed','1');
     };
 
