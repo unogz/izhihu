@@ -163,7 +163,7 @@ function Answer(iZhihu) {
         iZhihu.Comment.processCommentButton($a);
 
         var $cm=$('.zm-comment-box',$a);
-        if($cm.length){
+        if($cm.length && $cm.is(':visible')){console.log('scrolling to meta of the answer');
             iZhihu.Comment.metaScrollToViewBottom($cm.closest('.zm-item-meta'),function(){
                 iZhihu.Comment.processComment($cm);
             });

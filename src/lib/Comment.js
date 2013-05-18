@@ -8,12 +8,12 @@ function Comment(iZhihu) {
     iZhihu.Comment = this;
 
     var css_comment={
-            'position':'fixed'
-          , 'background-color':'#fff'
+            'background-color':'#fff'
           , 'outline':'none'
           , 'z-index':'9999'
           , 'border-radius':'0 6px 0 0'
           , 'padding':'100px 0px 0px 7px'
+          , 'position':'absolute'
           , 'visibility':'hidden'
           , 'top':-70
         }
@@ -60,20 +60,37 @@ function Comment(iZhihu) {
             $bc.prependTo($bc.parent());
         }
     };
-    this.metaScrollToViewBottom = function($itemMeta,doEnd){
+    this.metaScrollToViewBottom = function($itemMeta,funcAfterScroll,always,animate){
+        if(typeof always === 'undefined')always=true;//if false, scrolling only when the .zm-item-meta out of visible range
+        if(typeof animate === 'undefined')animate=true;//if false, scrolling instantly
         var winHeight=iZhihu.$win.height()
           , scrollTop=document.documentElement.scrollTop+document.body.scrollTop
           , navHeight=iZhihu.$body.children().first().height()
           , bar=$('.zu-global-notify.zu-global-notify-info:visible')
           , barHeight=!bar.length?0:bar.outerHeight()
+          , baseTop=((barHeight&&bar.css('position')=='fixed')?barHeight:(scrollTop>barHeight?0:barHeight-scrollTop))+navHeight
+          , maxHeight=winHeight-baseTop
           , metaHeight=$itemMeta.innerHeight()
           , offsetTop=$itemMeta.offset().top
           , offsetBottom=offsetTop+metaHeight
+          , $item=$itemMeta.is('#zh-question-meta-wrap')?$itemMeta.closest('#zh-single-question').children('#zh-question-detail'):$itemMeta.closest('.feed-item,.zm-item-answer')
+          , itemHeight=$item.innerHeight()
+          , offsetTopA=$item.offset().top
+          , offsetBottomA=offsetTopA+itemHeight
+          , scrollTarget=itemHeight>maxHeight?offsetBottom-winHeight:(offsetTopA<=scrollTop?offsetTopA-baseTop:offsetBottom-winHeight)
         ;
-        if(offsetTop<scrollTop||offsetBottom>scrollTop+winHeight){
-        	$(document.documentElement).animate({'scrollTop':offsetBottom-winHeight},doEnd);
+        if(!always){
+            always=offsetTop<scrollTop||offsetBottom>scrollTop+winHeight;
+        }
+        if(always){
+            if(animate){
+            	$(document.documentElement).animate({'scrollTop':scrollTarget},funcAfterScroll);
+        	}else{
+        	    $(document.documentElement).scrollTop(offsetBottom-winHeight);
+                if(funcAfterScroll){funcAfterScroll();}
+        	}
         }else{
-            doEnd();
+            if(funcAfterScroll){funcAfterScroll();}
         }
     };
     this.box = function($cm,keepSize,animate){if(!$cm||!$cm.length)return;
@@ -370,7 +387,7 @@ function Comment(iZhihu) {
                         ;
                         iZhihu.Comment.metaScrollToViewBottom($itemMeta,function(){
                             $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
-                        });
+                        },false,true);
                     }
                 })
               , $buttonsL=$('<div>',{
