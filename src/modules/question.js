@@ -74,7 +74,6 @@ $(function(){
             }).prependTo('#zh-single-question').hide();
         }   
     }
-    window.iZhihu.Comment.processComment($('.zm-comment-box',$questionWrap));
 
     //process each answer
     if($listAnswers&&$listAnswers.length){
@@ -169,5 +168,14 @@ $(function(){
         }
     });
     console.log((new Date()).getTime());
+
+    var $cm=$('.zm-comment-box',$questionWrap);
+    if($cm.length && $cm.is(':visible')){
+        iZhihu.Comment.scrollFocusCommentOnLoad($cm);
+    
+        iZhihu.Comment.metaScrollToViewBottom($cm.closest('.zm-item-meta'),function(){
+            iZhihu.Comment.processComment($cm);
+        });
+    }
   }
 })

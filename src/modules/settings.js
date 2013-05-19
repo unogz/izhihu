@@ -43,7 +43,7 @@ $(function(){
                 '制作：<a data-tip="p$t$unogzx" href="/people/unogzx">@钢盅郭子</a>，',
                 '<a data-tip="p$t$liuyong25" href="/people/liuyong25">@天猪(刘勇)</a>，',
                 '<a data-tip="p$t$luoxr" href="/people/luoxr">@罗大睿</a><br/>',
-                '感谢：<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>',
+                '感谢：<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
               '</div>',
               '<div class="zm-command">',
               '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>',
