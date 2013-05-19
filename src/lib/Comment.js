@@ -64,7 +64,12 @@ function Comment(iZhihu) {
     }
     this.processCommentButton = function($a){
         if(iZhihu.Comment.RightComment){
-            var $bc=$a.find('.meta-item[name="addcomment"],.meta-item[name="add-q-comment"]');
+            var $bc=$a.find('.meta-item[name="addcomment"],.meta-item[name="add-q-comment"]')
+            //, $fk=$bc.clone().empty().removeAttr('name')
+            ;
+            //$fk.insertBefore($bc).get(0).onclick=null;
+            if($bc.attr('name')=='addcomment')
+                $bc.parent().children().first().css('margin-right',$bc.innerWidth());
             $bc.prependTo($bc.parent());
         }
     };
