@@ -24,7 +24,6 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
             }).prependTo('#zh-single-question').hide();
         }   
     }
-    window.iZhihu.Comment.processComment($('.zm-comment-box',$questionWrap));
 
     //process each answer
     var $listAnswers=$('.zm-item-answer','#zh-single-question');
@@ -44,5 +43,14 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
                 , false);
         }
     });
+
+    var $cm=$('.zm-comment-box',$questionWrap);
+    if($cm.length && $cm.is(':visible')){
+    	iZhihu.Comment.scrollFocusCommentOnLoad($cm);
+
+    	iZhihu.Comment.metaScrollToViewBottom($cm.closest('.zm-item-meta'),function(){
+            iZhihu.Comment.processComment($cm);
+        });
+    }
   }
 })
