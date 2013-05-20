@@ -430,19 +430,21 @@ function Comment(iZhihu) {
                     }
                 }
             });
-            var $btnCC=$('<a>',{
+            var cmClose=function(event){
+                    var $cm=$(this).closest('.zm-comment-box');
+            		if($(this).is('[name=closeform]')&&(!$cm.is('.empty')))return;
+                    var $item=iZhihu.getItem($cm)//.attr('tabindex','-1').focus().removeAttr('tabindex')
+                      , $itemMeta=$cm.closest('.zm-item-meta')
+                    ;
+                    iZhihu.Comment.metaScrollToViewBottom($itemMeta,function(){
+                        $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
+                    },false,true);
+                }
+              , $btnCC=$('<a>',{
                     'class':'zu-question-answer-meta-comment izh-button-cc'
                   , href:'javascript:void(0);'
                   , html:'收起'
-                  , click:function(){
-                        var $cm=$(this).closest('.zm-comment-box')
-                          , $item=iZhihu.getItem($cm)//.attr('tabindex','-1').focus().removeAttr('tabindex')
-                          , $itemMeta=$cm.closest('.zm-item-meta')
-                        ;
-                        iZhihu.Comment.metaScrollToViewBottom($itemMeta,function(){
-                            $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
-                        },false,true);
-                    }
+                  , click:cmClose
                 })
               , $buttonsL=$('<div>',{
                 	'class':'izh-buttons-cm-L'
@@ -452,9 +454,22 @@ function Comment(iZhihu) {
                 })
             ;
             if(iZhihu.Comment.RightComment){
+                $btnCC.clone(true).css({
+                    'background-image': 'url("/static/img/sprites-1.8.2.png")'
+                  , 'background-position': '-261px -62px'
+                  , 'background-repeat': 'no-repeat'
+                  , 'display': 'inline-block'
+                  , 'width': 15
+                  , 'height': 15
+                  , 'position': 'absolute'
+                  , 'right': 3
+                  , 'top': 0
+                  , 'z-index': '10000'
+                }).html('').prependTo($cm)
                 $buttonsR.prependTo($cm);
                 if($list.children().length==0){
                     $buttonsR.hide();
+                    $cm.children('.zm-comment-form').find('[name=closeform]').click(cmClose);
                 }
                 $btnCC.css({
                     'float':'left'
