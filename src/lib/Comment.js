@@ -42,6 +42,7 @@ function Comment(iZhihu) {
             ,'.zm-comment-box a.izh-button.off{color:#eee;}'
             //,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
             ,'.zm-comment-box.empty .zm-comment-list{display:none;}'
+            ,'.zm-comment-box .zm-comment-list .zm-item-comment[izh_hilight]{background-color:rgb(255,255,160);}'
             ,''].join('\n');
         iZhihu.$win.load(function(){
             var iZhihu=window.iZhihu;
@@ -73,20 +74,21 @@ function Comment(iZhihu) {
             $bc.prependTo($bc.parent());
         }
     };
-    this.scrollFocusCommentOnLoad = function($cm){
+    this.scrollFocusCommentOnPageLoad = function($cm){
+        var focusName=url.data.attr.fragment;
+        if(!focusName||focusName=='')return;
     	if(window.iZhihu4CRX){
-            var focusName=url.data.attr.fragment;
-            if(!focusName||focusName=='')return;
             var $icm2C=$cm.find('.zm-comment-list .zm-item-comment a.zg-anchor-hidden[name="'+focusName+'"]').parent()
               , offsetTop=$icm2C.length?$icm2C.offset().top:0
             ;if(offsetTop){document.body.scrollTop=offsetTop;}
     	}
+        return focusName;
     };
     
     this.metaScrollToViewBottom = function($itemMeta,funcAfterScroll,always,animate){
         if(typeof always === 'undefined')always=true;//if false, scrolling only when the .zm-item-meta out of visible range
         if(typeof animate === 'undefined')animate=false;//if false, scrolling instantly
-        //if(always)$itemMeta.children('.zm-comment-box').css('position','fixed');
+        if(always)$itemMeta.children('.zm-comment-box').css('position','fixed');
         var winHeight=iZhihu.$win.height()
           , scrollObj=window.iZhihu4CRX?document.body:document.documentElement
           , scrollTopNow=scrollObj.scrollTop
@@ -167,7 +169,7 @@ function Comment(iZhihu) {
         }
         $cm;
     };
-    this.open = function($ac,$cm){
+    this.open = function($ac,$cm,icmFocus){
         var noCommentOpening = iZhihu.Comment.Opening == null;
         iZhihu.Comment.Opening = $cm.get(0);
         $('.zm-comment-box:visible')
@@ -238,6 +240,19 @@ function Comment(iZhihu) {
                 //$n.css('border-color','#999999');
                 $('.zh-backtotop').css('visibility','hidden');
                 iZhihu.$body.scrollTop(currTop);
+                if(icmFocus){
+                    var $icm=$(icmFocus).attr('izh_hilight','1')
+                      , $list=$icm.closest('.zm-comment-list');
+                    $list.scrollTop(icmFocus.offsetTop-$list.get(0).offsetTop);
+                    iZhihu.Comment.HiLightItem=icmFocus;
+                    iZhihu.Comment.HiLightColor='rgb(255,255,160)';
+                    $icm.click(function(){
+                        var iZhihu=window.iZhihu;
+                        if(iZhihu&&iZhihu.Comment.HiLightItem){
+                            $(iZhihu.Comment.HiLightItem).removeAttr('izh_hilight');
+                        }
+                    });
+                }
             };
 
         $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth}));
@@ -283,7 +298,7 @@ function Comment(iZhihu) {
             o();
         }	
     };
-    this.processComment = function($cm){
+    this.processComment = function($cm,focusName){
         if(!$cm.is('.zm-comment-box'))return;
         var $item=iZhihu.getItem($cm);
         if(iZhihu.Comment.RightComment){
@@ -415,24 +430,6 @@ function Comment(iZhihu) {
                     }
                 }
             });
-
-            if(iZhihu.Comment.RightComment){
-                $list.css({
-                    'height':'100%'
-                  , 'overflow':'auto'
-                }).children('.zm-item-comment').bind('DOMNodeRemoved',function(event){
-                    var $icm=$(event.target);
-                    if(!$icm.is('.zm-item-comment'))return;
-                    var $cm=$icm.hide().closest('.zm-comment-box:visible');
-                    if($cm.length){
-                        if($(this).closest('.zm-comment-list').children().length==1){
-                            $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
-                        }
-                        iZhihu.Comment.box($cm,false,false);
-                    }
-                });
-                iZhihu.Comment.open($item,$cm);
-            }
             var $btnCC=$('<a>',{
                     'class':'zu-question-answer-meta-comment izh-button-cc'
                   , href:'javascript:void(0);'
@@ -501,6 +498,7 @@ function Comment(iZhihu) {
                 }).css({
                     'float':'right'
                 }).appendTo($buttonsR);
+
                 $list.scroll(function(){
                     var $e=$(this)
                       , $b=$e.closest('.zm-comment-box').find('.izh-back-top')
@@ -511,10 +509,36 @@ function Comment(iZhihu) {
                         $b.addClass('off');
                     }
                 }).scroll();
-                $list.find('.zm-item-comment span.like-num').each(function(i,e){
-                    var tip=e.getAttribute('data-tip').replace('s$r$','s$l$');
-                    if(tip!='')e.setAttribute('data-tip',tip);
+
+                var icmFocus=null;
+                $list.css({
+                    'height':'100%'
+                  , 'overflow':'auto'
+                }).children('.zm-item-comment').each(function(i,e){
+                    var $icm=$(e);
+                    $icm.bind('DOMNodeRemoved',function(event){
+                        var $icm=$(event.target);
+                        if(!$icm.is('.zm-item-comment'))return;
+                        var $cm=$icm.hide().closest('.zm-comment-box:visible');
+                        if($cm.length){
+                            if($(this).closest('.zm-comment-list').children().length==1){
+                                $('.izh-quick-block-switch',$cm).add('.izh-buttons-cm-R',$cm).hide();
+                            }
+                            iZhihu.Comment.box($cm,false,false);
+                        }
+                    });
+                    $icm.find('span.like-num').each(function(i,e){
+                        var tip=e.getAttribute('data-tip').replace('s$r$','s$l$');
+                        if(tip!='')e.setAttribute('data-tip',tip);
+                    });
+                    if (!icmFocus&&focusName&&focusName!=''
+                        && $icm.children('a.zg-anchor-hidden[name="'+focusName+'"]').length){
+                        //var offsetTop=$icm.get(0).offsetTop-$list.get(0).offsetTop;
+                        //if(offsetTop){listScrollTop=offsetTop;}
+                        icmFocus=$icm.get(0);
+                    }
                 });
+                iZhihu.Comment.open($item,$cm,icmFocus);
             }else{
                 $btnCC.prepend('<i class="z-icon-fold"/>')
                 .css({
