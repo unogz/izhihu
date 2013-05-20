@@ -46,10 +46,10 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
 
     var $cm=$('.zm-comment-box',$questionWrap);
     if($cm.length && $cm.is(':visible')){
-    	iZhihu.Comment.scrollFocusCommentOnLoad($cm);
+    	var focusName = iZhihu.Comment.scrollFocusCommentOnPageLoad($cm);
 
     	iZhihu.Comment.metaScrollToViewBottom($cm.closest('.zm-item-meta'),function(){
-            iZhihu.Comment.processComment($cm);
+            iZhihu.Comment.processComment($cm, focusName);
         });
     }
   }
