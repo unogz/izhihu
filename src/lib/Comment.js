@@ -70,7 +70,7 @@ function Comment(iZhihu) {
             ;
             //$fk.insertBefore($bc).get(0).onclick=null;
             if($bc.attr('name')=='addcomment')
-                $bc.parent().children().first().css('margin-right',$bc.innerWidth());
+                $bc.next().css('margin-left',$bc.innerWidth());
             $bc.prependTo($bc.parent());
         }
     };
