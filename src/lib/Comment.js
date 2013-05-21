@@ -177,9 +177,14 @@ function Comment(iZhihu) {
                 if(!$cm.length||e!=$cm.get(0))
                     $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
-        var $ct=$ac.closest('.zu-main-content-inner')
+        var mcLeft=iZhihu.$main.offset().left
+          , $ct=$ac.closest('.zu-main-content-inner')
           , ctWidth=$ct.width()
-          , cmWidth=540>ctWidth?ctWidth:540//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
+          , ctLeft=$ct.offset().left
+          , $meta=$cm.closest('.zm-item-meta')
+          , mtWidth=$meta.innerWidth()
+          , maxWidth=540
+          , cmWidth=maxWidth>mtWidth?mtWidth:maxWidth//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
           , o=function(){
             
                 var currTop=_doc.body.scrollTop
@@ -220,7 +225,7 @@ function Comment(iZhihu) {
                     }).show();
         
                     iZhihu.Comment.box(
-                        $cm.css({'left':w-1}).attr('izh_inQuestion',inQuestion?'1':'0')
+                        $cm.css({'left':mtWidth-1}).attr('izh_inQuestion',inQuestion?'1':'0')
                     );
                     
                     $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
@@ -259,10 +264,9 @@ function Comment(iZhihu) {
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
             var cmWidthOver=cmWidth+8-iZhihu.$win.width()
-              , ctLeft=$ct.offset().left
               , shiftLeft=cmWidthOver+ctWidth+ctLeft;
             if(shiftLeft>0){
-                if(shiftLeft>ctLeft){shiftLeft=ctLeft;}
+                if(shiftLeft>ctLeft){shiftLeft=mcLeft;}
                 else if(cmWidthOver>0){shiftLeft-=cmWidthOver;}
                 $ct.css({'position':'relative','left':0}).animate({left:-shiftLeft},o);
             }else{
