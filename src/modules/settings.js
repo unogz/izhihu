@@ -27,7 +27,7 @@ $(function(){
             	'</thead>',
             	'<tbody>',
                 '<tr style="display:none"><td align="left"title="">在首页直接浏览常去话题</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" /></td></tr>',
-                '<tr><td align="left"title="">改变网页样式外观</td><td align="right"><i class="icon icon-help" data-tip="s$t$* 首页隐藏大头像<br/>* 赞同票右移<br/>* 按钮图标动画 "></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>',
+                '<tr><td align="left"title="">改变网页样式外观</td><td align="right"><i class="icon icon-help" data-tip="s$t$* 首页隐藏大头像<br/>* 缩进投票按钮（问题/回答页）<br/>* 按钮图标动画 "></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>',
                 '<tr><td align="left"title="">调整首页「新动态」提醒按钮</td><td align="right"><i class="icon icon-help" data-tip="s$t$挪到 Timeline 右上角<br/>与标题「最新动态」平行"></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>',
                 '<tr><td align="left">将用户信息挪到回答下方</td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" name="AuthorRear" /></td></tr>',
                 '<tr><td align="left">在页面右侧浮动显示打开的评论列表</td><td align="right"><i class="icon icon-help" data-tip="s$t$在首页、问题、回答页中生效"></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment" name="ShowComment" /></td></tr>',
