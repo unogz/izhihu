@@ -65,12 +65,12 @@ function Comment(iZhihu) {
     }
     this.processCommentButton = function($a){
         if(iZhihu.Comment.RightComment){
-            var $bc=$a.find('.meta-item[name="addcomment"],.meta-item[name="add-q-comment"]')
-            //, $fk=$bc.clone().empty().removeAttr('name')
-            ;
-            //$fk.insertBefore($bc).get(0).onclick=null;
-            if($bc.attr('name')=='addcomment')
-                $bc.next().css('margin-left',$bc.innerWidth());
+            var $bc=$a.find('.meta-item[name="addcomment"],.meta-item[name="add-q-comment"]');
+            if($bc.attr('name')=='addcomment'){
+                $('<span>',{id:'izh_placeholder'})
+                	.css({'display':'inline-block','width':$bc.outerWidth()})
+                	.insertAfter($bc);
+            }
             $bc.prependTo($bc.parent());
         }
     };
