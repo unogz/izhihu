@@ -75,6 +75,7 @@ function Comment(iZhihu) {
         }
     };
     this.scrollFocusCommentOnPageLoad = function($cm){
+        if(!iZhihu.Comment.RightComment)return;
         var focusName=url.data.attr.fragment;
         if(!focusName||focusName=='')return;
     	if(window.iZhihu4CRX){
@@ -86,6 +87,10 @@ function Comment(iZhihu) {
     };
     
     this.metaScrollToViewBottom = function($itemMeta,funcAfterScroll,always,animate){
+        if(!iZhihu.Comment.RightComment){
+            if(funcAfterScroll){funcAfterScroll();}
+            return;
+        }
         if(typeof always === 'undefined')always=true;//if false, scrolling only when the .zm-item-meta out of visible range
         if(typeof animate === 'undefined')animate=false;//if false, scrolling instantly
         if(always)$itemMeta.children('.zm-comment-box').css('position','fixed');
