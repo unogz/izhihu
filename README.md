@@ -32,5 +32,5 @@
 
 - [@钢盅郭子](http://www.zhihu.com/people/unogzx)
 - [@刘勇](http://www.zhihu.com/people/liuyong25)
-- [@罗大睿](http://www.zhihu.com/people/yukirock)
+- [@罗大睿](http://www.zhihu.com/people/luoxr)
 - 欢迎您的加入或反馈.
