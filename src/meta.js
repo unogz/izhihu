@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.7.2
+// @version      2.7.3
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
@@ -12,8 +12,8 @@
 // @grant GM_openInTab
 // ==/UserScript==
 
-var version='2.7.2';
-var updateDate='2013-5-21';
+var version='2.7.3';
+var updateDate='2013-5-25';
 
 var bGreasemonkeyServiceDefined = false;
 
