@@ -176,11 +176,10 @@ function Comment(iZhihu) {
     };
     this.open = function($ac,$cm,icmFocus){
         var noCommentOpening = iZhihu.Comment.Opening == null;
-        iZhihu.Comment.Opening = $cm.get(0);
-        $('.zm-comment-box:visible')
+        iZhihu.Comment.Opening = $cm.attr('izh-opening','1').get(0);
+        $('.zm-comment-box:visible:not([izh-opening=1])')
             .each(function(i,e){
-                if(!$cm.length||e!=$cm.get(0))
-                    $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
+                $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
         var mcLeft=iZhihu.$main.offset().left
           , $ct=$ac.closest('.zu-main-content-inner')
@@ -230,7 +229,7 @@ function Comment(iZhihu) {
                     }).show();
         
                     iZhihu.Comment.box(
-                        $cm.css({'left':mtWidth-1}).attr('izh_inQuestion',inQuestion?'1':'0')
+                        $cm.css({'left':mtWidth-1}).attr('izh_inQuestion',inQuestion?'1':'0').removeAttr('izh-opening')
                     );
                     
                     $('.mention-popup').attr('data-aid',$ac.attr('data-aid'));
@@ -308,13 +307,14 @@ function Comment(iZhihu) {
         }	
     };
     this.processComment = function($cm,focusName){
+        if($cm.is('.zm-comment-spinner'))$cm=$cm.closest('.zm-comment-box');
         if(!$cm.is('.zm-comment-box'))return;
         var $item=iZhihu.getItem($cm);
         if(iZhihu.Comment.RightComment){
             var cmLeft=$item.width()-1;
             $cm.css({'left':cmLeft,'width':216,'z-index':'10000'});
         }
-        if($cm.has('.zm-comment-list').length){
+        if($cm.filter('.zm-comment-box').has('.zm-comment-list').length){
 /* Collections for comment
             $cm.find('.zm-comment-editable').bind('DOMNodeInserted',function(event){
                 var $c=$(event.target),$cm=$c.closest('.zm-comment-box');
