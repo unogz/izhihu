@@ -14,9 +14,16 @@ function Answer(iZhihu) {
   	this.processAnswer=function($a,$pp,bAuthorRear,bAuthorList){
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
-        var $c=$a.children().last()
-          , $p=$a.find('.zm-item-answer-author-info')
-          , $v=$a.find('.meta-item[name=favo]');
+        var $meta=$a.find('.zm-item-meta')
+          , $author=$a.find('.zm-item-answer-author-info')
+          , $favo=$a.find('.meta-item[name=favo]')
+          , $fold=$('<button/>',{'class':'down',html:'<i class="izh-button z-icon-fold"></i>',click:function(){
+                var $fold=$(this).closest('.answer_wrap').next('.feed-meta').find('.meta-item[name=collapse]');
+                if($fold.length)
+                    $fold.get(0).click();
+          	}})
+          , $vote=$a.find('.zm-votebar').append($fold)
+        ;
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
             var $voteInfo=$('.zm-item-vote-info',$a);
@@ -27,14 +34,14 @@ function Answer(iZhihu) {
             }
             // Region end
         }
-        if($p.length){//relocatePersonInfo
+        if($author.length){//relocatePersonInfo
             if(bAuthorRear){
-                $p.css({
+                $author.css({
                     'textAlign':'right'
                 });
                 if($a.is('.feed-item')){
                     $a.find('.answer_wrap .zm-item-answer-detail .zm-item-rich-text')
-                        .append($p.hide()).bind('DOMNodeInserted',function(event){
+                        .append($author.hide()).bind('DOMNodeInserted',function(event){
                             var $c=$(event.target);
                             if($c.is('.zm-editable-content')){
                                 $(this).children('.zm-item-answer-author-info')
@@ -46,10 +53,10 @@ function Answer(iZhihu) {
                             }
                         });
                 }else{
-                    $p.insertBefore($c);
+                    $author.insertBefore($meta);
                 }
             }
-            $p=$p.children().first().children().eq(1);
+            $author=$author.children().first().children().eq(1);
             if ($pp && bAuthorList){
                 // Region: 回答目录项
                 var $ppla=$('<a>',{
@@ -69,12 +76,12 @@ function Answer(iZhihu) {
                 if($a.attr('data-collapsed')=='1'){
                     nameCSS+=' collapsed'
                 }
-                if(!$p.length){
+                if(!$author.length){
                     nameCSS+=' noname';
                 }
                 $('<span>',{
                     'class':nameCSS
-                  , html:!$p.length?'匿名用户':$p.html()
+                  , html:!$author.length?'匿名用户':$author.html()
                   , style:css_AuthorListItemA_name
                 }).appendTo($ppla);
                 if ($ppl.width()>iZhihu.Answer.ppWidth)
@@ -154,9 +161,9 @@ function Answer(iZhihu) {
         }
 
         if(iZhihu.QuickFavo)
-            iZhihu.QuickFavo.addQuickFavo($v,$a);
+            iZhihu.QuickFavo.addQuickFavo($favo,$a);
 
-        $c.bind('DOMNodeInserted',function(event){
+        $meta.bind('DOMNodeInserted',function(event){
             iZhihu.Comment.processComment($(event.target));
         });
         

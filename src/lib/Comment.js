@@ -39,10 +39,15 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .izh-buttons-cm-R{right:1em;}'
             ,'.zm-comment-box .izh-buttons-cm-R > a{margin-left:7px;}'
             ,'.zm-comment-box a.izh-button.on{color:#225599;text-shadow:0 0 1px #225599;}'
+            ,'.zm-comment-box a.izh-button .zg-icon{opacity:0.5;}'
+            ,'.zm-comment-box a.izh-button.on .zg-icon{opacity:1;}'
             ,'.zm-comment-box a.izh-button.off{color:#eee;}'
+            ,'.zm-comment-box a.izh-button.off .zg-icon{opacity:0.2;}'
             //,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
             ,'.zm-comment-box.empty .zm-comment-list{display:none;}'
             ,'.zm-comment-box .zm-comment-list .zm-item-comment[izh_hilight]{background-color:rgb(255,255,160);}'
+            ,'.zm-comment-box .izh-button.on .zg-icon-comment-like{background-position:-222px -79px;}'
+            ,'.zm-comment-box .izh-button .z-icon-fold{height:6px;}'
             ,''].join('\n');
         iZhihu.$win.load(function(){
             var iZhihu=window.iZhihu;
@@ -487,14 +492,14 @@ function Comment(iZhihu) {
                 $('<a>',{
                     'class':'izh-button izh-back-top'
                   , href:'javascript:void(0);'
-                  , html:'返回顶部'
+                  , html:'<i class="zg-icon z-icon-fold"></i>'//返回顶部
                   , click:function(){
                         $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
                     }
                 }).add('<a>',{
                     'class':'izh-button izh-show-good'
                   , href:'javascript:void(0);'
-                  , html:'人气妙评'//先来后到
+                  , html:'<i class="zg-icon zg-icon-comment-like"></i>'//人气妙评
                   , click:function(){
                        var $e=$(this)
                          , $c=$e.closest('.zm-comment-box')
