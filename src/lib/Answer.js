@@ -17,12 +17,11 @@ function Answer(iZhihu) {
         var $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
-          , $fold=$('<button/>',{'class':'down',html:'<i class="izh-button z-icon-fold"></i>',click:function(){
+          , $fold=$a.has('.zh-summary').length?$('<button/>',{'class':'down',html:'<i class="izh-button z-icon-fold"></i>',click:function(){
                 var $fold=$(this).closest('.answer_wrap').next('.feed-meta').find('.meta-item[name=collapse]');
                 if($fold.length)
                     $fold.get(0).click();
-          	}})
-          , $vote=$a.find('.zm-votebar').append($fold)
+          	}}).appendTo($a.find('.zm-votebar')):null
         ;
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽

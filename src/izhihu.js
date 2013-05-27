@@ -109,7 +109,9 @@ if(pageIs.Question&&izhAuthorList){
          ,''].join('\n');
 }
 css+=['.z-icon-izh-fold{background-position:-173px -107px;width:15px;height:15px;}'
-     ,'.zm-votebar button .izh-button{position:absolute;}'
+     ,'.zm-votebar button .izh-button{transition:none;position:absolute;}'
+     ,'.zm-votebar button .z-icon-fold{left:6px;bottom:6px;background-position:-135px -37px;}'
+     ,'.zm-votebar button:hover .z-icon-fold{width:7px;bottom:4px;border-top:2px solid #fff;background-position:-267px -88px;}'
      ,''].join('\n');
 css+=['.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif !important;font-size:12px !important;text-shadow:none !important;border-collapse:collapse !important;margin:0 !important;line-height:120%}'
      ,'.t_set_tb thead td{background:#0080c0;color:#fff;border:none !important;padding:4px 8px 4px !important;border-top-left-radius:6px;border-top-right-radius:6px}'
