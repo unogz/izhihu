@@ -17,12 +17,47 @@ function Answer(iZhihu) {
         var $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
-          , $fold=$a.has('.zh-summary').length?$('<button/>',{'class':'down',html:'<i class="izh-button z-icon-fold"></i>',click:function(){
-                var $fold=$(this).closest('.answer_wrap').next('.feed-meta').find('.meta-item[name=collapse]');
-                if($fold.length)
-                    $fold.get(0).click();
-          	}}).appendTo($a.find('.zm-votebar')):null
+          , $fold=!$a.has('.zh-summary').length?null:$('<button/>',{
+                'class':'down'
+              , html:'<i class="izh-button z-icon-fold"></i>'
+              , click:function(){
+                    var $vote=$(this).closest('.zm-votebar')
+                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.answer_wrap')
+                      , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.next('.feed-meta').find('.meta-item[name=collapse]')
+                    ;
+                    if($fold&&$fold.length){
+                        if($answer==null)$answer=$vote.closest('.answer_wrap');
+                        iZhihu.Answer.$Folding=$answer;
+                        $fold.get(0).click();
+                    }
+              	}
+            })
         ;
+        $a.find('.zm-votebar').append($fold).bind('DOMNodeRemoved',function(event){
+            var $vote=$(event.target);
+            if($vote.is('.zm-votebar')){
+                iZhihu.Answer.$Fold=$vote.closest('.answer_wrap').next('.feed-meta').find('.meta-item[name=collapse]');
+            }
+        });
+        $meta.find('.meta-item[name=collapse]').click(function(){
+            if(!iZhihu.Answer.$Folding)return;
+            var scrollObj=window.iZhihu4CRX?document.body:document.documentElement
+              , $meta=$(this).closest('.feed-meta')
+              , $answer=$meta.prev()
+              , scrollTop=iZhihu.Answer.$Folding.children('.zm-votebar').length?scrollObj.scrollTop
+                      :($answer.closest('.feed-item').offset().top-iZhihu.$body.children().first().height())
+            ;
+        	scrollTop+=$answer.outerHeight();
+            var $summary=$answer.find('.zh-summary').show()
+              , offset=0;
+            scrollTop-=$summary.outerHeight();
+            $summary.hide();
+            if(!$answer.find('.zm-item-vote-info.empty').length)
+                offset=1;
+            if($answer.prev().is(':hidden'))offset+=2;
+            $(scrollObj).scrollTop(scrollTop+offset);
+            iZhihu.Answer.$Folding=null;
+        });
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
             var $voteInfo=$('.zm-item-vote-info',$a);
