@@ -52,7 +52,7 @@ function Comment(iZhihu) {
         iZhihu.$win.load(function(){
             var iZhihu=window.iZhihu;
             iZhihu.$win.scroll(function(event){
-                if(iZhihu.Comment.Opening){
+                if(iZhihu.Comment.Opening&&!iZhihu.Comment.PageNotScroll){
                     var animate=true;//document.body.offsetHeight>document.body.scrollTop+document.documentElement.scrollTop+iZhihu.Comment.Opening.offsetHeight;
                     iZhihu.Comment.box($(iZhihu.Comment.Opening),true,animate);
                 }
@@ -192,8 +192,9 @@ function Comment(iZhihu) {
           , ctLeft=$ct.offset().left
           , $meta=$cm.closest('.zm-item-meta')
           , mtWidth=$meta.innerWidth()
-          , maxWidth=540
-          , cmWidth=maxWidth>mtWidth?mtWidth:maxWidth//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
+          , minWidth=iZhihu.$main.width()-ctWidth
+          , cmWidth=mtWidth
+          , maxWidth=iZhihu.$win.width()-ctWidth
           , o=function(){
             
                 var currTop=_doc.body.scrollTop
@@ -269,11 +270,17 @@ function Comment(iZhihu) {
                 }
             };
 
-        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth}));
+        if(maxWidth>547)maxWidth=547;
+        if(cmWidth>maxWidth)
+            cmWidth=maxWidth;//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
+        if(cmWidth<minWidth)
+            cmWidth=minWidth;
+        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth-7}));
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
-            var cmWidthOver=cmWidth+8-iZhihu.$win.width()
-              , shiftLeft=cmWidthOver+ctWidth+ctLeft;
+            var cmWidthOver=cmWidth-iZhihu.$win.width()
+              , shiftLeft=cmWidthOver+ctWidth+ctLeft
+            ;
             if(shiftLeft>0){
                 if(shiftLeft>ctLeft){shiftLeft=mcLeft;}
                 else if(cmWidthOver>0){shiftLeft-=cmWidthOver;}
@@ -312,10 +319,14 @@ function Comment(iZhihu) {
         }	
     };
     this.processComment = function($cm,focusName){
-        if($cm.is('.zm-comment-spinner'))$cm=$cm.closest('.zm-comment-box');
+        var loading=false;
+        if($cm.is('.zm-comment-spinner')){
+            $cm=$cm.closest('.zm-comment-box');
+            loading=true;
+        }
         if(!$cm.is('.zm-comment-box'))return;
         var $item=iZhihu.getItem($cm);
-        if(iZhihu.Comment.RightComment){
+        if(iZhihu.Comment.RightComment&&loading){
             var cmLeft=$item.width()-1;
             $cm.css({'left':cmLeft,'width':216,'z-index':'10000'});
         }
@@ -528,6 +539,7 @@ function Comment(iZhihu) {
                     'float':'right'
                 }).appendTo($buttonsR);
 
+                iZhihu.Comment.PageNotScroll = true;
                 $list.scroll(function(){
                     var $e=$(this)
                       , $b=$e.closest('.zm-comment-box').find('.izh-back-top')
@@ -538,6 +550,7 @@ function Comment(iZhihu) {
                         $b.addClass('off');
                     }
                 }).scroll();
+                iZhihu.Comment.PageNotScroll = false;
 
                 var icmFocus=null;
                 $list.css({
