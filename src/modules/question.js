@@ -6,7 +6,7 @@ $(function(){
   if(pageIs.Question){
 
     var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
-      , $listAnswers=$('#zh-question-answer-wrap').children()//$('.zm-item-answer','#zh-single-question')
+      , $listAnswers=$('#zh-question-answer-wrap,#zh-question-collapsed-wrap').children()//$('.zm-item-answer','#zh-single-question')
       , numAnswersCount=$listAnswers.length
       , $btnCollapsedSwitcher=$('#zh-question-collapsed-switcher')
       , numCollapsedCount=!$btnCollapsedSwitcher.length||$btnCollapsedSwitcher.is(':hidden')?0:parseInt($('#zh-question-collapsed-num').text())
