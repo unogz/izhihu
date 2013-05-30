@@ -270,12 +270,12 @@ function Comment(iZhihu) {
                 }
             };
 
-        if(maxWidth>547)maxWidth=547;
+        if(maxWidth>549)maxWidth=549;
         if(cmWidth>maxWidth)
             cmWidth=maxWidth;//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
         if(cmWidth<minWidth)
             cmWidth=minWidth;
-        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth-7}));
+        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth-9}));
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
             var cmWidthOver=cmWidth-iZhihu.$win.width()
