@@ -380,7 +380,7 @@ function QuickBlock(iZhihu) {
                     'class':'izh-quick-block-switch'
                   , html:'快速屏蔽'
                   , href:'javascript:void(0);'
-                  , title:'开始从赞同列表中选择屏蔽对象'
+                  , 'data-tip':'s$b$开始从赞同列表中选择屏蔽对象'
                 }).css({
                     'position':'absolute'
                   , 'left':width
@@ -388,12 +388,12 @@ function QuickBlock(iZhihu) {
                 }).click(function(){
                     if(this.getAttribute('on')=='1'){
                         $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
-                        $(this).attr({title:'开始从赞同列表中选择屏蔽对象','on':'0'}).nextAll('.izh-quick-block').hide();
+                        $(this).attr({'data-tip':'s$b$开始从赞同列表中选择屏蔽对象','on':'0'}).nextAll('.izh-quick-block').hide();
                         //this.setAttribute('on','0');
                     }
                     else{
                         $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
-                        $(this).attr({title:'结束从赞同列表中选择屏蔽对象','on':'1'}).nextAll('.izh-quick-block').show();
+                        $(this).attr({'data-tip':'s$b$结束从赞同列表中选择屏蔽对象','on':'1'}).nextAll('.izh-quick-block').show();
                         //this.setAttribute('on','1');
                     }
                 }).insertBefore($vi)
@@ -468,15 +468,15 @@ function QuickBlock(iZhihu) {
                 'class':'izh-quick-block-switch izh-button'
               , html:'快速屏蔽'
               , href:'javascript:void(0);'
-              , title:'开始从评论者中选择屏蔽对象'
+              , 'data-tip':'s$b$开始从评论者中选择屏蔽对象'
             }).css({'margin-left':7}).prependTo($where).click(function(){
                 if(this.getAttribute('on')=='1'){
                     $('.zm-comment-hd .izh-quick-block-pend').hide();
-                    $(this).attr({title:'开始从评论者中选择屏蔽对象','on':'0'}).removeClass('on');
+                    $(this).attr({'data-tip':'s$b$开始从评论者中选择屏蔽对象','on':'0'}).removeClass('on');
                 }
                 else{
                     $('.zm-comment-hd .izh-quick-block-pend').show();
-                    $(this).attr({title:'结束从评论者中选择屏蔽对象','on':'1'}).addClass('on');
+                    $(this).attr({'data-tip':'s$b$结束从评论者中选择屏蔽对象','on':'1'}).addClass('on');
                 }
             })
         ;

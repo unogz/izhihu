@@ -491,7 +491,7 @@ function Comment(iZhihu) {
                   , 'right': 3
                   , 'top': 0
                   , 'z-index': '10000'
-                }).html('').prependTo($cm)
+                }).attr('data-tip','s$l$收起').html('').prependTo($cm)
                 $buttonsR.prependTo($cm);
                 if($list.children().length==0){
                     $buttonsR.hide();
@@ -502,15 +502,17 @@ function Comment(iZhihu) {
                 }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
                 $('<a>',{
                     'class':'izh-button izh-back-top'
+                  , 'data-tip':'s$l$返回顶部'
                   , href:'javascript:void(0);'
-                  , html:'<i class="zg-icon z-icon-fold"></i>'//返回顶部
+                  , html:'<i class="zg-icon z-icon-fold"></i>'
                   , click:function(){
                         $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
                     }
                 }).add('<a>',{
                     'class':'izh-button izh-show-good'
+                  , 'data-tip':'s$l$人气妙评'
                   , href:'javascript:void(0);'
-                  , html:'<i class="zg-icon zg-icon-comment-like"></i>'//人气妙评
+                  , html:'<i class="zg-icon zg-icon-comment-like"></i>'
                   , click:function(){
                        var $e=$(this)
                          , $c=$e.closest('.zm-comment-box')
