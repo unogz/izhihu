@@ -60,7 +60,10 @@ function Comment(iZhihu) {
         
             iZhihu.$win.resize(function(event){
                 if(iZhihu.Comment.Opening){
-                    iZhihu.Comment.box($(iZhihu.Comment.Opening),false,false);
+                    var $cm=$(iZhihu.Comment.Opening);
+                    iZhihu.Comment.Opening = null;
+                    iZhihu.Comment.close(null,$cm);
+                    iZhihu.Comment.open(null,$cm);
                 }
             });
             if(iZhihu.ScrollTop){
@@ -160,7 +163,7 @@ function Comment(iZhihu) {
             $cm.css('height',th<=minHeight?minHeight:(th<maxHeight?th-100:maxHeight-80));
         }
         var target={},other={'height':''};
-        $cm.attr('izh_cmHeight',th).css({'visibility':'visible','position':'absolute'});
+        $cm.attr('izh_cmHeight',th).css({'display':'','visibility':'visible','position':'absolute'});
         if(th<=maxHeight){
             var top=-offsetTop-70,fixHeight=(th<=minHeight?-1:7);
             if(!tooSmall&&top+th>winHeight){
@@ -186,17 +189,21 @@ function Comment(iZhihu) {
             .each(function(i,e){
                 $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
-        var mcLeft=iZhihu.$main.offset().left
-          , $ct=$ac.closest('.zu-main-content-inner')
+        var winWidth=iZhihu.$win.width()//unsafeWindow.innerWidth
+          , mcLeft=iZhihu.$main.offset().left
+          , $ct=$cm.closest('.zu-main-content-inner')
           , ctWidth=$ct.width()
           , ctLeft=$ct.offset().left
           , $meta=$cm.closest('.zm-item-meta')
           , mtWidth=$meta.innerWidth()
           , minWidth=iZhihu.$main.width()-ctWidth
           , cmWidth=mtWidth
-          , maxWidth=iZhihu.$win.width()-ctWidth
+          , maxWidth=winWidth-ctWidth
           , o=function(){
-            
+        		if(!$ac){
+                    iZhihu.Comment.box($cm);
+                    return;
+        		}
                 var currTop=_doc.body.scrollTop
                   , $n=$ac.next(),$n=$n.length?$n:$ac.parent().next()
                   , t=$ac.offset().top-iZhihu.$main.offset().top
@@ -272,13 +279,13 @@ function Comment(iZhihu) {
 
         if(maxWidth>549)maxWidth=549;
         if(cmWidth>maxWidth)
-            cmWidth=maxWidth;//$ac.width()//iZhihu.$main.width()-$ac.closest('.zu-main-content-inner').outerWidth()//-iZhihu.$main.offset().left-18
+            cmWidth=maxWidth;
         if(cmWidth<minWidth)
             cmWidth=minWidth;
-        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth-9}));
+        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'display':'none','width':cmWidth-9}));
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
-            var cmWidthOver=cmWidth-iZhihu.$win.width()
+            var cmWidthOver=cmWidth-winWidth
               , shiftLeft=cmWidthOver+ctWidth+ctLeft
             ;
             if(shiftLeft>0){
@@ -293,12 +300,15 @@ function Comment(iZhihu) {
         }	
     };
     this.close = function($ac,$cm){
-        var $n=$ac.next()
-          , $n=$n.length?$n:$ac.parent().next()
-          , inQuestion=$ac.is('#zh-question-detail');
         if(!$cm)$cm=$ac.find('.zm-comment-box');
+        var $ct=$cm.closest('.zu-main-content-inner');
         var o=function(){
             $(this).css('position','');
+            if(!$ac)return;
+            var $n=$ac.next()
+              , $n=$n.length?$n:$ac.parent().next()
+              , inQuestion=$ac.is('#zh-question-detail');
+            if(!$ac){return;}
             if(inQuestion){
                 $('#izh_QuestionShadow').hide();
                 $('#zh-question-meta-wrap').next(':visible').andSelf().removeClass('izh_noBorder');
@@ -313,10 +323,12 @@ function Comment(iZhihu) {
 
         if(iZhihu.Comment.Opening == $cm.get(0)){
             iZhihu.Comment.Opening = null;
-            $ac.closest('.zu-main-content-inner').animate({left:0},o);
+            $ct.animate({left:0},o);
         }else{
+            if(!$ac){$ct.css({left:0});}
             o();
-        }	
+        }
+        
     };
     this.processComment = function($cm,focusName){
         var loading=false;
