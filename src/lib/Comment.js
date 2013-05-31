@@ -53,7 +53,7 @@ function Comment(iZhihu) {
             var iZhihu=window.iZhihu;
             iZhihu.$win.scroll(function(event){
                 if(iZhihu.Comment.Opening&&!iZhihu.Comment.PageNotScroll){
-                    var animate=true;//document.body.offsetHeight>document.body.scrollTop+document.documentElement.scrollTop+iZhihu.Comment.Opening.offsetHeight;
+                    var animate=true;
                     iZhihu.Comment.box($(iZhihu.Comment.Opening),true,animate);
                 }
             });
@@ -113,7 +113,7 @@ function Comment(iZhihu) {
           , metaHeight=$itemMeta.innerHeight()
           , offsetTop=$itemMeta.offset().top
           , offsetBottom=offsetTop+metaHeight
-          , $item=iZhihu.getItem($itemMeta)//$itemMeta.is('#zh-question-meta-wrap')?$itemMeta.closest('#zh-single-question').children('#zh-question-detail'):$itemMeta.closest('.feed-item,.zm-item-answer')
+          , $item=iZhihu.getItem($itemMeta)
           , itemHeight=$item.innerHeight()
           , offsetTopA=$item.offset().top
           , offsetBottomA=offsetTopA+itemHeight
@@ -182,18 +182,19 @@ function Comment(iZhihu) {
         }
         $cm;
     };
-    this.open = function($ac,$cm,icmFocus){
+    this.open = function($ac,$cm,icmFocus){// if $ac is null, just re-sizing and re-locating comment-box
         var noCommentOpening = iZhihu.Comment.Opening == null;
-        iZhihu.Comment.Opening = $cm.attr('izh-opening','1').get(0);
+        iZhihu.Comment.Opening = $cm.attr('izh-opening','1').css({'display':'none'}).get(0);
         $('.zm-comment-box:visible:not([izh-opening=1])')
             .each(function(i,e){
                 $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
             });
-        var winWidth=iZhihu.$win.width()//unsafeWindow.innerWidth
+        var winWidth=iZhihu.$win.width()
           , mcLeft=iZhihu.$main.offset().left
           , $ct=$cm.closest('.zu-main-content-inner')
-          , ctWidth=$ct.width()
-          , ctLeft=$ct.offset().left
+          , ctMarginL=parseInt($ct.css('margin-left'))
+          , ctWidth=$ct.width()+ctMarginL
+          , ctLeft=$ct.offset().left-ctMarginL
           , $meta=$cm.closest('.zm-item-meta')
           , mtWidth=$meta.innerWidth()
           , minWidth=iZhihu.$main.width()-ctWidth
@@ -282,7 +283,7 @@ function Comment(iZhihu) {
             cmWidth=maxWidth;
         if(cmWidth<minWidth)
             cmWidth=minWidth;
-        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'display':'none','width':cmWidth-9}));
+        $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth-9}));
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
             var cmWidthOver=cmWidth-winWidth
@@ -291,8 +292,12 @@ function Comment(iZhihu) {
             if(shiftLeft>0){
                 if(shiftLeft>ctLeft){shiftLeft=mcLeft;}
                 else if(cmWidthOver>0){shiftLeft-=cmWidthOver;}
+            }
+            if(shiftLeft<0){shiftLeft=0;}
+            if(shiftLeft && $ac){
                 $ct.css({'position':'relative','left':0}).animate({left:-shiftLeft},o);
             }else{
+                $ct.css({'position':'relative','left':-shiftLeft});
                 o();
             }
         }else{
@@ -589,8 +594,6 @@ function Comment(iZhihu) {
                     });
                     if (!icmFocus&&focusName&&focusName!=''
                         && $icm.children('a.zg-anchor-hidden[name="'+focusName+'"]').length){
-                        //var offsetTop=$icm.get(0).offsetTop-$list.get(0).offsetTop;
-                        //if(offsetTop){listScrollTop=offsetTop;}
                         icmFocus=$icm.get(0);
                     }
                 });
