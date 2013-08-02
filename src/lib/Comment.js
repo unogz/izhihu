@@ -26,8 +26,7 @@ function Comment(iZhihu) {
     } else {
         this.css = 
             ['.mention-popup{z-index:10000 !important;}'
-            ,'.zm-item-meta .meta-item[name=addcomment],'
-            ,'.zm-item-meta .meta-item[name=add-q-comment]{display:block;float:right;margin-left:7px !important;}'
+            ,'.zm-item-meta .meta-item.toggle-comment{display:block;float:right;margin-left:7px !important;}'
             ,'.zm-comment-box{position:absolute;margin-top:0;}'
             ,'.zm-comment-box .icon-spike{display:none !important;}'
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
@@ -73,7 +72,7 @@ function Comment(iZhihu) {
     }
     this.processCommentButton = function($a){
         if(iZhihu.Comment.RightComment){
-            var $bc=$a.find('.meta-item[name="addcomment"],.meta-item[name="add-q-comment"]');
+            var $bc=$a.find('.meta-item.toggle-comment');
             if($bc.attr('name')=='addcomment'){
                 $('<span>',{id:'izh_placeholder'})
                 	.css({'display':'inline-block','width':$bc.outerWidth()})
@@ -187,7 +186,7 @@ function Comment(iZhihu) {
         iZhihu.Comment.Opening = $cm.attr('izh-opening','1').css({'display':'none'}).get(0);
         $('.zm-comment-box:visible:not([izh-opening=1])')
             .each(function(i,e){
-                $(e).css('visibility','hidden').closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]')[0].click();
+                $(e).css('visibility','hidden').closest('.zm-item-meta').find('.toggle-comment')[0].click();
             });
         var winWidth=iZhihu.$win.width()
           , mcLeft=iZhihu.$main.offset().left
@@ -379,7 +378,7 @@ function Comment(iZhihu) {
             });
 */
             if(iZhihu.Comment.RightComment){
-                $cm.closest('.zm-item-meta').find('[name=addcomment],[name=add-q-comment]').click(function(event){
+                $cm.closest('.zm-item-meta').find('.toggle-comment').click(function(event){
                     var $openedBy=$(this)
                       , $ac=$openedBy.closest('.zm-item-meta')
                       , $cm=$ac.find('.zm-comment-box').css('visibility','hidden')
@@ -479,7 +478,7 @@ function Comment(iZhihu) {
                       , $itemMeta=$cm.closest('.zm-item-meta')
                     ;
                     iZhihu.Comment.metaScrollToViewBottom($itemMeta,function(){
-                        $itemMeta.find('[name=addcomment],[name=add-q-comment]')[0].click();
+                        $itemMeta.find('.toggle-comment')[0].click();
                     },false,true);
                 }
               , $btnCC=$('<a>',{
