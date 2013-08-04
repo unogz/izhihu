@@ -134,6 +134,11 @@ css+=['.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif !i
 css+=['.izh_boxShadow{box-shadow: 5px 5px 3px 0px #999 !important;}'
      ,'#zh-question-meta-wrap.izh_noBorder{border-bottom-color:transparent !important;}'
      ,'#zh-question-filter-wrap.izh_noBorder{border-top-color:transparent !important;}'
+     ,'.izh-feeds-filter{}'
+     ,'.izh-feeds-filter .izh-feeds-filter-option{color:#999999;padding-left:5px;text-decoration:none;cursor:pointer;}'
+     ,'.izh-feeds-filter .izh-feeds-filter-option i{background-position:-183px -4px}'
+     ,'.izh-feeds-filter .izh-feeds-filter-option.checked{color:#225599;}'
+     ,'.izh-feeds-filter .izh-feeds-filter-option.checked i{background-position:-183px -24px}'
      ,''].join('\n');
 if(izhHomeLayout){
     css +=  ['#zh-question-list { padding-left:30px!important }'
