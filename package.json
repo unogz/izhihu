@@ -1,6 +1,6 @@
 {
     "name": "izhihu",
-    "version": "2.8.1.392",
+    "version": "2.9.0.395",
     "root": "#",
     "license": "MIT",
     "dependencies": {
