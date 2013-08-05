@@ -32,7 +32,7 @@ function Comment(iZhihu) {
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
             ,'.zm-comment-box.empty .zm-comment-form{bottom:25px;margin:15px !important;}'
             ,'.zm-comment-box.empty .zm-comment-form .zm-comment-editable{position:absolute;top:0;left:0;right:0;overflow:auto;}'
-            ,'.zm-comment-box.empty .zm-comment-form .zm-command{position:absolute;right:0;bottom:10px;}'
+            ,'.zm-comment-box.empty .zm-comment-form .zm-command{position:absolute;left:0;right:0;bottom:10px;}'
             ,'.zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}'
             ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:35px;z-index:10;}'
             ,'.zm-comment-box .izh-buttons-cm-L{left:0;}'
@@ -614,7 +614,7 @@ function Comment(iZhihu) {
                       , $c=$f.closest('.zm-comment-box.empty[opened=1]')
                     ;
                     if($l.children().length==0&&$c.is('.empty')){
-                        var $t=$e.clone().css({'position':'absolute','width':$e.width()}).removeClass('editable').appendTo(document.body).show()
+                        var $t=$e.clone().css({'position':'absolute','width':$e.width()}).appendTo(document.body).show()
                           , h=$t.height()
                         ;
                         $t.remove();$t=null;
