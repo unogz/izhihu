@@ -20,16 +20,15 @@ allLinks=function(name,listSel,listName){
               '<div>',
                 '<div class="zg-section">',
                   '<div class="izhihu-collection-links" tabIndex="-1" class="zg-form-text-input" style="height:300px;overflow-y:scroll;outline:none;">',
-                    //'<textarea style="width: 100%; height: 132px;" id="izhihu-collection-links" class="zu-seamless-input-origin-element"></textarea>',
                   '</div>',
+                  '<form action="http://izhihu.kd.io/saveMe.py"method="post"target="_blank"style="display:none"><textarea style="width: 100%;" name="links"class="izhihu-collection-links-post"></textarea><input name="title"/></form>',
                 '</div>',
                 '<div class="zm-command">',
                   '<div class="zg-left">',
                   '<a class="zg-btn-blue reload" href="javascript:;">重新获取</a>',
                   '</div>',
                   //'<a class="zm-command-cancel" name="cancel" href="javascript:;">取消</a>',
-                  '<a class="zg-btn-blue copy" href="javascript:;">复制到剪贴板</a>',
-                  '<a class="zg-btn-blue selAll" href="javascript:;">选择全部</a>',
+                  '<a class="zg-btn-blue save" href="javascript:;">保存</a>',
                 '</div>',
               '</div>',
             '</div>',
@@ -48,21 +47,21 @@ allLinks=function(name,listSel,listName){
 
         //拖动
         this.$dlg.drags({handler:'.modal-dialog-title-draggable'});
-
-        $('.copy',this.$dlg).click(function(){
-            var s = new Array();
-            $('.izhihu-collection-links a',$(this).parentsUntil('.modal-dialog-content').parent()).each(function(i,e){
-                s.push(e.getAttribute('href'));
-            });
-            //copyToClipboard(txt);
-            GM_setClipboard('test','html');//s.join('<br/>')
-            alert('已复制 :)');
-        }).hide();
         
-        $('.selAll',this.$dlg).click(function(){
-            var $e=$(this).parentsUntil('.modal-dialog-content').parent().find('.izhihu-collection-links');
-            if($e.length)
-                selectText($e.get(0));
+        $('.save',this.$dlg).click(function(){
+            var $dlg=$(this).parentsUntil('.modal-dialog-content').parent()
+              , $links=$dlg.find('.izhihu-collection-links')
+              , $linksPost=$dlg.find('.izhihu-collection-links-post')
+              , $linksTitle=$linksPost.next()
+              , $form=$linksPost.parent()
+              , links=''
+            ;
+            $links.find('li a').each(function(i,e){
+                links+=e.getAttribute('href')+'\n';
+            });
+            $linksPost.val(links);
+            $linksTitle.val($('#zh-fav-head-title').text());
+            $form.submit();
         });
         
         $('.reload',this.$dlg).click(function(){
@@ -171,58 +170,4 @@ var handler = function(msg,$dlg){
     $('#zh-global-spinner').hide();
     $('.selAll',$dlg).click();
   }
-};
-
-var w=unsafeWindow;
-// 复制到剪贴板（未实现）
-var copyToClipboard = function(txt){
-    if(w.clipboardData){
-        w.clipboardData.clearData();
-        w.clipboardData.setData("Text", txt);
-    }else if(navigator.userAgent.indexOf("Opera") != -1){
-        w.location = txt;
-    }else if(w.netscape){
-        try{
-            w.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-        }catch(e){
-            alert("被浏览器拒绝！\n请在浏览器地址栏输入'about:config'并回车\n然后将'signed.applets.codebase_principal_support'设置为'true'");
-        }
-        var clip = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);
-        if (!clip)
-            return;
-        var trans = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);
-        if (!trans)
-            return;
-        trans.addDataFlavor('text/unicode');
-        var str = new Object();
-        var len = new Object();
-        var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-        var copytext = txt;
-        str.data = copytext;
-        trans.setTransferData("text/unicode", str, copytext.length * 2);
-        var clipid = Components.interfaces.nsIClipboard;
-        if(!clip)
-            return false;
-        clip.setData(trans,null,clipid.kGlobalClipboard);
-        alert("复制成功！");
-    }
-};
-
-// 选中元素内文本
-var selectText = function(element) {
-    if(!element)return;
-    var doc = document
-        , range, selection
-    ;    
-    if (doc.body.createTextRange) { //ms
-        range = doc.body.createTextRange();
-        range.moveToElementText(element);
-        range.select();
-    } else if (window.getSelection) { //all others
-        selection = window.getSelection();        
-        range = doc.createRange();
-        range.selectNodeContents(element);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
 };
