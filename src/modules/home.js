@@ -2,14 +2,19 @@
  * 首页
  */
 $(function(){
-    var $lblActivityCaption=$('#zh-home-list-title')//activity_caption
+    var $lblHomeTitle=$('#zh-home-list-title')//activity_caption
       , $btnNewActivity=$('#zh-main-feed-fresh-button')//new_activity
       , $feedList=$('.zh-general-list')//feed_list
       , $topLinkHome=$('#zh-top-link-home')
       , $filter=$('<span>',{
             'class':'izh-feeds-filter'
-          , html:'<a class="izh-feeds-filter-option"showFeeds="QUESTION,ANSWER"><i class="zg-icon"></i>问答</a><a class="izh-feeds-filter-option"showFeeds="ROUNDTABLE"><i class="zg-icon"></i>圆桌</a><a class="izh-feeds-filter-option"showFeeds="ARTICLE"><i class="zg-icon"></i>专栏</a>'
-          , style:'position:absolute;display:none;background-color:#fff;border:1px solid #777'
+          , html:[''
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="QUESTION_"><i class="zg-icon"></i>问题</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ANSWER_CREATE"><i class="zg-icon"></i>回答</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ANSWER_VOTE_"><i class="zg-icon"></i>赞同</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ARTICLE_"><i class="zg-icon"></i>专栏</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ROUNDTABLE_"><i class="zg-icon"></i>圆桌</a>'
+            ].join('')
         })
       , $filterInfo=$('<span>')
       , ShowFeeds=function(type,enable){
@@ -23,7 +28,7 @@ $(function(){
                     nd=_doc.createElement('style');
                     nd.type='text/css';
                     nd.id=id;
-                    nd.appendChild(_doc.createTextNode('.feed-item[data-feedtype^="'+type+'_"]{display:none}'));
+                    nd.appendChild(_doc.createTextNode('.feed-item[data-feedtype^="'+type+'"]{display:none}'));
                     heads[0].appendChild(nd);
                 }
                 //{ROUNDTABLE_ADD_RELATED: "roundtable",ARTICLE_VOTE_UP: "post_vote",ARTICLE_CREATE: "post_create",RECOMMENDED: "feed_recommended",QUESTION_FOLLOW: "feed_question_follow",QUESTION_CREATE: "feed_question",ANSWER_VOTE_UP: "feed_answer_vote",ANSWER_CREATE: "feed_answer_answer"};
@@ -39,88 +44,83 @@ $(function(){
       }
     ;
     if (pageIs.Home){
-        $filter.children('.izh-feeds-filter-option').addClass('checked').click(function(event){
+        $filter.children('.izh-feeds-filter-option').addClass('on').click(function(event){
             var i=0
-              , $e=$(this).toggleClass('checked')
-              , f=$e.attr('showFeeds').split(',')
+              , $e=$(this)
+              , fs=$e.attr('showFeeds')
+              , fa=fs.split(',')
             ;
-            for(;i<f.length;i++){
-                ShowFeeds(f[i],$e.is('.checked'));
+            $('.izh-feeds-filter-option[showFeeds="'+fs+'"]').toggleClass('on');
+            for(;i<fa.length;i++){
+                ShowFeeds(fa[i],$e.is('.on'));
             }
             refreshFilterInfo();
     	});
         if($topLinkHome.length){
-            var $filter2=$('<div>').append($filter.clone(true,true).css('display','')).hide()
+            var $filter2=$('<div>')
+            		.css({position:'absolute',border:'1px solid #777',backgroundColor:'#fff'}).hide()
+                    .append($filter.clone(true,true).css({display:'block'}))
                 	.on('show',function(){
                 	    var $e=$(this).stop();
-                    	$e.fadeIn('slow');
+                	    if($e.is(':hidden'))
+                	    	$e.css({display:'',opacity:0})
+                        $e.animate({opacity:1},'slow');
                 	})
                 	.on('hide',function(){
                 	    var $e=$(this).stop();
                     	$e.fadeOut('slow');
                 	})
-                	.on('mouseenter',function(){
-                	    $(this).trigger('show');
-                	})
-                	.on('mouseleave',function(){
-                	    $(this).trigger('hide');
-                	})
             ;
             $topLinkHome.after($filter2).parent()
             	.on('mouseenter',function(event){
-                    var $e=$(event.target)
-                      , $f=$e.next()
+                    var $e=$(this)
+                      , $f=$e.children().last()
                     ;
             	    $f.trigger('show');
             	})
             	.on('mouseleave',function(event){
-                    var $e=$(event.target)
-                      , $f=$e.next()
+                    var $e=$(this)
+                      , $f=$e.children().last()
                     ;
             	    $f.trigger('hide');
             	})
             ;
         }
-        if($lblActivityCaption.length){
-            $filter
+        if($lblHomeTitle.length){
+            $('#feed-ver').before($filterInfo);
+            $lblHomeTitle
+            	.on('mouseenter',function(event){
+                    var $e=$(this)
+                      , $f=$e.children().first()
+                    ;
+            	    $f.trigger('show');
+            	})
+            	.on('mouseleave',function(event){
+                    var $e=$(this)
+                      , $f=$e.children().first()
+                    ;
+            	    $f.trigger('hide');
+            	}).css({overflow:'hidden'})
+            	.prepend($filter)
+            ;
+            $filter.css({marginLeft:-$filter.width()})
             	.on('show',function(){
             	    var $e=$(this).stop();
             	    if($e.is(':hidden'))
-            	    	$e.css({display:'',opacity:0})
-                    $e.animate({opacity:1},'slow');
+            	    	$e.css({display:''})
+                    $e.animate({marginLeft:0},'slow',function(){$(this).css('display','');});
             	})
             	.on('hide',function(){
             	    var $e=$(this).stop();
-                	$e.fadeOut('slow');
-            	})
-            	.on('mouseenter',function(){
-            	    $(this).trigger('show');
-            	})
-            	.on('mouseleave',function(){
-            	    $(this).trigger('hide');
+                    $e.animate({marginLeft:-$filter.width()},'slow',function(){$(this).css('display','none');});
             	})
         	;
-            $('#feed-ver').before($filterInfo);
-            $lblActivityCaption.children('i').after($filter)
-            	.on('mouseenter',function(event){
-                    var $e=$(event.target)
-                      , $f=$e.next()
-                    ;
-            	    $f.trigger('show');
-            	})
-            	.on('mouseleave',function(event){
-                    var $e=$(event.target)
-                      , $f=$e.next()
-                    ;
-            	    $f.trigger('hide');
-            	})
-            ;
         }
         if (izhHomeNoti
-         && $lblActivityCaption.length
+         && $lblHomeTitle.length
          && $btnNewActivity.length
         ){
-            $lblActivityCaption.css({
+            $lblHomeTitle.css({
                 'float':'left'
               , 'margin-bottom':'2px'
               , 'line-height':'32px'
@@ -130,7 +130,7 @@ $(function(){
                 'float':'right'
               , 'margin':'0'
               , 'line-height':'22px'
-            }).appendTo($lblActivityCaption);
+            }).appendTo($lblHomeTitle);
         }
     }
     if(pageIs.Home||pageIs.Debuts){
