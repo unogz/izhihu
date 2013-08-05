@@ -12,7 +12,6 @@ function Comment(iZhihu) {
           , 'outline':'none'
           , 'z-index':'9999'
           , 'border-radius':'0 6px 0 0'
-          , 'padding':'100px 0px 0px 7px'
           , 'position':'absolute'
           , 'visibility':'hidden'
           , 'top':-70
@@ -31,9 +30,11 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .icon-spike{display:none !important;}'
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
-            ,'.zm-comment-box.empty .zm-comment-form{margin:0 !important;padding:15px !important;}'
+            ,'.zm-comment-box.empty .zm-comment-form{bottom:25px;margin:15px !important;}'
+            ,'.zm-comment-box.empty .zm-comment-form .zm-comment-editable{position:absolute;top:0;left:0;right:0;overflow:auto;}'
+            ,'.zm-comment-box.empty .zm-comment-form .zm-command{position:absolute;right:0;bottom:10px;}'
             ,'.zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}'
-            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:30px;z-index:10;}'
+            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:35px;z-index:10;}'
             ,'.zm-comment-box .izh-buttons-cm-L{left:0;}'
             ,'.zm-comment-box .izh-buttons-cm-L > a{margin-right:7px;}'
             ,'.zm-comment-box .izh-buttons-cm-R{right:1em;}'
@@ -173,8 +174,10 @@ function Comment(iZhihu) {
                 offsetTop+=((!tooSmall)&&top>baseTop?top:baseTop);
                 target={'top':offsetTop,'bottom':-offsetTop-th-metaHeight+fixHeight};
             }
+            $cm.filter('.empty').find('.zm-comment-form .zm-comment-editable').css({'bottom':''});
         }else{
             target={'top':offsetTop+baseTop,'bottom':offsetBottom};
+            $cm.filter('.empty').find('.zm-comment-form .zm-comment-editable').css({'bottom':'20px'});
         }
         if(animate){
             $cm.animate(target,function(){$cm.css(other);});
@@ -285,6 +288,8 @@ function Comment(iZhihu) {
         if(cmWidth<minWidth)
             cmWidth=minWidth;
         $cm.addClass('izh_boxShadow').css($.extend(css_comment,{'width':cmWidth-9}));
+        //if(!$cm.is('.empty'))
+            $cm.css({'padding':'100px 0px 0px 7px'});
         $('i.zm-comment-bubble',$cm).hide();
         if(noCommentOpening){
             var cmWidthOver=cmWidth-winWidth
@@ -574,22 +579,26 @@ function Comment(iZhihu) {
                 iZhihu.Comment.PageNotScroll = false;
 
                 var icmFocus=null;
-                if(!$cm.is('.empty')){
                     $list.css({
                         'height':'100%'
                       , 'overflow':'auto'
                     });
-                }
                 utils.observeDOMNodeAdded($cm.find('.zm-comment-form .zm-comment-editable')[0],function(event){
                     var $e=$(event.target)
                       , $f=$e.closest('.zm-comment-form')
                       , $l=$f.prev('.zm-comment-list')
                       , $c=$f.closest('.zm-comment-box.empty')
                     ;
-                    if($l.children().length==0&&$c.is('.empty')&&$l.height()!=$e.height()){
-                        $l.css('height',$e.height());
-                        $c.attr('izh_cmHeight','')
-                        iZhihu.Comment.box($cm,false,false);
+                    if($l.children().length==0&&$c.is('.empty')){
+                        var $t=$e.clone().css({'min-height':22,'position':'absolute','width':$e.width()}).appendTo(document.body).show()
+                          , h=$t.height()
+                        ;
+                        $t.remove();$t=null;
+                        if($l.height()!=h){
+                            $l.css('height',h);
+                            $c.attr('izh_cmHeight','')
+                            iZhihu.Comment.box($cm,false,false);
+                        }
                     }
                 });
                 $list.children('.zm-item-comment').each(function(i,e){
