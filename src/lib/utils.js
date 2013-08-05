@@ -145,3 +145,23 @@ utils.observeDOMAttrModified = (function(){
         }
     }
 })();
+
+utils.observeDOMNodeAdded = (function(){
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+        eventListenerSupported = window.addEventListener;
+
+    return function(obj, callback){
+        if( MutationObserver ){
+            // define a new observer
+            var obs = new MutationObserver(function(mutations, observer){
+                mutations.forEach(function(mutation) {
+                    console.log(mutation.type);
+                    callback(mutation);
+                  });    
+            });
+            obs.observe( obj, { childList:true });
+        }else if( eventListenerSupported ){
+            obj.addEventListener('DOMNodeInserted', callback, false);
+        }
+    }
+})();

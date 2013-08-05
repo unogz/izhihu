@@ -580,8 +580,8 @@ function Comment(iZhihu) {
                       , 'overflow':'auto'
                     });
                 }
-                $cm.find('.zm-comment-form .zm-comment-editable').on('DOMNodeInserted',function(event){
-                    var $e=$(this)
+                utils.observeDOMNodeAdded($cm.find('.zm-comment-form .zm-comment-editable')[0],function(event){
+                    var $e=$(event.target)
                       , $f=$e.closest('.zm-comment-form')
                       , $l=$f.prev('.zm-comment-list')
                       , $c=$f.closest('.zm-comment-box.empty')
