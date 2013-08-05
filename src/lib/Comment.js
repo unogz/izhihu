@@ -205,6 +205,7 @@ function Comment(iZhihu) {
           , cmWidth=mtWidth
           , maxWidth=winWidth-ctWidth
           , o=function(){
+                $cm.attr('opened','1');
         		if(!$ac){
                     iZhihu.Comment.box($cm);
                     return;
@@ -580,27 +581,9 @@ function Comment(iZhihu) {
 
                 var icmFocus=null;
                     $list.css({
-                        'height':'100%'
+                        'height':$cm.is('.empty')?'':'100%'
                       , 'overflow':'auto'
                     });
-                utils.observeDOMNodeAdded($cm.find('.zm-comment-form .zm-comment-editable')[0],function(event){
-                    var $e=$(event.target)
-                      , $f=$e.closest('.zm-comment-form')
-                      , $l=$f.prev('.zm-comment-list')
-                      , $c=$f.closest('.zm-comment-box.empty')
-                    ;
-                    if($l.children().length==0&&$c.is('.empty')){
-                        var $t=$e.clone().css({'min-height':22,'position':'absolute','width':$e.width()}).appendTo(document.body).show()
-                          , h=$t.height()
-                        ;
-                        $t.remove();$t=null;
-                        if($l.height()!=h){
-                            $l.css('height',h);
-                            $c.attr('izh_cmHeight','')
-                            iZhihu.Comment.box($cm,false,false);
-                        }
-                    }
-                });
                 $list.children('.zm-item-comment').each(function(i,e){
                     var $icm=$(e);
                     $icm.bind('DOMNodeRemoved',function(event){
@@ -624,6 +607,24 @@ function Comment(iZhihu) {
                     }
                 });
                 iZhihu.Comment.open($item,$cm,icmFocus);
+                utils.observeDOMNodeAdded($cm.find('.zm-comment-form .zm-comment-editable')[0],function(event){
+                    var $e=$(event.target)
+                      , $f=$e.closest('.zm-comment-form')
+                      , $l=$f.prev('.zm-comment-list')
+                      , $c=$f.closest('.zm-comment-box.empty[opened=1]')
+                    ;
+                    if($l.children().length==0&&$c.is('.empty')){
+                        var $t=$e.clone().css({'position':'absolute','width':$e.width()}).removeClass('editable').appendTo(document.body).show()
+                          , h=$t.height()
+                        ;
+                        $t.remove();$t=null;
+                        if($l.height()!=h){
+                            $l.css('height',h);
+                            $c.attr('izh_cmHeight','')
+                            iZhihu.Comment.box($cm,false,false);
+                        }
+                    }
+                });
             }else{
                 $btnCC.prepend('<i class="z-icon-fold"/>')
                 .css({
