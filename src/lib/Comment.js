@@ -31,8 +31,9 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .icon-spike{display:none !important;}'
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
-            ,'.zm-comment-box.empty .zm-comment-box-ft{position:static;margin:0 !important;padding:15px !important;}'
+            ,'.zm-comment-box.empty .zm-comment-form{margin:0 !important;padding:15px !important;}'
             ,'.zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}'
+            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:30px;z-index:10;}'
             ,'.zm-comment-box .izh-buttons-cm-L{left:0;}'
             ,'.zm-comment-box .izh-buttons-cm-L > a{margin-right:7px;}'
             ,'.zm-comment-box .izh-buttons-cm-R{right:1em;}'
@@ -43,7 +44,7 @@ function Comment(iZhihu) {
             ,'.zm-comment-box a.izh-button.off{color:#eee;}'
             ,'.zm-comment-box a.izh-button.off .zg-icon{opacity:0.2;}'
             //,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:7px;}'
-            ,'.zm-comment-box.empty .zm-comment-list{display:none;}'
+            ,'.zm-comment-box.empty .zm-comment-list{visibility:hidden;}'
             ,'.zm-comment-box .zm-comment-list .zm-item-comment[izh_hilight]{background-color:rgb(255,255,160);}'
             ,'.zm-comment-box .izh-button.on .zg-icon-comment-like{background-position:-222px -79px;}'
             ,'.zm-comment-box .izh-button .z-icon-fold{height:6px;}'
@@ -154,8 +155,9 @@ function Comment(iZhihu) {
         ;if(tooSmall)maxHeight=minHeight;
         if(!th||isNaN(th)){
             var $t=$cm.clone().css({'position':'absolute','z-index':'-1'}).appendTo(document.body).show()
-              , $l=$t.children('.zm-comment-list').css({'position':'absolute','height':'','top':'','bottom':''})
+              , $l=$t.children('.zm-comment-list')
             ;
+            if(!$cm.is('.empty')&&$l.children().length>0)$l.css({'position':'absolute','height':'','top':'','bottom':''});
             th=$l.height();
             th+=th==0?minHeight:100;
             $t.remove();$t=null;//console.log(th);
@@ -413,6 +415,7 @@ function Comment(iZhihu) {
                         iZhihu.QuickBlock.addQuickBlockInOneComment($icm);
                     }
                     if(iZhihu.Comment.RightComment){
+                        $list.css('height','100%');
                         $icm.show().bind('DOMNodeRemoved',function(event){
                             var $icm=$(event.target);
                             if(!$icm.is('.zm-item-comment'))return;
@@ -571,10 +574,25 @@ function Comment(iZhihu) {
                 iZhihu.Comment.PageNotScroll = false;
 
                 var icmFocus=null;
-                $list.css({
-                    'height':'100%'
-                  , 'overflow':'auto'
-                }).children('.zm-item-comment').each(function(i,e){
+                if(!$cm.is('.empty')){
+                    $list.css({
+                        'height':'100%'
+                      , 'overflow':'auto'
+                    });
+                }
+                $cm.find('.zm-comment-form .zm-comment-editable').on('DOMNodeInserted',function(event){
+                    var $e=$(this)
+                      , $f=$e.closest('.zm-comment-form')
+                      , $l=$f.prev('.zm-comment-list')
+                      , $c=$f.closest('.zm-comment-box.empty')
+                    ;
+                    if($l.children().length==0&&$c.is('.empty')&&$l.height()!=$e.height()){
+                        $l.css('height',$e.height());
+                        $c.attr('izh_cmHeight','')
+                        iZhihu.Comment.box($cm,false,false);
+                    }
+                });
+                $list.children('.zm-item-comment').each(function(i,e){
                     var $icm=$(e);
                     $icm.bind('DOMNodeRemoved',function(event){
                         var $icm=$(event.target);
