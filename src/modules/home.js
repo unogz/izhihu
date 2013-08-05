@@ -16,7 +16,7 @@ $(function(){
               , '<a class="izh-button izh-feeds-filter-option"showFeeds="ROUNDTABLE_"><i class="zg-icon"></i>圆桌</a>'
             ].join('')
         })
-      , $filterInfo=$('<span>')
+      , $filterInfo=$('<a>',{'class':'izh-feeds-filter-info nothing',href:'javascript:void(0);'}).on('click',function(){$filter.trigger($filter.is(':hidden')||$filter.attr('doing')=='hide'?'show':'hide');})
       , ShowFeeds=function(type,enable){
             var id="izhCSS_FilterFeed_"+type
               , nd=document.getElementById(id)
@@ -36,10 +36,14 @@ $(function(){
         }
       , refreshFilterInfo=function(){
             var count=$feedList.children('.feed-item:hidden').length
-              , info=''
+              , info='&nbsp;>过滤选项<'
             ;
-            if(count>0)
-                info='（根据您的选择，'+count+'条动态被隐藏）';
+            if(count){
+                info='（'+count+'条动态被隐藏）';
+                $filterInfo.removeClass('nothing');
+            }else{
+                $filterInfo.addClass('nothing');
+            }   
             $filterInfo.html(info);
       }
     ;
@@ -87,34 +91,56 @@ $(function(){
             ;
         }
         if($lblHomeTitle.length){
-            $('#feed-ver').before($filterInfo);
-            $lblHomeTitle
+            $filterInfo.css({
+                display:'none'
+              , textDecoration:'none'
+              , cursor:'pointer'
+            }).insertBefore($('#feed-ver'));
+            $lblHomeTitle.css({overflow:'hidden'})
+            	.prepend($filter)
+            	//.children('i:first')
             	.on('mouseenter',function(event){
                     var $e=$(this)
-                      , $f=$e.children().first()
+                      , $f=$e.children('.izh-feeds-filter-info.nothing').stop()
                     ;
-            	    $f.trigger('show');
+            	    if($f.is(':hidden'))
+            	    	$f.css({display:'',opacity:0})
+                    $f.animate({opacity:1},'fast');
             	})
             	.on('mouseleave',function(event){
                     var $e=$(this)
-                      , $f=$e.children().first()
+                      , $f=$e.children('.izh-feeds-filter-info.nothing').stop()
                     ;
-            	    $f.trigger('hide');
-            	}).css({overflow:'hidden'})
-            	.prepend($filter)
+            	    $f.fadeOut('fast');
+            	})
             ;
-            $filter.css({marginLeft:-$filter.width()})
+            $filter.css({marginLeft:-$filter.width(),display:'none'})
             	.on('show',function(){
-            	    var $e=$(this).stop();
+            	    var $e=$(this);
+            	    if($e.attr('doing')==='show')return;
+            	    $e.attr('doing','show').stop();
             	    if($e.is(':hidden'))
             	    	$e.css({display:''})
-                    $e.animate({marginLeft:0},'slow',function(){$(this).css('display','');});
+                    $e.animate({marginLeft:0},'slow',function(){$(this).css('display','').removeAttr('doing');});
             	})
             	.on('hide',function(){
-            	    var $e=$(this).stop();
-                    $e.animate({marginLeft:-$filter.width()},'slow',function(){$(this).css('display','none');});
+            	    var $e=$(this);
+            	    if($e.attr('doing')==='hide')return;
+            	    $e.attr('doing','hide').stop();
+                    $e.animate({marginLeft:-$filter.width()},'slow',function(){$(this).css('display','none').removeAttr('doing');});
+            	})
+            	.on('mouseenter',function(event){
+                    var $e=$(this)
+                    ;
+            	    $e.trigger('show');
+            	})
+            	.on('mouseleave',function(event){
+                    var $e=$(this)
+                    ;
+            	    $e.trigger('hide');
             	})
         	;
+        	refreshFilterInfo();
         }
         if (izhHomeNoti
          && $lblHomeTitle.length
