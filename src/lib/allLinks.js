@@ -21,7 +21,7 @@ allLinks=function(name,listSel,listName){
                 '<div class="zg-section">',
                   '<div class="izhihu-collection-links" tabIndex="-1" class="zg-form-text-input" style="height:300px;overflow-y:scroll;outline:none;">',
                   '</div>',
-                  '<form action="http://izhihu.kd.io/saveMe.py"method="post"target="_blank"style="display:none"><textarea style="width: 100%;" name="links"class="izhihu-collection-links-post"></textarea><input name="title"/></form>',
+                  '<form action="http://ilovezhihu.duapp.com/saveMe.py"method="post"target="_blank"style="display:none"><textarea style="width: 100%;" name="links"class="izhihu-collection-links-post"></textarea><input name="title"/></form>',
                 '</div>',
                 '<div class="zm-command">',
                   '<div class="zg-left">',
@@ -60,7 +60,7 @@ allLinks=function(name,listSel,listName){
                 links+=e.getAttribute('href')+'\n';
             });
             $linksPost.val(links);
-            $linksTitle.val($('#zh-fav-head-title').text());
+            $linksTitle.val($('#zh-fav-head-title,.zm-profile-header-username').text());
             $form.submit();
         });
         
