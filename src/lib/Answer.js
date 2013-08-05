@@ -22,11 +22,11 @@ function Answer(iZhihu) {
               , html:'<i class="izh-button z-icon-fold"></i>'
               , click:function(){
                     var $vote=$(this).closest('.zm-votebar')
-                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.answer_wrap')
+                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.entry-body')
                       , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.next('.feed-meta').find('.meta-item[name=collapse]')
                     ;
                     if($fold&&$fold.length){
-                        if($answer==null)$answer=$vote.closest('.answer_wrap');
+                        if($answer==null)$answer=$vote.closest('.entry-body');
                         iZhihu.Answer.$Folding=$answer;
                         $fold.get(0).click();
                     }
@@ -36,7 +36,7 @@ function Answer(iZhihu) {
         $a.find('.zm-votebar').append($fold).bind('DOMNodeRemoved',function(event){
             var $vote=$(event.target);
             if($vote.is('.zm-votebar')){
-                iZhihu.Answer.$Fold=$vote.closest('.answer_wrap').next('.feed-meta').find('.meta-item[name=collapse]');
+                iZhihu.Answer.$Fold=$vote.closest('.entry-body').next('.feed-meta').find('.meta-item[name=collapse]');
             }
         });
         $meta.find('.meta-item[name=collapse]').click(function(){
@@ -74,7 +74,7 @@ function Answer(iZhihu) {
                     'textAlign':'right'
                 });
                 if($a.is('.feed-item')){
-                    $a.find('.answer_wrap .zm-item-answer-detail .zm-item-rich-text')
+                    $a.find('.entry-body .zm-item-answer-detail .zm-item-rich-text')
                         .append($author.hide()).bind('DOMNodeInserted',function(event){
                             var $c=$(event.target);
                             if($c.is('.zm-editable-content')){
