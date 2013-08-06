@@ -3,11 +3,11 @@
   , "converted_from_user_script": true
 
   , "name"           : "iZhihu"
-  , "version"        : "2.9.0.400"
+  , "version"        : "2.9.0.396"
   , "description"    : ""
   , "permissions"    : [
         "http://*.zhihu.com/"
-        "http://ilovezhihu.duapp.com/"
+      , "http://ilovezhihu.duapp.com/"
     ]
   , "content_scripts": [ {
         "run_at"       : "document_end"
