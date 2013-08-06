@@ -40,7 +40,7 @@ $(function(){
             ;
             if(count){
                 info='（'+count+'条动态被隐藏）';
-                $filterInfo.removeClass('nothing');
+                $filterInfo.removeClass('nothing').css({display:''});
             }else{
                 $filterInfo.addClass('nothing');
             }   
