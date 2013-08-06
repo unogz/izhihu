@@ -30,11 +30,14 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .icon-spike{display:none !important;}'
             ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
-            ,'.zm-comment-box.empty .zm-comment-form{bottom:25px;margin:15px !important;}'
-            ,'.zm-comment-box.empty .zm-comment-form .zm-comment-editable{position:absolute;top:0;left:0;right:0;overflow:auto;}'
-            ,'.zm-comment-box.empty .zm-comment-form .zm-command{position:absolute;left:0;right:0;bottom:10px;}'
+            ,'.zm-comment-box .zm-comment-form{margin:15px !important;}'
+            ,'.zm-comment-box.empty .zm-comment-form{bottom:25px;}'
+            ,'.zm-comment-box .zm-comment-form .zm-comment-editable{position:absolute;bottom:60px;top:0;left:0;right:0;overflow:auto;}'
+            ,'.zm-comment-box.empty .zm-comment-form .zm-comment-editable{bottom:25px;}'
+            ,'.zm-comment-box .zm-comment-form .zm-command{position:absolute;left:0;right:0;bottom:40px;}'
+            ,'.zm-comment-box.empty .zm-comment-form .zm-command{bottom:10px;}'
             ,'.zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}'
-            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:35px;z-index:10;}'
+            ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:30px;z-index:10;}'
             ,'.zm-comment-box .izh-buttons-cm-L{left:0;}'
             ,'.zm-comment-box .izh-buttons-cm-L > a{margin-right:7px;}'
             ,'.zm-comment-box .izh-buttons-cm-R{right:1em;}'
@@ -611,18 +614,38 @@ function Comment(iZhihu) {
                     var $e=$(event.target)
                       , $f=$e.closest('.zm-comment-form')
                       , $l=$f.prev('.zm-comment-list')
-                      , $c=$f.closest('.zm-comment-box.empty[opened=1]')
+                      , $c=$f.closest('.zm-comment-box[opened=1]')
+                      , ch=$c.height()
+                      , winHeight=iZhihu.$win.height()
+                      , scrollTop=document.documentElement.scrollTop+document.body.scrollTop
+                      , navHeight=iZhihu.$body.children().first().height()
+                      , bar=$('.zu-global-notify.zu-global-notify-info:visible')
+                      , barHeight=!bar.length?0:bar.outerHeight()
+                      , baseTop=((barHeight&&bar.css('position')=='fixed')?barHeight:(scrollTop>barHeight?0:barHeight-scrollTop))+navHeight
+                      , minHeight=112
+                      , maxHeight=winHeight-baseTop-35
                     ;
-                    if($l.children().length==0&&$c.is('.empty')){
-                        var $t=$e.clone().css({'position':'absolute','width':$e.width()}).appendTo(document.body).show()
-                          , h=$t.height()
-                        ;
-                        $t.remove();$t=null;
-                        if($l.height()!=h){
-                            $l.css('height',h);
-                            $c.attr('izh_cmHeight','')
-                            iZhihu.Comment.box($cm,false,false);
-                        }
+                    if(!$c.length)return;
+                    if(!$c.is('.empty')&&$l.children().length>0){
+                        lh=$l.height();
+                    }else{
+                        lh=0;
+                    }
+                    var $t=$e.clone().appendTo(document.body)
+                    	    .css({'position':'absolute','z-index':'-1','width':$e.width(),'min-height':22})
+                      , eh=$t.height()
+                      , h=Math.max(eh,lh)+(lh==0?90:100)
+                    ;
+                    $t.remove();$t=null;
+                    if(isNaN(ch)||ch!=h){
+                        $c.attr('izh_cmHeight',h);
+                        iZhihu.Comment.box($c,true,false);
+                    }
+                    if(!$f.is('.expanded')&&event.addedNodes.length){
+                        $f.css({'height':'','bottom':''});
+                    }else{
+                        eh+=30;
+                        $f.css(lh==0||eh>ch?{'height':'','bottom':25}:{'height':eh,'bottom':''});
                     }
                 });
             }else{
