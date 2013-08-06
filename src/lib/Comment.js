@@ -28,14 +28,14 @@ function Comment(iZhihu) {
             ,'.zm-item-meta .meta-item.toggle-comment{display:block;float:right;margin-left:7px !important;}'
             ,'.zm-comment-box{position:absolute;margin-top:0;}'
             ,'.zm-comment-box .icon-spike{display:none !important;}'
-            ,'.zm-comment-box .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
+            ,'.zm-comment-box > .zm-comment-box-ft{position:absolute;top:0;left:0;right:0;}'
             ,'.zm-comment-box.empty{padding-top:10px !important;}'
-            ,'.zm-comment-box .zm-comment-form{margin:15px !important;}'
-            ,'.zm-comment-box.empty .zm-comment-form{bottom:25px;}'
-            ,'.zm-comment-box .zm-comment-form .zm-comment-editable{position:absolute;bottom:60px;top:0;left:0;right:0;overflow:auto;}'
-            ,'.zm-comment-box.empty .zm-comment-form .zm-comment-editable{bottom:25px;}'
-            ,'.zm-comment-box .zm-comment-form .zm-command{position:absolute;left:0;right:0;bottom:40px;}'
-            ,'.zm-comment-box.empty .zm-comment-form .zm-command{bottom:10px;}'
+            ,'.zm-comment-box > .zm-comment-form{margin:15px !important;}'
+            ,'.zm-comment-box.empty > .zm-comment-form{bottom:25px;}'
+            ,'.zm-comment-box > .zm-comment-form .zm-comment-editable{position:absolute;bottom:60px;top:0;left:0;right:0;overflow:auto;}'
+            ,'.zm-comment-box.empty > .zm-comment-form .zm-comment-editable{bottom:25px;}'
+            ,'.zm-comment-box > .zm-comment-form .zm-command{position:absolute;left:0;right:0;bottom:40px;}'
+            ,'.zm-comment-box.empty > .zm-comment-form .zm-command{bottom:10px;}'
             ,'.zm-comment-box [class^=izh-buttons-cm]{position:absolute;top:70px;}'
             ,'.zm-comment-box.empty [class^=izh-buttons-cm]{top:auto;bottom:30px;z-index:10;}'
             ,'.zm-comment-box .izh-buttons-cm-L{left:0;}'
@@ -610,7 +610,7 @@ function Comment(iZhihu) {
                     }
                 });
                 iZhihu.Comment.open($item,$cm,icmFocus);
-                utils.observeDOMNodeAdded($cm.find('.zm-comment-form .zm-comment-editable')[0],function(event){
+                utils.observeDOMNodeAdded($cm.children('.zm-comment-form').children('.zm-comment-editable')[0],function(event){
                     var $e=$(event.target)
                       , $f=$e.closest('.zm-comment-form')
                       , $l=$f.prev('.zm-comment-list')
