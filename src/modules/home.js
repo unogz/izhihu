@@ -81,12 +81,14 @@ $(function(){
                       , $f=$e.children().last()
                     ;
             	    $f.trigger('show');
+            	    $filterInfo.filter('.nothing').hide();
             	})
             	.on('mouseleave',function(event){
                     var $e=$(this)
                       , $f=$e.children().last()
                     ;
             	    $f.trigger('hide');
+            	    $filterInfo.filter('.nothing').hide();
             	})
             ;
         }
