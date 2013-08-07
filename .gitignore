@@ -1,3 +1,50 @@
+# Linux
+# backup files
+*~
+
+# Windows
+# thumbnails
+Thumbs.db
+
+# Mac OS X
+# metadata
+.DS_Store
+# thumbnails
+._*
+
+# Visual Studio PHP
+*.sln
+*.phpproj
+*.puo
+*.suo
+*.cache
+
+# Netbeans
+nbproject/
+catalog.xml
+nbactions.xml
+
+# Eclipse
+.settings/
+.buildpath
+.classpath
+.project
+
+# SVN
+# svn folders
+.svn/
+
+# PHPStorm
+.idea/
+.nameencodings
+.xmlmisc
+.xmlmodules
+.xmlprojectCodeStyle
+.xmlvcs.xml
+*.imlworkspace
+.xml
+
+
 # common #
 *.log
 logs/
@@ -24,5 +71,14 @@ grails-*.zip
 *.swp
 .DS_Store
 
+
+
 /.gitCfg.bat
 /iZhihu for Chrome/126619.user.js
+
+
+
+
+# develop files
+build/
+iZhihu for Chrome/*

@@ -1,14 +1,15 @@
 {
     "name": "izhihu",
-    "version": "2.9.0.397",
-    "root": "#",
+    "version": "2.9.0",
     "license": "MIT",
-    "dependencies": {
-    },
-    "output": {
-      "izhihu.js": {
-        "main": "./izhihu.js",
-        "includes": ["./meta.js","./jquery.min.js","./import/*.js","./lib/*.js","./izhihu.js", "./modules/*.js", "end.js"]
-      }
+    "devDependencies": {
+        "grunt": "*",
+
+        "grunt-contrib-concat": "*",
+        "grunt-contrib-uglify": "*",
+
+        "grunt-contrib-watch": "*",
+        "grunt-contrib-copy": "*",
+        "grunt-contrib-clean": "*"
     }
 }
