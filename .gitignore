@@ -81,4 +81,4 @@ grails-*.zip
 
 # develop files
 build/
-iZhihu for Chrome/*
+dist/iZhihu for Chrome/*
