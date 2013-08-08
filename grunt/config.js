@@ -19,14 +19,16 @@ module.exports = function(grunt) {
                 src: [
 
                     "src/meta.js",
+                    'src/begin.js',
                     "src/jquery.min.js",
                     "src/import/*.js",
                     "src/lib/*.js",
                     'src/izhihu.js',
                     "src/modules/*.js",
+                    "src/pages/*.js",
                     "src/end.js"
                 ], //src filled in by build task
-                dest: '<%= dist %>/<%= filename %>-<%= version %>.js'
+                dest: '<%= dist %>/<%= filename %>.js'
             }
         }
         // 压缩 js 文件
@@ -38,8 +40,8 @@ module.exports = function(grunt) {
                 report: 'gzip'
             },
             dist: {
-                src: ['<%= dist %>/<%= filename %>-<%= version %>.js'],
-                dest: '<%= dist %>/<%= filename %>-<%= version %>.min.js'
+                src: ['<%= dist %>/<%= filename %>.js'],
+                dest: '<%= dist %>/<%= filename %>.min.js'
             },
         }
         // copy 文档
@@ -52,7 +54,7 @@ module.exports = function(grunt) {
                     filter: 'isFile',
                     flatten: true,
                     src: [
-                        '<%= dist %>/<%= filename %>-<%= version %>.js',
+                        '<%= dist %>/<%= filename %>.js',
                         'misc/crx-config/init4CRX.js',
                         'misc/crx-config/manifest.json'
                     ],
@@ -102,11 +104,11 @@ module.exports = function(grunt) {
     grunt.registerTask('updateManifest', 'update crx manifest', function() {
         var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
         manifest.version = grunt.config('version') + '.' + manifest.version.split('.')[3];
-        manifest.content_scripts[0].js = ['init4CRX.js', grunt.config('filename') + '-' + grunt.config('version') + '.js'];
+        manifest.content_scripts[0].js = ['init4CRX.js', grunt.config('filename') + '.js'];
         grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
     });
 
-    grunt.registerTask('chrome', ['concat', 'updateManifest', 'copy:toChrome']);
+    grunt.registerTask('chrome', ['default', 'updateManifest', 'copy:toChrome']);
 
     return grunt;
 };
