@@ -17,11 +17,12 @@ module.exports = function(grunt) {
                     // banner: '<%= meta.modules %>\n'
                 },
                 src: [
-                    'src/izhihu.js',
-                    // "src/meta.js",
+
+                    "src/meta.js",
                     "src/jquery.min.js",
                     "src/import/*.js",
                     "src/lib/*.js",
+                    'src/izhihu.js',
                     "src/modules/*.js",
                     "src/end.js"
                 ], //src filled in by build task
@@ -46,16 +47,25 @@ module.exports = function(grunt) {
         ,
         copy: {
             toChrome: {
-                expand: true,
-                flatten: true,
-                filter: 'isFile',
-                src: [
-                    '<%= dist %>/<%= filename %>-<%= version %>.js',
-                    './misc/crx-config/init4CRX.js',
-                    './misc/crx-config/manifest.json'
-                ],
-                dest: './iZhihu for Chrome/'
-
+                files: [{
+                    expand: true,
+                    filter: 'isFile',
+                    flatten: true,
+                    src: [
+                        '<%= dist %>/<%= filename %>-<%= version %>.js',
+                        'misc/crx-config/init4CRX.js',
+                        'misc/crx-config/manifest.json'
+                    ],
+                    dest: 'iZhihu for Chrome/package'
+                }, {
+                    expand: true,
+                    flatten: true,
+                    filter: 'isFile',
+                    src: [
+                        'misc/crx-config/iZhihu for Chrome.pem'
+                    ],
+                    dest: 'iZhihu for Chrome/'
+                }]
             },
         }
         // 监控文件变化并动态执行任务
@@ -76,15 +86,22 @@ module.exports = function(grunt) {
 
     grunt.registerTask('buildnum', 'build num +1', function() {
         var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
-        manifest.build = 1 + parseInt(manifest.build);
-        console.log('cur build', manifest.build);
+
+        var versions = manifest.version.split('.');
+
+        versions[3] = parseInt(versions[3]) + 1;
+
+        manifest.version = versions.join('.');
+
+        console.log('cur build', versions[3]);
+
         grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
     });
 
 
     grunt.registerTask('updateManifest', 'update crx manifest', function() {
         var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
-        manifest.version = grunt.config('version') + '.' + manifest.build;
+        manifest.version = grunt.config('version') + '.' + manifest.version.split('.')[3];
         manifest.content_scripts[0].js = ['init4CRX.js', grunt.config('filename') + '-' + grunt.config('version') + '.js'];
         grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
     });
