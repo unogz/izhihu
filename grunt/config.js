@@ -1,10 +1,11 @@
 module.exports = function(grunt) {
+    var path_dist = 'dist';
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json') //
         ,
         version: '<%= pkg.version %>' //
         ,
-        dist: 'dist' //
+        dist: path_dist //
         ,
         filename: '<%= pkg.name %>' //
 
@@ -55,18 +56,8 @@ module.exports = function(grunt) {
                     flatten: true,
                     src: [
                         '<%= dist %>/<%= filename %>.js',
-                        'misc/crx-config/init4CRX.js',
-                        'misc/crx-config/manifest.json'
                     ],
-                    dest: 'iZhihu for Chrome/package'
-                }, {
-                    expand: true,
-                    flatten: true,
-                    filter: 'isFile',
-                    src: [
-                        'misc/crx-config/iZhihu for Chrome.pem'
-                    ],
-                    dest: 'iZhihu for Chrome/'
+                    dest: '<%= dist %>/iZhihu for Chrome'
                 }]
             },
         }
@@ -87,7 +78,7 @@ module.exports = function(grunt) {
 
 
     grunt.registerTask('buildnum', 'build num +1', function() {
-        var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
+        var manifest = grunt.file.readJSON('./' + path_dist + '/iZhihu for Chrome/manifest.json');
 
         var versions = manifest.version.split('.');
 
@@ -97,15 +88,15 @@ module.exports = function(grunt) {
 
         console.log('cur build', versions[3]);
 
-        grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
+        grunt.file.write('./' + path_dist + '/iZhihu for Chrome/manifest.json', JSON.stringify(manifest));
     });
 
 
     grunt.registerTask('updateManifest', 'update crx manifest', function() {
-        var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
+        var manifest = grunt.file.readJSON('./' + path_dist + '/iZhihu for Chrome/manifest.json');
         manifest.version = grunt.config('version') + '.' + manifest.version.split('.')[3];
         manifest.content_scripts[0].js = ['init4CRX.js', grunt.config('filename') + '.js'];
-        grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
+        grunt.file.write('./' + path_dist + '/iZhihu for Chrome/manifest.json', JSON.stringify(manifest));
     });
 
     grunt.registerTask('chrome', ['default', 'updateManifest', 'copy:toChrome']);
