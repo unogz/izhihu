@@ -1,5 +1,5 @@
-var version='2.9';
-var updateDate='2013-8-9';
+var version='2.9.1';
+var updateDate='2013-8-14';
 
 var bGreasemonkeyServiceDefined = false;
 
@@ -15,7 +15,7 @@ catch (err) {
 if ( typeof unsafeWindow === "undefined"  ||  ! bGreasemonkeyServiceDefined) {
     unsafeWindow    = ( function () {
         var dummyElem   = document.createElement('p');
-        dummyElem.setAttribute ('onclick', 'return window;');
+        dummyElem.onclick=function(){return window;};
         return dummyElem.onclick ();
     } ) ();
 }
