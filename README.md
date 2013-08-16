@@ -25,7 +25,7 @@
 
 ## 反馈地址
 
-- 知乎话题: 待补
+- 知乎专栏: [http://zhuanlan.zhihu.com/izhihu](http://zhuanlan.zhihu.com/izhihu)
 - github: [https://github.com/unogz/izhihu](https://github.com/unogz/izhihu)
 
 ## 关于我们
