@@ -75,7 +75,7 @@ module.exports = function(grunt) {
     });
 
     // 设定 任务
-    grunt.registerTask('default', ['concat', 'uglify']);
+    grunt.registerTask('default', ['concat']);
 
 
     grunt.registerTask('buildnum', 'build num +1', function() {
