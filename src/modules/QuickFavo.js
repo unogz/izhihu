@@ -21,24 +21,34 @@ function QuickFavo(iZhihu) {
         ,'div.izh_fav a.fav span{float:right;display:block;margin-right:-32px}'
         ,'.meta-item.on{position:relative;z-index:10000;background-color:#fff;border:1px solid #999999;border-top-color:#fff;margin:-1px -8px -1px -1px;padding:0 7px;border-radius:2px 2px 3px 3px;}'
         ,''].join('\n');
-    this.addQuickFavo = function($v,$a){
+    this.addQuickFavo = function($v,$ai){
         if($v.length){
-            if($a.children('.izh_fav').length<=0){
+            var $a=$ai
+              , $m=$v.closest('.zm-item-meta');
+            if(pageIs.Answers||pageIs.Collection||pageIs.Roundtable){
+                $a=$ai.find('.zm-item-answer');
+            }else if(pageIs.Debuts){
+                $a=$ai.find('.entry-body');
+            }
+            if($m.parent().children('.izh_fav').length<=0){
                 $('<div class="izh_fav">loading...</div>').bind('mouseover',function(){
                     $(this).show().parent().find('.meta-item[name=favo]').addClass('on');
                 }).bind('mouseout',function(){
                     $(this).hide().parent().find('.meta-item[name=favo]').removeClass('on');
-                }).appendTo($a);
+                }).appendTo($m.parent());
             }
             $v.bind('mouseenter',function(){
-                var $a=iZhihu.getItem($(this))
-                  , $m=$(this).addClass('on').closest('.zm-item-meta')
+                var $m=$(this).addClass('on').closest('.zm-item-meta')
+                  , $ai=iZhihu.getItem($m)
+                  , $a=pageIs.Answers||pageIs.Collection||pageIs.Roundtable?$m.closest('.zm-item-answer')
+                        :pageIs.Debuts?$m.prev('.entry-body')
+                        :$ai
                   , aid=$a.attr('data-aid')
                   , $op=$(this).offsetParent()
                   , bottom1=parseInt($op.css('margin-bottom'))
-                  , bottom2=parseInt($a.css('padding-bottom'))
+                  , bottom2=parseInt($a.css('padding-bottom'))+pageIs.Debuts?10:0
                 ;
-                $a.children('.izh_fav').css({
+                $ai.find('.izh_fav').css({
                     'bottom':(isNaN(bottom1)?0:bottom1)+(isNaN(bottom2)?0:bottom2)+$op.height()-$(this).position().top
                   , 'left':$(this).position().left
                 }).html('loading...').show();
@@ -47,9 +57,12 @@ function QuickFavo(iZhihu) {
                       , sel=pageIs.Question?'.zm-item-answer'
                            :pageIs.Home?'.feed-item'
                            :pageIs.Answer?'.zm-item-answer'
+                           :pageIs.Answers||pageIs.Collection||pageIs.Roundtable?'.zm-item-answer'
+                           :pageIs.Debuts?'.entry-body'
                            :''
-                      , $a=$(sel+'[data-aid='+aid+']')
-                      , $v=$a.children('.izh_fav').html([
+                      , $a=''==sel?null:$(sel+'[data-aid='+aid+']')
+                      , $ai=''==sel?null:iZhihu.getItem($a)
+                      , $v=''==sel?null:$ai.find('.izh_fav').html([
                             '<div class="title"title="以下为最近选择的收藏夹">快速收藏</div>'
                           //, '<div class="pinned"></div><div class="normal"></div>'
                         ].join(''))
@@ -91,14 +104,19 @@ function QuickFavo(iZhihu) {
                             }).click(function(){
                                 var u='http://www.zhihu.com/collection/';
                                 u+=$(this).hasClass('selected')?'remove':'add';
-                                $.post(u,$.param({_xsrf:$('input[name=_xsrf]').val(),answer_id:$(this).attr('aid'),favlist_id:$(this).attr('fid')}),function(result){
+                                $.post(u,$.param({answer_id:$(this).attr('aid'),favlist_id:$(this).attr('fid')}),function(result){
                                     var act=this.url.substring(this.url.lastIndexOf('/')+1)
                                       , fid=utils.getParamInQuery(this.data,'favlist_id')
                                       , aid=utils.getParamInQuery(this.data,'answer_id')
                                       , sel=pageIs.Question?'.zm-item-answer'
                                            :pageIs.Home?'.feed-item'
+                                           :pageIs.Answer?'.zm-item-answer'
+                                           :pageIs.Answers||pageIs.Collection||pageIs.Roundtable?'.zm-item-answer'
+                                           :pageIs.Debuts?'.entry-body'
                                            :''
-                                      , $vi=''==sel?null:$(sel+'[data-aid='+aid+'] .izh_fav a[fid='+fid+']')
+                                      , $a=''==sel?null:$(sel+'[data-aid='+aid+']')
+                                      , $ai=''==sel?null:iZhihu.getItem($a)
+                                      , $vi=''==sel?null:$ai.find('.izh_fav a[fid='+fid+']')
                                       , inc=0;
                                     if(''==sel)return;
                                     if(act=='remove'&&result.msg=='OK'){
@@ -124,7 +142,7 @@ function QuickFavo(iZhihu) {
             });
             $v.bind('mouseleave',function(){
                 var $a=iZhihu.getItem($(this).removeClass('on'));
-                $a.children('.izh_fav').hide();
+                $a.find('.izh_fav').hide();
             });
         }
     };

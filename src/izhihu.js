@@ -34,6 +34,7 @@ pageIs.Question=!pageIs.Answer&&0==_path.indexOf('/question/');
 pageIs.Answers=0<iPathAnswers&&_path.substr(iPathAnswers)=='/answers';
 pageIs.Collection=0==iPathCollection;
 pageIs.Debuts=0==_path.indexOf('/debuts/');
+pageIs.Roundtable=0==_path.indexOf('/roundtable/');
 pageIs.MyCollection=0==_path.indexOf('/collections/mine');
 
 var i=0
@@ -240,7 +241,7 @@ if(izhHomeLayout){
 }
 
 var css_comment='';
-if(pageIs.Home||pageIs.Question||pageIs.Answer){
+if(pageIs.Home||pageIs.Question||pageIs.Answer||pageIs.Answers||pageIs.Collection||pageIs.Debuts){
     css_comment = window.iZhihu.Comment.css;
 }
 
@@ -278,8 +279,10 @@ window.iZhihu.getItem=function($c){
     var $item=$(null);
     if($c && $c.length){ 
         var $itemMeta=$c.closest('.zm-item-meta');
-        if ($itemMeta.parent().is('.feed-meta')){
+        if (pageIs.Debuts||$itemMeta.parent().is('.feed-meta')){
             $item=$c.closest('.feed-item');
+        }else if(pageIs.Answers||pageIs.Collection||pageIs.Roundtable){
+            $item=$c.closest('.zm-item');
         }else if($itemMeta.is('.answer-actions')){
             $item=$c.closest('.zm-item-answer,.feed-item');
         }else{

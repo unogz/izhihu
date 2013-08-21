@@ -161,7 +161,7 @@ $(function(){
             }).appendTo($lblHomeTitle);
         }
     }
-    if(pageIs.Home||pageIs.Debuts){
+    if(pageIs.Home||pageIs.Debuts||pageIs.Roundtable){
         $feedList.find('.feed-item').each(function(i,e){
             window.iZhihu.Answer.processAnswer($(e),null
               , izhAuthorRear

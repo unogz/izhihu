@@ -14,6 +14,7 @@ function Answer(iZhihu) {
   	this.processAnswer=function($a,$pp,bAuthorRear,bAuthorList){
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
+        $a.attr('izh_processed','0');
         var $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
