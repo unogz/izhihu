@@ -18,8 +18,8 @@ function Answer(iZhihu) {
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
           , $fold=!$a.has('.zh-summary').length?null:$('<button/>',{
-                'class':'down'
-              , html:'<i class="izh-button z-icon-fold"></i>'
+                'class':'down izh-button fold'
+              , html:'收起'
               , click:function(){
                     var $vote=$(this).closest('.zm-votebar')
                       , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.entry-body')
