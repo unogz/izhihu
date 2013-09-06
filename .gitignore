@@ -74,10 +74,7 @@ grails-*.zip
 
 
 /.gitCfg.bat
-/iZhihu for Chrome/126619.user.js
-
-
-
+/iZhihu for Chrome/
 
 # develop files
 build/
