@@ -83,7 +83,8 @@ function Answer(iZhihu) {
                                     .css({
                                         'position':'absolute'
                                       , 'right':0
-                                    }).show();
+                                    }).show()
+                                    .find('[name=collapse]').hide();
                             }
                         });
                 }else{
