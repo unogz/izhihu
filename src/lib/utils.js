@@ -16,6 +16,7 @@ var cfgDefault = {
   , 'HomeNoti':false
   , 'QuickBlock':false
   , 'Noti7':true
+  , 'HomeFeedsColumns':false
 };
   
 /**
