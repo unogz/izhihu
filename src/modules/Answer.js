@@ -69,6 +69,7 @@ function Answer(iZhihu) {
             // Region end
         }
         if($author.length){//relocatePersonInfo
+        	$author.find('[name=collapse]').hide();
             if(bAuthorRear){
                 $author.css({
                     'textAlign':'right'
@@ -83,8 +84,7 @@ function Answer(iZhihu) {
                                     .css({
                                         'position':'absolute'
                                       , 'right':0
-                                    }).show()
-                                    .find('[name=collapse]').hide();
+                                    }).show();
                             }
                         });
                 }else{
