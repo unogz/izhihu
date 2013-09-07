@@ -9,11 +9,11 @@ $(function(){
       , $filter=$('<span>',{
             'class':'izh-feeds-filter'
           , html:[''
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="QUESTION_"><i class="zg-icon"></i>问题</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="QUESTION_CREATE"><i class="zg-icon"></i>提问</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="QUESTION_FOLLOW"><i class="zg-icon"></i>关注</a>'
               , '<a class="izh-button izh-feeds-filter-option"showFeeds="ANSWER_CREATE"><i class="zg-icon"></i>回答</a>'
               , '<a class="izh-button izh-feeds-filter-option"showFeeds="ANSWER_VOTE_"><i class="zg-icon"></i>赞同</a>'
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ARTICLE_"><i class="zg-icon"></i>专栏</a>'
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ROUNDTABLE_"><i class="zg-icon"></i>圆桌</a>'
+              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ARTICLE_,ROUNDTABLE_"data-tip="s$t$专栏、圆桌"><i class="zg-icon"></i>其他</a>'
             ].join('')
         })
       , $filterInfo=$('<a>',{'class':'izh-feeds-filter-info nothing',href:'javascript:void(0);'}).on('click',function(){$filter.trigger($filter.is(':hidden')||$filter.attr('doing')=='hide'?'show':'hide');})
