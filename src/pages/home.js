@@ -45,104 +45,278 @@ $(function(){
                 $filterInfo.addClass('nothing');
             }   
             $filterInfo.html(info);
+        }
+      , izhHomeFeedsColumns = window.iZhihu.config['HomeFeedsColumns']
+      , feedsColumns=function(){ // Implemented by morley, modified by unogz
+			//动态的类型
+			var feedTypes = [{
+			 index: 0,
+			 name: '全部',
+			 codeName: ''
+			}, {
+			 index: 1,
+			 name: '提问',
+			 codeName: 'QUESTION_CREATE'
+			}, {
+			 index: 2,
+			 name: '关注',
+			 codeName: 'QUESTION_FOLLOW'
+			}, {
+			 index: 3,
+			 name: '回答',
+			 codeName: 'ANSWER_CREATE'
+			}, {
+			 index: 4,
+			 name: '赞同',
+			 codeName: 'ANSWER_VOTE_UP'
+			}, {
+			 index: 5,
+			 name: '专栏',
+			 codeName: 'ARTICLE_'
+			}, {
+			// index: 6,
+			// name: '顶贴',
+			// codeName: 'ARTICLE_VOTE_UP'
+			// }, {
+			//     index: 7,
+			//     name: '圆桌',
+			//     codeName: 'ROUNDTABLE_ADD_RELATED'
+			// }, {
+			//     index: 8,
+			//     name: '推荐内容',
+			//     codeName: 'RECOMMENDED'
+			}];
+			
+			//自定义 CSS 到 head
+			var styles = [];
+			
+			styles.push('.za-filter{display: inline-block;margin-right:10px;cursor:pointer;color:#999;}');
+			styles.push('.za-filter.active{color:#259;}');
+			styles.push('.za-filter>.zg-num.hide{display:none;}');
+			
+			$('<style/>').html(styles.join('')).appendTo('head');
+			
+			var $zhHomeListTitle = $('#zh-home-list-title');
+			
+			//根据类型添加过滤按钮 到 #zh-home-list-title
+			var filterBtns = []
+			  , i = feedTypes.length;
+			
+			while (i--) {
+			 filterBtns.push(
+			     $('<span class="za-filter"/>')
+			     .attr('typeIndex', feedTypes[i].index)
+			     .html(feedTypes[i].name)
+			     .append($('<span class="zg-num"/>').addClass('hide'))
+			     .on('click', toggleFeedType)
+			 );
+			}
+			
+			filterBtns.reverse();
+			filterBtns[0].addClass('active');
+			var curfeedTypeCodeName = '';
+			
+			$zhHomeListTitle.html(
+			 $zhHomeListTitle.html().replace('最新动态', '')
+			).find('i').eq(0).after(filterBtns).remove();
+
+			var $targetZero = filterBtns[0].find('.zg-num');
+
+			//按钮事件
+			function toggleFeedType() {
+			 var $clicked = $(this);
+			 $clickedNum = $clicked.find('.zg-num');
+			 // 交互效果
+			 filterBtns.forEach(function(item) {
+			     item.removeClass('active');
+			 });
+
+			 $clicked.addClass('active');
+
+			 if ($clicked.attr('typeIndex') == 0) {
+			     $('.zg-num', '.za-filter').html('').addClass('hide');
+			 } else {
+			     var totalUnread = (parseInt($targetZero.html()) || 0) - (parseInt($clickedNum.html()) || 0);
+			     if (totalUnread != 0) {
+			         $targetZero.html(totalUnread);
+			     } else {
+			         $targetZero.html('').addClass('hide');
+			     }
+			
+			     $clickedNum.html('').addClass('hide');
+			 }
+			 curfeedTypeCodeName = feedTypes[$clicked.attr('typeIndex')].codeName;
+			 // 信息流过滤
+			 $('.feed-item').each(function() {
+			     typeMatch($(this));
+			 });
+			}
+			
+			function typeMatch($elem) {
+			 if (curfeedTypeCodeName == '') {
+			     $elem.show();
+			 } else if (curfeedTypeCodeName == $elem.attr('data-feedtype')) {
+			     $elem.show();
+			 } else {
+			     $elem.hide();
+			 }
+			}
+			
+			function getTypeIndexByCodeName(codeName) {
+			 var i = feedTypes.length;
+			 while (i--) {
+			     if (codeName.indexOf(feedTypes[i].codeName)) {
+			         return i;
+			     };
+			 }
+			}
+			
+			var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+			
+			//监听推送
+			var hasNewFeed = false;
+			//create an observer instance
+			var observer = new MutationObserver(function(mutations) {
+			 if ( !! parseInt($("#zh-main-feed-fresh-button").html())) {
+			     mutations.forEach(function(mutation) {
+			         if (mutation.type === 'childList') {
+			             console.log('Has New Feed');
+			             // 有新推送则触发之
+			             hasNewFeed = true;
+			             $("#zh-main-feed-fresh-button").html('');
+			             $.when($("#zh-main-feed-fresh-button")[0].click()).done(function() {
+			                 setTimeout(function() {
+			                     hasNewFeed = false;
+			                 }, 1000);
+			             });
+			         }
+			     });
+			 };
+			});
+			
+			//pass in the target node, as well as the observer options
+			observer.observe(
+			 $("#zh-main-feed-fresh-button")[0], {
+			     childList: true
+			 });
+			
+			//监听插入
+			$('#js-home-feed-list').on("DOMNodeInserted", function(e) {
+			 var $self = $(e.target);
+			
+			 if ($self.hasClass('feed-item')) {
+			     if (hasNewFeed) {
+			         $self.hide();
+			         var $target = filterBtns[getTypeIndexByCodeName($self.attr('data-feedtype'))].find('.zg-num');
+			         $target.html((parseInt($target.html()) || 0) + 1).removeClass('hide');
+			         $targetZero.html((parseInt($targetZero.html()) || 0) + 1).removeClass('hide');
+			     } else {
+			         typeMatch($self);
+			     }
+			 }
+          });
       }
     ;
     if (pageIs.Home){
-        $filter.children('.izh-feeds-filter-option').addClass('on').click(function(event){
-            var i=0
-              , $e=$(this)
-              , fs=$e.attr('showFeeds')
-              , fa=fs.split(',')
-            ;
-            $('.izh-feeds-filter-option[showFeeds="'+fs+'"]').toggleClass('on');
-            for(;i<fa.length;i++){
-                ShowFeeds(fa[i],$e.is('.on'));
-            }
-            refreshFilterInfo();
-    	});
-        if($topLinkHome.length){
-            var $filter2=$('<div>')
-            		.css({position:'absolute',border:'1px solid #777',backgroundColor:'#fff'}).hide()
-                    .append($filter.clone(true,true).css({display:'block'}))
-                	.on('show',function(){
-                	    var $e=$(this).stop();
-                	    if($e.is(':hidden'))
-                	    	$e.css({display:'',opacity:0})
-                        $e.animate({opacity:1},'slow');
-                	})
-                	.on('hide',function(){
-                	    var $e=$(this).stop();
-                    	$e.fadeOut('slow');
-                	})
-            ;
-            $topLinkHome.after($filter2).parent()
-            	.on('mouseenter',function(event){
-                    var $e=$(this)
-                      , $f=$e.children().last()
-                    ;
-            	    $f.trigger('show');
-            	    $filterInfo.filter('.nothing').hide();
-            	})
-            	.on('mouseleave',function(event){
-                    var $e=$(this)
-                      , $f=$e.children().last()
-                    ;
-            	    $f.trigger('hide');
-            	    $filterInfo.filter('.nothing').hide();
-            	})
-            ;
-        }
-        if($lblHomeTitle.length){
-            $filterInfo.css({
-                display:'none'
-              , textDecoration:'none'
-              , cursor:'pointer'
-            }).insertBefore($('#feed-ver'));
-            $lblHomeTitle.css({overflow:'hidden'})
-            	.prepend($filter)
-            	//.children('i:first')
-            	.on('mouseenter',function(event){
-                    var $e=$(this)
-                      , $f=$e.children('.izh-feeds-filter-info.nothing').stop()
-                    ;
-            	    if($f.is(':hidden'))
-            	    	$f.css({display:'',opacity:0})
-                    $f.animate({opacity:1},'fast');
-            	})
-            	.on('mouseleave',function(event){
-                    var $e=$(this)
-                      , $f=$e.children('.izh-feeds-filter-info.nothing').stop()
-                    ;
-            	    $f.fadeOut('fast');
-            	})
-            ;
-            $filter.css({marginLeft:-$filter.width(),display:'none'})
-            	.on('show',function(){
-            	    var $e=$(this);
-            	    if($e.attr('doing')==='show')return;
-            	    $e.attr('doing','show').stop();
-            	    if($e.is(':hidden'))
-            	    	$e.css({display:''})
-                    $e.animate({marginLeft:0},'slow',function(){$(this).css('display','').removeAttr('doing');});
-            	})
-            	.on('hide',function(){
-            	    var $e=$(this);
-            	    if($e.attr('doing')==='hide')return;
-            	    $e.attr('doing','hide').stop();
-                    $e.animate({marginLeft:-$filter.width()},'slow',function(){$(this).css('display','none').removeAttr('doing');});
-            	})
-            	.on('mouseenter',function(event){
-                    var $e=$(this)
-                    ;
-            	    $e.trigger('show');
-            	})
-            	.on('mouseleave',function(event){
-                    var $e=$(this)
-                    ;
-            	    $e.trigger('hide');
-            	})
-        	;
-        	refreshFilterInfo();
+    	if (!izhHomeFeedsColumns){
+	        $filter.children('.izh-feeds-filter-option').addClass('on').click(function(event){
+	            var i=0
+	              , $e=$(this)
+	              , fs=$e.attr('showFeeds')
+	              , fa=fs.split(',')
+	            ;
+	            $('.izh-feeds-filter-option[showFeeds="'+fs+'"]').toggleClass('on');
+	            for(;i<fa.length;i++){
+	                ShowFeeds(fa[i],$e.is('.on'));
+	            }
+	            refreshFilterInfo();
+	    	});
+	        if($topLinkHome.length){
+	            var $filter2=$('<div>')
+	            		.css({position:'absolute',border:'1px solid #777',backgroundColor:'#fff'}).hide()
+	                    .append($filter.clone(true,true).css({display:'block'}))
+	                	.on('show',function(){
+	                	    var $e=$(this).stop();
+	                	    if($e.is(':hidden'))
+	                	    	$e.css({display:'',opacity:0})
+	                        $e.animate({opacity:1},'slow');
+	                	})
+	                	.on('hide',function(){
+	                	    var $e=$(this).stop();
+	                    	$e.fadeOut('slow');
+	                	})
+	            ;
+	            $topLinkHome.after($filter2).parent()
+	            	.on('mouseenter',function(event){
+	                    var $e=$(this)
+	                      , $f=$e.children().last()
+	                    ;
+	            	    $f.trigger('show');
+	            	    $filterInfo.filter('.nothing').hide();
+	            	})
+	            	.on('mouseleave',function(event){
+	                    var $e=$(this)
+	                      , $f=$e.children().last()
+	                    ;
+	            	    $f.trigger('hide');
+	            	    $filterInfo.filter('.nothing').hide();
+	            	})
+	            ;
+	        }
+	        if($lblHomeTitle.length){
+	            $filterInfo.css({
+	                display:'none'
+	              , textDecoration:'none'
+	              , cursor:'pointer'
+	            }).insertBefore($('#feed-ver'));
+	            $lblHomeTitle.css({overflow:'hidden'})
+	            	.prepend($filter)
+	            	//.children('i:first')
+	            	.on('mouseenter',function(event){
+	                    var $e=$(this)
+	                      , $f=$e.children('.izh-feeds-filter-info.nothing').stop()
+	                    ;
+	            	    if($f.is(':hidden'))
+	            	    	$f.css({display:'',opacity:0})
+	                    $f.animate({opacity:1},'fast');
+	            	})
+	            	.on('mouseleave',function(event){
+	                    var $e=$(this)
+	                      , $f=$e.children('.izh-feeds-filter-info.nothing').stop()
+	                    ;
+	            	    $f.fadeOut('fast');
+	            	})
+	            ;
+	            $filter.css({marginLeft:-$filter.width(),display:'none'})
+	            	.on('show',function(){
+	            	    var $e=$(this);
+	            	    if($e.attr('doing')==='show')return;
+	            	    $e.attr('doing','show').stop();
+	            	    if($e.is(':hidden'))
+	            	    	$e.css({display:''})
+	                    $e.animate({marginLeft:0},'slow',function(){$(this).css('display','').removeAttr('doing');});
+	            	})
+	            	.on('hide',function(){
+	            	    var $e=$(this);
+	            	    if($e.attr('doing')==='hide')return;
+	            	    $e.attr('doing','hide').stop();
+	                    $e.animate({marginLeft:-$filter.width()},'slow',function(){$(this).css('display','none').removeAttr('doing');});
+	            	})
+	            	.on('mouseenter',function(event){
+	                    var $e=$(this)
+	                    ;
+	            	    $e.trigger('show');
+	            	})
+	            	.on('mouseleave',function(event){
+	                    var $e=$(this)
+	                    ;
+	            	    $e.trigger('hide');
+	            	})
+	        	;
+	        	refreshFilterInfo();
+	        }
+        }else{
+        	feedsColumns();
         }
         if (izhHomeNoti
          && $lblHomeTitle.length

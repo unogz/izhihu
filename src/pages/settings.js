@@ -34,6 +34,7 @@ $(function(){
                 '<tr><td align="left"title="">开启「快速屏蔽」（加入黑名单/取消关注）功能</td><td align="right"><i class="icon icon-help" data-tip="s$t$在赞同列表、评论列表中使用"></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickBlock" name="QuickBlock" /></td></tr>',
                 '<tr><td align="left"title="">开启「快速收藏」菜单</td><td align="right"><i class="icon icon-help" data-tip="s$t$鼠标移上「收藏」按钮时显示"></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setQuickFavo" name="QuickFavo" /></td></tr>',
                 '<tr><td align="left"title="">开启「回答目录」</td><td align="right"><i class="icon icon-help" data-tip="s$t$在问题页面左侧掩藏，鼠标移上时展开<br/>并在右侧即时显示回答预览"></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorList" name="AuthorList" /></td></tr>',
+                '<tr><td align="left"title="">开启「首页分栏」</td><td align="right"><i class="icon icon-help" data-tip="s$t$"></i><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeFeedsColumns" name="HomeFeedsColumns" /></td></tr>',
             	'</tbody>',
             '</table>',
             '</div>',
