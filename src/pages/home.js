@@ -155,7 +155,7 @@ $(function(){
 			function typeMatch($elem) {
 			 if (curfeedTypeCodeName == '') {
 			     $elem.show();
-			 } else if (curfeedTypeCodeName == $elem.attr('data-feedtype')) {
+			 } else if (0 <= $elem.attr('data-feedtype').indexOf(curfeedTypeCodeName)) {
 			     $elem.show();
 			 } else {
 			     $elem.hide();
@@ -165,7 +165,7 @@ $(function(){
 			function getTypeIndexByCodeName(codeName) {
 			 var i = feedTypes.length;
 			 while (i--) {
-			     if (codeName.indexOf(feedTypes[i].codeName)) {
+			     if (codeName == feedTypes[i].codeName) {
 			         return i;
 			     };
 			 }
