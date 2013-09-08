@@ -17,7 +17,7 @@ function Answer(iZhihu) {
         var $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
-          , $fold=!$a.has('.zh-summary').length?null:$('<button/>',{
+          , $fold=!$a.has('.zh-summary > .toggle-expand').length?null:$('<button/>',{
                 'class':'down izh-button fold'
               , html:'收起'
               , click:function(){
