@@ -7,15 +7,21 @@ function QuickFavo(iZhihu) {
     }
     iZhihu.QuickFavo = this;
     
+    var htmlSpinner = '<i class="spinner-gray"></i>'
+      , htmlLoading = htmlSpinner + '&nbsp;加载中...&nbsp;'
+    ;
+    
     this.DefaultCount = 4;
     this.PinnedList = iZhihu.config['QuickFavoPinned'];
     this.css = 
-        ['.izh-Pin4QuickFavo{padding:0 5px;float:right;display:block;margin-top:4px;margin-right:2em;line-height:1.25;}'
+        ['.izh-Pin4QuickFavo{padding:3px 5px 0;float:right;display:block;margin-top:4px;margin-right:2em;line-height:1.25;}'
         ,'.izh-Pin4QuickFavo .zm-item-top-btn{visibility:visible;margin:0 4px;float:right;}'
-        ,'div.izh_fav{position:absolute;z-index:9999;display:none;border:1px solid #999999;background-color:#fff;border-radius:5px 5px 0 0;margin-left:-1px;}'
+        ,'div.izh_fav{position:absolute;z-index:9999;display:none;border:1px solid #999999;background-color:#fff;border-radius:5px 5px 5px 0;margin-left:-1px;}'
         ,'div.izh_fav .title{padding:0 5px;background-color:#0874c4;color:#fff;font-weight:bold;font-size:15px;text-align:center;border-radius:3px 3px 0 0;}'
         ,'div.izh_fav a.fav{display:block;clear:both;float;left;padding:0 36px 0 24px;line-height:2;}'
-        ,'div.izh_fav a.fav i.z-icon-collect{visibility:hidden;background-position:-56px -36px;position:absolute;left:10px;margin-top:0.5em;}'
+        ,'div.izh_fav a.fav i{position:absolute;margin-top:0.5em;}'
+        ,'div.izh_fav a.fav i.spinner-gray{left:0;}'
+        ,'div.izh_fav a.fav i.z-icon-collect{left:10px;visibility:hidden;background-position:-56px -36px;}'
         ,'div.izh_fav a.fav.selected i.z-icon-collect{visibility:visible;}'
         ,'div.izh_fav a.fav:hover{text-decoration:none}'
         ,'div.izh_fav a.fav span{float:right;display:block;margin-right:-32px}'
@@ -24,7 +30,7 @@ function QuickFavo(iZhihu) {
     this.addQuickFavo = function($v,$a){
         if($v.length){
             if($a.children('.izh_fav').length<=0){
-                $('<div class="izh_fav">loading...</div>').bind('mouseover',function(){
+                $('<div class="izh_fav">'+htmlLoading+'</div>').bind('mouseover',function(){
                     $(this).show().parent().find('.meta-item[name=favo]').addClass('on');
                 }).bind('mouseout',function(){
                     $(this).hide().parent().find('.meta-item[name=favo]').removeClass('on');
@@ -41,7 +47,7 @@ function QuickFavo(iZhihu) {
                 $a.children('.izh_fav').css({
                     'bottom':(isNaN(bottom1)?0:bottom1)+(isNaN(bottom2)?0:bottom2)+$op.height()-$(this).position().top
                   , 'left':$(this).position().left
-                }).html('loading...').show();
+                }).show();
                 $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:aid}),function(result,status,xhr){
                     var aid=this.url.substr(this.url.indexOf('answer_id=')+10)
                       , sel=pageIs.Question?'.zm-item-answer'
@@ -89,8 +95,13 @@ function QuickFavo(iZhihu) {
                               , fid:fID
                               , html:fName
                             }).click(function(){
-                                var u='http://www.zhihu.com/collection/';
-                                u+=$(this).hasClass('selected')?'remove':'add';
+                                var u='http://www.zhihu.com/collection/'
+                                  , $f=$(this)
+                                  , $i=$f.children(':first')
+                                ;
+                                if($i.hasClass('spinner-gray'))return;
+                                u+=$f.hasClass('selected')?'remove':'add';
+                                $i.attr('class','spinner-gray');
                                 $.post(u,$.param({_xsrf:$('input[name=_xsrf]').val(),answer_id:$(this).attr('aid'),favlist_id:$(this).attr('fid')}),function(result){
                                     var act=this.url.substring(this.url.lastIndexOf('/')+1)
                                       , fid=utils.getParamInQuery(this.data,'favlist_id')
@@ -111,6 +122,7 @@ function QuickFavo(iZhihu) {
                                     if(inc!=0){
                                         $vi.children('span').html(parseInt($vi.children('span').html())+inc);
                                     }
+                                    $vi.children(':first').attr('class','z-icon-collect');
                                 });
                             }).prepend($('<i/>',{'class':'z-icon-collect'}))
                               .append($('<span/>',{html:e[3]}));
