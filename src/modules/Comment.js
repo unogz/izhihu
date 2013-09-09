@@ -18,6 +18,7 @@ function Comment(iZhihu) {
         }
     ;
     this.RightComment = iZhihu.config['ShowComment'];
+    this.AutoScrollPageWhenClosing = iZhihu.config['RightComment_AutoScrollPageWhenClosing'];
     if (!this.RightComment){
         this.css = 
             ['.zm-comment-box.empty .izh-button-cc{display:none;}'
@@ -99,7 +100,7 @@ function Comment(iZhihu) {
     };
     
     this.metaScrollToViewBottom = function($itemMeta,funcAfterScroll,always,animate){
-        if(!iZhihu.Comment.RightComment){
+        if(!iZhihu.Comment.RightComment || !iZhihu.Comment.AutoScrollPageWhenClosing){
             if(funcAfterScroll){funcAfterScroll();}
             return;
         }
