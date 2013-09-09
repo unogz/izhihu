@@ -32,13 +32,18 @@ function Answer(iZhihu) {
                     }
               	}
             })
+          , $vote=$a.find('.zm-votebar')
         ;
-        $a.find('.zm-votebar').append($fold).bind('DOMNodeRemoved',function(event){
-            var $vote=$(event.target);
-            if($vote.is('.zm-votebar')){
-                iZhihu.Answer.$Fold=$vote.closest('.entry-body').next('.feed-meta').find('.meta-item[name=collapse]');
-            }
-        });
+        if($vote.length){
+            $vote.append($fold).bind('DOMNodeRemoved',function(event){
+                var $vote=$(event.target);
+                if($vote.is('.zm-votebar')){
+                    iZhihu.Answer.$Fold=$vote.closest('.entry-body').next('.feed-meta').find('.meta-item[name=collapse]');
+                }
+            });
+        	if($author)$author.find('[name=collapse]').hide();
+        	$a.find('.feed-main .entry-body [name=collapse]').hide();
+        }
         $meta.find('.meta-item[name=collapse]').click(function(){
             if(!iZhihu.Answer.$Folding)return;
             var scrollObj=window.iZhihu4CRX?document.body:document.documentElement
@@ -69,7 +74,6 @@ function Answer(iZhihu) {
             // Region end
         }
         if($author.length){//relocatePersonInfo
-        	$author.find('[name=collapse]').hide();
             if(bAuthorRear){
                 $author.css({
                     'textAlign':'right'
