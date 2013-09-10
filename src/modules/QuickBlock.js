@@ -278,23 +278,28 @@ function QuickBlock(iZhihu) {
         pending.Users += who;
         pending.Count ++;
 
-        $.get(href+'/json','',function(r){
-            var user=r.msg[0]
-              , userName=user[0]
-              , userID=user[1]
-              , hashID=user[3]
-              , f_=r.msg[3]
-              , _f=r.msg[4]
+        $.get(href+'/profilecard','',function(r){
+            var $html=$(r)
+              //, user=r.msg[0]
+              , userName=$html.find('.header > .avatar-link > .name').html()//user[0]
+              //, userID=user[1]
+              , $btnFollow=$html.find('.footer > [data-follow=\"m:button\"]')
+              , hashID=!$btnFollow.length?'':$btnFollow.attr('id').substr(3)//user[3]
+              , f_=$btnFollow.length&&$btnFollow.is('.zg-btn-unfollow')//r.msg[3]
+              , _f=$btnFollow.length&&$btnFollow.is('[data-focusme=1]')//r.msg[4]
               , cssF=_f||f_?'zg-icon rel ':''
               , $cartDIV=$('#izh_blockCart')
               , $cart=$cartDIV.find('.list')
-              , href='/people/'+userID
+              , href=$html.find('.header > .avatar-link').attr('href')//'/people/'+userID
+              , userID=href.substr(8)
               , who=','+userID+','
               , pending=iZhihu.QuickBlock.Pending
             ;console.log(userName+':'+f_+':'+_f);
 
             if(0==--pending.Count)$cartDIV.removeClass('pending');
 
+            if(hashID=='')
+                return; // User blocked or you blocked
             if(pending.Users.indexOf(who) < 0)
                 return; // No this user in pending
             
@@ -380,7 +385,7 @@ function QuickBlock(iZhihu) {
                     'class':'izh-quick-block-switch'
                   , html:'快速屏蔽'
                   , href:'javascript:void(0);'
-                  , 'data-tip':'s$b$开始从赞同列表中选择屏蔽对象'
+                  , 'data-tip':'s$t$开始从赞同列表中选择屏蔽对象'
                 }).css({
                     'position':'absolute'
                   , 'left':width
@@ -388,12 +393,12 @@ function QuickBlock(iZhihu) {
                 }).click(function(){
                     if(this.getAttribute('on')=='1'){
                         $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
-                        $(this).attr({'data-tip':'s$b$开始从赞同列表中选择屏蔽对象','on':'0'}).nextAll('.izh-quick-block').hide();
+                        $(this).attr({'data-tip':'s$t$开始从赞同列表中选择屏蔽对象','on':'0'}).nextAll('.izh-quick-block').hide();
                         //this.setAttribute('on','0');
                     }
                     else{
                         $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
-                        $(this).attr({'data-tip':'s$b$结束从赞同列表中选择屏蔽对象','on':'1'}).nextAll('.izh-quick-block').show();
+                        $(this).attr({'data-tip':'s$t$结束从赞同列表中选择屏蔽对象','on':'1'}).nextAll('.izh-quick-block').show();
                         //this.setAttribute('on','1');
                     }
                 }).insertBefore($vi)
@@ -403,7 +408,7 @@ function QuickBlock(iZhihu) {
                 'class':'izh-quick-block-pend'
               , href:'javascript:void(0);'
               , html:'候审'
-              , title:'将所选之人列入候审名单以待收监'
+              , 'data-tip':'s$b$将所选之人列入候审名单以待收监'
             }).css({//$.extend(css_QuickBlock,{
                 'margin-top':'1em'
               , 'font-size':'200%'
@@ -421,7 +426,7 @@ function QuickBlock(iZhihu) {
                 'class':'izh-quick-block-selAll'
               , html:'无'
               , href:'javascript:void(0);'
-              , title:'无一选中'
+              , 'data-tip':'s$r$无一选中'
             }).css({
                 'margin-left':'3em'
             }).click(function(){
@@ -434,7 +439,7 @@ function QuickBlock(iZhihu) {
                 'class':'izh-quick-block-notAll'
               , html:'全'
               , href:'javascript:void(0);'
-              , title:'全部选中'
+              , 'data-tip':'s$l$全部选中'
             }).css({
             }).click(function(){
                 var $quickBlock=$(this).closest('.izh-quick-block')
@@ -451,7 +456,7 @@ function QuickBlock(iZhihu) {
             'class':'izh-quick-block-pend izh-button'
           , html:'候审'
           , href:'javascript:void(0);'
-          , title:'将此人列入候审名单以待收监'
+          , 'data-tip':'s$l$将此人列入候审名单以待收监'
         }).click(function(){
             iZhihu.QuickBlock.in2BlockCart($(this).next());
         }).prependTo($where).hide();
@@ -468,15 +473,15 @@ function QuickBlock(iZhihu) {
                 'class':'izh-quick-block-switch izh-button'
               , html:'快速屏蔽'
               , href:'javascript:void(0);'
-              , 'data-tip':'s$b$开始从评论者中选择屏蔽对象'
+              , 'data-tip':'s$t$开始从评论者中选择屏蔽对象'
             }).css({'margin-left':7}).prependTo($where).click(function(){
                 if(this.getAttribute('on')=='1'){
                     $('.zm-comment-hd .izh-quick-block-pend').hide();
-                    $(this).attr({'data-tip':'s$b$开始从评论者中选择屏蔽对象','on':'0'}).removeClass('on');
+                    $(this).attr({'data-tip':'s$t$开始从评论者中选择屏蔽对象','on':'0'}).removeClass('on');
                 }
                 else{
                     $('.zm-comment-hd .izh-quick-block-pend').show();
-                    $(this).attr({'data-tip':'s$b$结束从评论者中选择屏蔽对象','on':'1'}).addClass('on');
+                    $(this).attr({'data-tip':'s$t$结束从评论者中选择屏蔽对象','on':'1'}).addClass('on');
                 }
             })
         ;
