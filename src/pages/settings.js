@@ -46,7 +46,7 @@ $(function(){
                 '<a data-tip="p$t$unogzx" href="/people/unogzx">@钢盅郭子</a>，',
                 '<a data-tip="p$t$liuyong25" href="/people/liuyong25">@天猪(刘勇)</a>，',
                 '<a data-tip="p$t$luoxr" href="/people/luoxr">@yukirock</a>，',
-                '<a data-tip="p$t$morlay" href="/people/luoxr">@墨磊</a>',
+                '<a data-tip="p$t$morlay" href="/people/morlay">@墨磊</a>',
                 '<br/>感谢：',
                 '<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
               '</div>',
