@@ -6,7 +6,7 @@
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
 // @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
-// @updateinfo   发布日期 2013-9-X|# 改进「首页」：增加「首页分栏」模式、修正额外「收起」按钮
+// @updateinfo   发布日期 2013-9-X|# 改进「首页」：增加「首页分栏」模式、修正额外「收起」按钮|# 改进「快速收藏」：增加操作状态指示|#修复「快速屏蔽」
 // @grant GM_xmlhttpRequest
 // @grant GM_registerMenuCommand
 // @grant GM_openInTab
