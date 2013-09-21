@@ -126,6 +126,7 @@ css+=['.t_set_tb{font-family:"Lucida Sans Unicode","Lucida Grande",Sans-Serif !i
      ,'.t_jchkbox-checked .t_jchkbox-hover img{background-position:0 -45px}'
      ,'.t_jchkbox-disabled img{background-position:0 -60px}'
      ,'.t_jchkbox-checked .t_jchkbox-disabled img{background-position:0 -75px}'
+     ,'.t_set_tb td{white-space:nowrap;}'
      ,'.t_set_tb td .icon-help{float:right;}'
      ,''].join('\n');
 css+=['.izh_boxShadow{box-shadow: 5px 5px 3px 0px #999 !important;}'
