@@ -27,7 +27,13 @@ $(function(){
     //添加按钮
     $('.zm-profile-section-name')
       .append('<span class="zg-bull">•</span>  ')
-      .append('<a href="javascript:;" id="getAllLinks">地址清单</a>');
+      .append('<a href="javascript:;" id="getAllLinks">地址清单</a>')
+      .append('<a href="javascript:;"id="izh-export">导出</a>')
+    ;
+    $('<form/>',{
+      action:'http://ilovezhihu.duapp.com/export.py'
+     ,
+    }).appendTo(document.body);
 
     var btn = $('#getAllLinks');
     var result = [];
@@ -43,6 +49,9 @@ $(function(){
       allLinksAnswers.$dlg.css({'top': y, 'left': x}).fadeIn('slow');
       allLinksAnswers.start();
     });
+
+    btn = $('#izh-export');
+    btn
   }
 
   if(pageIs.MyCollection&&window.iZhihu.QuickFavo){
