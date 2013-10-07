@@ -56,7 +56,8 @@ module.exports = function(grunt) {
                     src: [
                         '<%= dist %>/<%= filename %>.js',
                         'misc/crx-config/init4CRX.js',
-                        'misc/crx-config/manifest.json'
+                        'misc/crx-config/manifest.json',
+                        'misc/crx-config/*.png'
                     ],
                     dest: '<%= dist %>/iZhihu for Chrome/'
                 }]
