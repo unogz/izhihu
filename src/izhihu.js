@@ -276,7 +276,7 @@ window.iZhihu.getItem=function($c){
     var $item=$(null);
     if($c && $c.length){ 
         var $itemMeta=$c.closest('.zm-item-meta');
-        if ($itemMeta.parent().is('.feed-meta')){
+        if ($itemMeta.is('.feed-meta') || $itemMeta.parent().is('.feed-meta')){
             $item=$c.closest('.feed-item');
         }else if($itemMeta.is('.answer-actions')){
             $item=$c.closest('.zm-item-answer,.feed-item');
