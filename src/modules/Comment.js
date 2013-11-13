@@ -388,7 +388,7 @@ function Comment(iZhihu) {
                 $cm.closest('.zm-item-meta').find('.toggle-comment').click(function(event){
                     var $openedBy=$(this)
                       , $ac=$openedBy.closest('.zm-item-meta')
-                      , $cm=$ac.find('.zm-comment-box').css('visibility','hidden')
+                      , $cm=($ac.parent().is('.zm-item-meta.feed-meta')?$ac.parent():$ac).find('.zm-comment-box').css('visibility','hidden')
                     ;
                     if($cm.length){
                         var $item=iZhihu.getItem($cm);
