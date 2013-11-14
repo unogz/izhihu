@@ -48,7 +48,7 @@ $(function(){
                 '<a data-tip="p$t$luoxr" href="/people/luoxr">@yukirock</a>，',
                 '<a data-tip="p$t$morlay" href="/people/morlay">@墨磊</a>',
                 '<br/>感谢：',
-                '<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
+                '<a data-tip="p$t$PeterDeng" href="/people/PeterDeng">@邓文博</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
               '</div>',
               '<div class="zm-command">',
               '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>',
