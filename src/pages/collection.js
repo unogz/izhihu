@@ -13,7 +13,7 @@ $(function(){
         
     //注册点击事件
     btn.click(function(){
-      var allLinksCollection=new allLinks('Collections','#zh-list-answer-wrap','收藏夹');
+      var allLinksCollection=new allLinks('Collections','#zh-list-answer-wrap','收藏夹内容');
 	  if(!allLinksCollection.initDialog())return;
       $('.modal-dialog-bg').show();
       var y = ($win.height() - allLinksCollection.$dlg.width()) / 2
@@ -34,7 +34,7 @@ $(function(){
         
     //注册点击事件
     btn.click(function(){
-      var allLinksAnswers=new allLinks('Answers','#zh-profile-answer-list .zh-general-list','用户回答');
+      var allLinksAnswers=new allLinks('Answers','#zh-profile-answer-list','用户回答');
 	  if(!allLinksAnswers.initDialog())return;
       $('.modal-dialog-bg').show();
       var y = ($win.height() - allLinksAnswers.$dlg.width()) / 2
