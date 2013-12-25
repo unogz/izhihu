@@ -114,6 +114,7 @@ var processNode = function(content,$dlg){
 };
     
 var handler = function(pageWant,pageNow,$dlg){
+  if (!pageNow)pageNow=1;
   if($dlg.is(':hidden')){
     var count=_result.length;
     $('.izhihu-collection-info',$dlg).html('（加载被终止...已得到记录 ' + count + ' 条）');
@@ -128,8 +129,9 @@ var handler = function(pageWant,pageNow,$dlg){
     _loadTimes++;
     $('.izhihu-collection-info',$dlg).html('');
   }
-  var $lastPage=$(_listSel).next('.zm-invite-pager').children('span').last().prev()
-    , totalCount=Number($lastPage.text())
+  var $pager=$(_listSel).parent().find('.zm-invite-pager')
+    , $lastPage=$pager.children('span').last().prev()
+    , totalCount=$pager.length==0?1:Number($lastPage.text())
   ;
   if(pageWant>totalCount){
     $('.izhihu-collection-info',$dlg).html('（加载完成，共得到记录 ' + _result.length + ' 条）');
@@ -140,7 +142,7 @@ var handler = function(pageWant,pageNow,$dlg){
 
   var pageNext=pageWant+1;
   if(pageWant==pageNow){
-    processNode($(listSel).html(),$dlg);
+    processNode($(_listSel).html(),$dlg);
     handler(pageNext,pageNow,$dlg)
   }else{
     var _url=url.data.attr['base']+url.data.attr['path']+'?page='+pageWant;
