@@ -284,9 +284,9 @@ function QuickBlock(iZhihu) {
               , userName=$html.find('.header > .avatar-link > .name').html()//user[0]
               //, userID=user[1]
               , $btnFollow=$html.find('.footer > [data-follow=\"m:button\"]')
-              , hashID=!$btnFollow.length?'':$btnFollow.attr('id').substr(3)//user[3]
+              , hashID=!$btnFollow.length?'':$btnFollow.attr('data-id')//.substr(3)//user[3]
               , f_=$btnFollow.length&&$btnFollow.is('.zg-btn-unfollow')//r.msg[3]
-              , _f=$btnFollow.length&&$btnFollow.is('[data-focusme=1]')//r.msg[4]
+              , _f=$btnFollow.length&&$btnFollow.is('[data-followme=1]')//r.msg[4]
               , cssF=_f||f_?'zg-icon rel ':''
               , $cartDIV=$('#izh_blockCart')
               , $cart=$cartDIV.find('.list')
