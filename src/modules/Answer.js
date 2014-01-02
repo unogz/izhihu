@@ -14,7 +14,8 @@ function Answer(iZhihu) {
   	this.processAnswer=function($a,$pp,bAuthorRear,bAuthorList){
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
-        var $meta=$a.find('.zm-item-meta')
+        var selCollapse='.meta-item[name=collapse]'
+          , $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
           , $fold=!$a.has('.zh-summary > .toggle-expand').length?null:$('<button/>',{
@@ -22,12 +23,11 @@ function Answer(iZhihu) {
               , html:'收起'
               , click:function(){
                     var $vote=$(this).closest('.zm-votebar')
-                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.entry-body')
-                      , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.next('.feed-meta').find('.meta-item[name=collapse]')
+                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.feed-item')
+                      , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.find('.zm-item-meta:first '+selCollapse)
                     ;
                     if($fold&&$fold.length){
-                        if($answer==null)$answer=$vote.closest('.entry-body');
-                        iZhihu.Answer.$Folding=$answer;
+                        iZhihu.Answer.$Folding=$vote.closest('.entry-body');
                         $fold.get(0).click();
                     }
               	}
@@ -38,13 +38,13 @@ function Answer(iZhihu) {
             $vote.append($fold).bind('DOMNodeRemoved',function(event){
                 var $vote=$(event.target);
                 if($vote.is('.zm-votebar')){
-                    iZhihu.Answer.$Fold=$vote.closest('.entry-body').next('.feed-meta').find('.meta-item[name=collapse]');
+                    iZhihu.Answer.$Fold=$vote.closest('.feed-item').find('.zm-item-meta:first '+selCollapse);
                 }
             });
         	if($author)$author.find('[name=collapse]').hide();
         	$a.find('.feed-main .entry-body [name=collapse]').hide();
         }
-        $meta.find('.meta-item[name=collapse]').click(function(){
+        $meta.find(selCollapse).click(function(){
             if(!iZhihu.Answer.$Folding)return;
             var scrollObj=window.iZhihu4CRX?document.body:document.documentElement
               , $meta=$(this).closest('.feed-meta')

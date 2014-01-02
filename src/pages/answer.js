@@ -26,7 +26,7 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
     }
 
     //process each answer
-    var $listAnswers=$('.zm-item-answer','#zh-single-question');
+    var $listAnswers=$('.zm-item-answer,.feed-item','#zh-single-question');
     if($listAnswers&&$listAnswers.length){
         $listAnswers.each(function(i,e){
             window.iZhihu.Answer.processAnswer($(e),null
