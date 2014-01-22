@@ -51,7 +51,7 @@ $(function(){
                 '<a data-tip="p$t$PeterDeng" href="/people/PeterDeng">@邓文博</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
               '</div>',
               '<div class="zm-command">',
-              '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>',
+              '<a id="izhRefresh" class="zg-btn-blue" href="javascript:void(0);">刷新网页</a>',
             '</div>',
           '</div>',
         '</div>',
@@ -81,4 +81,7 @@ $(function(){
       console.log(key+' = '+value);
       utils.setCfg(key,value);
   });
+  $('#izhRefresh').click(function(){
+    location.reload()
+  })
 })
