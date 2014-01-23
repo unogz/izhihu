@@ -132,7 +132,8 @@ function QuickBlock(iZhihu) {
     this.in2BlockCart = function($e){
         var pending = iZhihu.QuickBlock.Pending
           , href = $e.attr('href')
-          , who = href.split('/').pop()+','
+          , username = href.split('/').pop()
+          , who = username+','
         ;
         if( typeof pending === 'undefined' || !pending){
             pending = iZhihu.QuickBlock.Pending = { Users:',', Count:0 };
@@ -278,19 +279,20 @@ function QuickBlock(iZhihu) {
         pending.Users += who;
         pending.Count ++;
 
-        $.get(href+'/profilecard','',function(r){
+        $.get('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}),'',function(r){
             var $html=$(r)
               //, user=r.msg[0]
-              , userName=$html.find('.header > .avatar-link > .name').html()//user[0]
+              , $avatarLink=$html.find('.avatar-link:first')
+              , userName=$avatarLink.text()//user[0]
               //, userID=user[1]
-              , $btnFollow=$html.find('.footer > [data-follow=\"m:button\"]')
+              , $btnFollow=$html.find('button[data-follow]')
               , hashID=!$btnFollow.length?'':$btnFollow.attr('data-id')//.substr(3)//user[3]
               , f_=$btnFollow.length&&$btnFollow.is('.zg-btn-unfollow')//r.msg[3]
               , _f=$btnFollow.length&&$btnFollow.is('[data-followme=1]')//r.msg[4]
               , cssF=_f||f_?'zg-icon rel ':''
               , $cartDIV=$('#izh_blockCart')
               , $cart=$cartDIV.find('.list')
-              , href=$html.find('.header > .avatar-link').attr('href')//'/people/'+userID
+              , href=$avatarLink.attr('href')//'/people/'+userID
               , userID=href.substr(8)
               , who=','+userID+','
               , pending=iZhihu.QuickBlock.Pending
