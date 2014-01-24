@@ -140,7 +140,7 @@ function Comment(iZhihu) {
         if(typeof animate === 'undefined')animate=false;
         var winHeight=iZhihu.$win.height()
           , th=keepSize?parseInt($cm.attr('izh_cmHeight')):0
-          , scrollTop=document.documentElement.scrollTop+document.body.scrollTop
+          , scrollTop=(document.body.scrollTop)?document.body.scrollTop:document.documentElement.scrollTop
           , navHeight=iZhihu.$body.children().first().height()
           , bar=$('.zu-global-notify.zu-global-notify-info:visible')
           , barHeight=!bar.length?0:bar.outerHeight()
