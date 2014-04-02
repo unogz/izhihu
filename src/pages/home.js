@@ -57,7 +57,7 @@ $(function(){
                  codeName: ''
                 }, {
                  index: 1,
-                 name: '提问',
+                 name: '问题',
                  codeName: 'q'
                 }, {
                  index: 2,
@@ -189,7 +189,7 @@ $(function(){
              if ($self.hasClass('feed-item')) {
                  if (hasNewFeed) {
                      $self.hide();
-                     var $target = filterBtns[getTypeIndexByCodeName($self.attr('data-feedtype'))].find('.zg-num');
+                     var $target = filterBtns[getTypeIndexByCodeName($self.attr(propFeedType))].find('.zg-num');
                      $target.html((parseInt($target.html()) || 0) + 1).removeClass('hide');
                      $targetZero.html((parseInt($targetZero.html()) || 0) + 1).removeClass('hide');
                  } else {

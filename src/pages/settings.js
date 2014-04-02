@@ -29,7 +29,7 @@ $(function(){
                 '<tr style="display:none"><td colspan="4"align="left"title="">在首页直接浏览常去话题</td><td width="1px"align="right"></td><td width="1px"align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" /></td></tr>',
                 '<tr><td colspan="4"align="left"title="">改变网页样式外观</td><td align="right"><i class="icon icon-help"data-tip="s$t$* 首页隐藏大头像<br/>* 缩进投票按钮（问题/回答页）<br/>* 按钮图标动画 "></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>',
                 '<tr><td colspan="4"align="left"title="">调整首页「新动态」提醒按钮</td><td align="right"><i class="icon icon-help"data-tip="s$t$挪到 Timeline 右上角<br/>与标题「最新动态」平行"></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>',
-                '<tr><td colspan="4"align="left"title="">开启「首页分栏」</td><td align="right"><i class="icon icon-help"data-tip="s$t$将首页动态分类单独显示：<br/>提问、关注、回答、赞同、专栏"></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeFeedsColumns" name="HomeFeedsColumns" /></td></tr>',
+                '<tr><td colspan="4"align="left"title="">开启「首页分栏」</td><td align="right"><i class="icon icon-help"data-tip="s$t$将首页动态分类单独显示：<br/>问题、回答、专栏"></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeFeedsColumns" name="HomeFeedsColumns" /></td></tr>',
                 '<tr><td colspan="4"align="left">将用户信息挪到回答下方</td><td align="right"></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setAuthorRear" name="AuthorRear" /></td></tr>',
                 '<tr><td align="left">开启「右舷评论」</td><td align="right"><i class="icon icon-help"data-tip="s$t$在页面右侧浮动显示打开的评论列表<br/>在首页、问题、回答页中生效"></i></td><td width="1px"align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment" name="ShowComment" /></td>',
                 '<td width="1px"align="left"nowrap>关闭时自动卷屏至对应条目</td><td align="right"><i class="icon icon-help"data-tip="s$t$仅对右舷评论生效"></i></td><td width="1px"align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setRightComment_AutoScrollPageWhenClosing" name="RightComment_AutoScrollPageWhenClosing" /></td></tr>',
@@ -48,10 +48,10 @@ $(function(){
                 '<a data-tip="p$t$luoxr" href="/people/luoxr">@yukirock</a>，',
                 '<a data-tip="p$t$morlay" href="/people/morlay">@墨磊</a>',
                 '<br/>感谢：',
-                '<a data-tip="p$t$cocksucker" href="/people/cocksucker">@Peter</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
+                '<a data-tip="p$t$PeterDeng" href="/people/PeterDeng">@邓文博</a>，<a data-tip="p$b$cakvfcwz" href="/people/cakvfcwz">@水云逸</a>',
               '</div>',
               '<div class="zm-command">',
-              '<a id="Refresh" class="zg-btn-blue" href="javascript:void(0);" onclick="location.reload();">刷新网页</a>',
+              '<a id="izhRefresh" class="zg-btn-blue" href="javascript:void(0);">刷新网页</a>',
             '</div>',
           '</div>',
         '</div>',
@@ -81,4 +81,7 @@ $(function(){
       console.log(key+' = '+value);
       utils.setCfg(key,value);
   });
+  $('#izhRefresh').click(function(){
+    location.reload()
+  })
 })
