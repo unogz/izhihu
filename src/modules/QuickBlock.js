@@ -410,7 +410,7 @@ function QuickBlock(iZhihu) {
                 'class':'izh-quick-block-pend'
               , href:'javascript:void(0);'
               , html:'候审'
-              , 'data-tip':'s$b$将所选之人列入候审名单以待收监'
+              , 'data-tip':'s$b$将所选之人列入候审名单以待收监<br/>包括答主'
             }).css({//$.extend(css_QuickBlock,{
                 'margin-top':'1em'
               , 'font-size':'200%'
@@ -419,7 +419,17 @@ function QuickBlock(iZhihu) {
                 var $pend=$(this)
                   , $quickBlock=$pend.closest('.izh-quick-block')
                   , $users2B=$('.zm-item-vote-info input.izh-quick-block-sel:checked',$quickBlock.parent())
+                  , $a=$quickBlock.parent()
+                  , $t=null
                 ;
+                if($a.is('.zm-item-answer-detail')){
+                    $t=$a.children('.zm-item-rich-text').find('.zm-item-answer-author-info:first')
+                }else if($a.is('.answer-head')){
+                    $t=$a.parent('.zm-item-answer').children('.zm-item-answer-author-info')
+                }
+                if($t&&$t.length){
+                    iZhihu.QuickBlock.in2BlockCart($t.children('.zm-item-answer-author-wrap').children('a:first'));
+                }
                 $users2B.each(function(i,e){
                     iZhihu.QuickBlock.in2BlockCart($(e).next());
                 });
