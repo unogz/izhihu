@@ -66,7 +66,7 @@ $(function(){
         if(utils.getCfg($(e).attr('name')))
             $(e).attr('checked','checked');
     });
-    $('#izh-dlg-settings').css({'z-index':'99','position':'fixed','top': ($win.height() - $('#izh-dlg-settings').height()) / 2, 'left': ($win.width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
+    $('#izh-dlg-settings').css({'z-index':'89','position':'fixed','top': ($win.height() - $('#izh-dlg-settings').height()) / 2, 'left': ($win.width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
   });
   var $dlg=$(domDlgSettings).appendTo(_doc.body);
   $dlg.drags({handler:'.modal-dialog-title-draggable'});

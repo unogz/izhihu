@@ -269,7 +269,7 @@ if (heads.length > 0) {
 }
 
 if(!$('.modal-dialog-bg').length){
-    $body.append('<div id="izh-dlg-bg" class="modal-dialog-bg" style="opacity:0.5;position:fixed;top:0;bottom:0;left:0;right:0;display:none;"></div>');
+    $body.append('<div id="izh-dlg-bg" class="modal-dialog-bg" style="z-index:85;opacity:0.5;position:fixed;top:0;bottom:0;left:0;right:0;display:none;"></div>');
 }
 
 window.iZhihu.getItem=function($c){
