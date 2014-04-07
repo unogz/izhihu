@@ -17,7 +17,7 @@ $(function(){
         var s=new Array()
           , $a=$('<a>')
           , $c=$('<span>',{'class':'zg-bull',html:'•'})
-          , $p=$lblQuestionMeta.children('a.meta-item:last')
+          , $p=$lblQuestionMeta.children('.zm-meta-panel').children('a.meta-item:last')
           , $m=$('.zu-answer-form-disabled-wrap:visible > a','#zh-question-answer-form-wrap')
         ;
         if($m.length){
