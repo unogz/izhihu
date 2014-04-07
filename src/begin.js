@@ -1,5 +1,5 @@
-var version='2.10.11';
-var updateDate='2014-4-2';
+var version='2.10.12';
+var updateDate='2014-4-7';
 
 var bGreasemonkeyServiceDefined = false;
 

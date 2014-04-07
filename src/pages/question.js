@@ -17,7 +17,7 @@ $(function(){
         var s=new Array()
           , $a=$('<a>')
           , $c=$('<span>',{'class':'zg-bull',html:'•'})
-          , $p=$lblQuestionMeta.children('a.meta-item:last')
+          , $p=$lblQuestionMeta.children('.zm-meta-panel').children('a.meta-item:last')
           , $m=$('.zu-answer-form-disabled-wrap:visible > a','#zh-question-answer-form-wrap')
         ;
         if($m.length){
@@ -53,6 +53,8 @@ $(function(){
     
     ;
 
+    window.iZhihu.$unoAnswers = $uno
+
     //答案按时间排序
     if(utils.getCfg('answer_orderByTime')){
       client.click('.zh-answers-filter-popup div[data-key=added_time]');
@@ -84,13 +86,12 @@ $(function(){
             $pp.appendTo($frm);
             $ppB.appendTo($uno);
             //uno.appendChild(ppI);
+            $uno.$endOfLastA=$('<li class="endOfLastA">').appendTo($pp)
         }
         $listAnswers.each(function(i,e){
-            //setTimeout(function(){
-                window.iZhihu.Answer.processAnswer($(e),$pp
-                  , izhAuthorRear
-                  , izhAuthorList);
-            //},1000);
+            window.iZhihu.Answer.processAnswer($(e),$pp
+              , izhAuthorRear
+              , izhAuthorList);
         });
         if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
             var $ppla=$('<a>',{href:'#draft',target:'_self'})
@@ -162,9 +163,10 @@ $(function(){
     $('#zh-question-answer-wrap').bind('DOMNodeInserted',function(event){
         var $na=$(event.target).filter('.zm-item-answer');
         if($na.length){
-            window.iZhihu.Answer.processAnswer($na,null
-                , izhAuthorRear
-                , false);
+            window.iZhihu.Answer.processAnswer($na,$pp
+              , $body.attr('izhAuthorRear')=='1'
+              , $body.attr('izhAuthorList')=='1'
+            );
         }
     });
     console.log((new Date()).getTime());
