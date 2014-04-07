@@ -98,12 +98,19 @@ function Answer(iZhihu) {
             $author=$author.children().first().children().eq(1);
             if ($pp && bAuthorList){
                 // Region: 回答目录项
-                var $ppla=$('<a>',{
+                var collapsed=$a.attr('data-collapsed')=='1'
+                  , $ppla=$('<a>',{
                             href:'#answer-'+$a.attr('data-aid')
                           , target:'_self'
                           , style:css_AuthorListItemA
                         })
-                  , $ppl=$('<li>').append($ppla).appendTo($pp);
+                  , $ppl=$('<li>').append($ppla)
+                  , $uno=iZhihu.$unoAnswers
+                if(collapsed){
+                    $ppl.appendTo($pp)
+                }else{
+                    $ppl.insertBefore($uno.$endOfLastA)
+                }
                 if($a.attr('data-isowner')=='1'){
                     iZhihu.Answer._e=$a.get(0);
                     $ppla.append('<span class="me"></span>');
@@ -112,7 +119,7 @@ function Answer(iZhihu) {
                 if($a.attr('data-isfriend')=='1'){
                     nameCSS+=' friend';
                 }
-                if($a.attr('data-collapsed')=='1'){
+                if(collapsed){
                     nameCSS+=' collapsed'
                 }
                 if(!$author.length){
@@ -134,7 +141,7 @@ function Answer(iZhihu) {
                 // Region end
                 $ppla.mouseover(function(){
                     var $frm=$(this.parentNode.parentNode.parentNode)
-                      , $uno=$frm.parent().mouseover();
+                      , $uno=iZhihu.$unoAnswers
                     $(this).addClass('sel');
                     if(iZhihu.Answer._e){
                         $uno.children('.meT').css('display',0>iZhihu.Answer._e.offsetTop-$frm.scrollTop()?'':'none');
@@ -192,7 +199,8 @@ function Answer(iZhihu) {
                     $(this).removeClass('sel');
                     var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
                     $uno.next().hide();
-                }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
+                }).click(function(){$(this).mouseout();
+                iZhihu.$unoAnswers.css('left',9-iZhihu.$unoAnswers.width());});
                 if(iZhihu.Answer._e==$a.get(0)){
                     iZhihu.Answer._e=$ppla.get(0);
                 }
