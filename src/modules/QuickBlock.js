@@ -46,44 +46,52 @@ function QuickBlock(iZhihu) {
         ,''
         ].join('\n');
     this.unblockAll = function(){
-        $('.zg-btn-unfollow').each(function(i,e){
-            var uid=$(e).attr('id').slice(4);
+        $('.blocked-users > .item-card').each(function(i,e){
+            var uid=$(e).attr('data-id');
             $.post('http://www.zhihu.com/settings/unblockuser',$.param({
                 _xsrf:$('input[name=_xsrf]').val()
               , uid:uid
             }),function(r){console.log(r);});
         });
-	};
-	this.doUnfollow = function($e){
-	    var uid=$e.attr('uid');
-	    $.post('http://www.zhihu.com/node/MemberFollowBaseV2'
-	      , $.param({
-	            method:'unfollow_member'
-	          , params:JSON.stringify({'hash_id':uid})
-	          , _xsrf:$('input[name=_xsrf]').val()
-            })
-	      , function(r){
-                var query=decodeURIComponent(this.data)
-                  , params=utils.getParamInQuery(query,'params')
-                ;
-                eval('params='+params);console.log(params);
-                var bid='fb-'+params.hash_id
-                  , who=bid+','
-                  , unfollowed=iZhihu.QuickBlock.Unfollowed
-                  , refollowed=iZhihu.QuickBlock.Refollowed
-                  , $cartDIV=$('#izh_blockCart')
-                  , $user=$cartDIV.find('.user2B[uid='+params.hash_id+']')
-                  , $list=$user.closest('.list')
-                ;
-                $user.prependTo($list.next().next());
-                if(unfollowed.Users.indexOf(','+who)<0)
-                    unfollowed.Users += who;
-                if(refollowed.Users.indexOf(','+who)>=0)
-                    refollowed.Users = refollowed.replace(','+who,',');
-	        }
-	      );
-	};
-    this.doQuickBlock = function($e){
+	  };
+	  this.doUnfollow = function(){
+        var $e = iZhihu.QuickBlock.Users2BBQ.shift()
+        if(typeof $e === 'undefined') return
+
+        var uid=$e.attr('uid');
+        $.post('http://www.zhihu.com/node/MemberFollowBaseV2'
+          , $.param({
+                method:'unfollow_member'
+              , params:JSON.stringify({'hash_id':uid})
+              , _xsrf:$('input[name=_xsrf]').val()
+              })
+          , function(r){
+                  var query=decodeURIComponent(this.data)
+                    , params=utils.getParamInQuery(query,'params')
+                  ;
+                  eval('params='+params);console.log(params);
+                  var bid='fb-'+params.hash_id
+                    , who=bid+','
+                    , unfollowed=iZhihu.QuickBlock.Unfollowed
+                    , refollowed=iZhihu.QuickBlock.Refollowed
+                    , $cartDIV=$('#izh_blockCart')
+                    , $user=$cartDIV.find('.user2B[uid='+params.hash_id+']')
+                    , $list=$user.closest('.list')
+                  ;
+                  $user.prependTo($list.next().next());
+                  if(unfollowed.Users.indexOf(','+who)<0)
+                      unfollowed.Users += who;
+                  if(refollowed.Users.indexOf(','+who)>=0)
+                      refollowed.Users = refollowed.replace(','+who,',');
+            }
+        ).always(function(data, textStatus, jqXHR){
+            iZhihu.QuickBlock.doUnfollow()
+        });
+	  };
+    this.doQuickBlock = function(){
+        var $e = iZhihu.QuickBlock.Users2BBQ.shift()
+        if(typeof $e === 'undefined') return
+
         var blocking = iZhihu.QuickBlock.Blocking
           , href = $e.attr('href')
           , who = href.split('/').pop()+','
@@ -115,6 +123,8 @@ function QuickBlock(iZhihu) {
             blocking.Users = blocking.Users.replace(who,',');
             $('#izh_blockCart .user2B[href="'+href+'"]').find('.del')[0].click();
             $('a[href$="'+href+'"]').css('text-decoration','line-through');
+        }).always(function(data, textStatus, jqXHR){
+            iZhihu.QuickBlock.doQuickBlock()
         });
   	};
   	this.resizeBlockCart = function($cartDIV){
@@ -129,7 +139,10 @@ function QuickBlock(iZhihu) {
         	$cartDIV.css({'height':'','bottom':0});
         }
     };
-    this.in2BlockCart = function($e){
+    this.in2BlockCart = function(){
+        var $e = iZhihu.QuickBlock.Users2B.shift()
+        if (typeof $e === 'undefined') return
+
         var pending = iZhihu.QuickBlock.Pending
           , href = $e.attr('href')
           , username = href.split('/').pop()
@@ -210,15 +223,18 @@ function QuickBlock(iZhihu) {
                       , title:'将下列人犯逐一加入黑名单'
                       , click:function(){
                           var $cartDIV=$(this.parentNode.parentNode);
+                          iZhihu.QuickBlock.Users2BBQ = []
                           if($('.unfo',this.parentNode).is(':checked')){
                               $('.list.i_fo .user2B',$cartDIV).each(function(i,e){
-                                  iZhihu.QuickBlock.doUnfollow($(e));
+                                  iZhihu.QuickBlock.Users2BBQ.push($(e))
                               });
+                              iZhihu.QuickBlock.doUnfollow();
                               //alert($('#izh_blockCart').find('.list.unfo .user2B').length);// Unfo
                           }else{
                               $('.list .user2B',$cartDIV).each(function(i,e){
-                                  iZhihu.QuickBlock.doQuickBlock($(e));
+                                  iZhihu.QuickBlock.Users2BBQ.push($(e))
                               });
+                              iZhihu.QuickBlock.doQuickBlock();
                           }
                       }
                     }).css({
@@ -279,8 +295,10 @@ function QuickBlock(iZhihu) {
         pending.Users += who;
         pending.Count ++;
 
-        $.get('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}),'',function(r){
-            var $html=$(r)
+        $.get('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}))
+        .done(function(data, textStatus, jqXHR){
+            if (data === '') return
+            var $html=$(data)
               //, user=r.msg[0]
               , $avatarLink=$html.find('.avatar-link:first')
               , userName=$avatarLink.text()//user[0]
@@ -300,15 +318,21 @@ function QuickBlock(iZhihu) {
 
             if(0==--pending.Count)$cartDIV.removeClass('pending');
 
-            if(hashID=='')
+            if(hashID==''){
+                //iZhihu.QuickBlock.in2BlockCart()
                 return; // User blocked or you blocked
-            if(pending.Users.indexOf(who) < 0)
+            }
+            if(pending.Users.indexOf(who) < 0){
+                //iZhihu.QuickBlock.in2BlockCart()
                 return; // No this user in pending
+            }
             
             pending.Users = pending.Users.replace(who,',');
 
-            if($cartDIV.find('.list .user2B[href="'+href+'"]').length)
+            if($cartDIV.find('.list .user2B[href="'+href+'"]').length){
+                //iZhihu.QuickBlock.in2BlockCart()
                 return; // User already in block list
+            }
 
             var $user2B=$('<div>',{
                 	'class':'user2B'+(f_&&$cartDIV.find('.do .unfo:checked').length?' unfo':'')
@@ -362,6 +386,10 @@ function QuickBlock(iZhihu) {
             var num2B=$cartDIV.find('.list .user2B').length;
             $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>999?'1k+':num2B);
             iZhihu.QuickBlock.resizeBlockCart($cartDIV);
+
+            //iZhihu.QuickBlock.in2BlockCart()
+        }).always(function(data,textStatus,jXHR){
+            iZhihu.QuickBlock.in2BlockCart()
         });
     };
     this.addQuickBlock = function($vi,quickBlock){
@@ -427,12 +455,14 @@ function QuickBlock(iZhihu) {
                 }else if($a.is('.answer-head')){
                     $t=$a.parent('.zm-item-answer').children('.zm-item-answer-author-info')
                 }
+                iZhihu.QuickBlock.Users2B = []
                 if($t&&$t.length){
-                    iZhihu.QuickBlock.in2BlockCart($t.children('.zm-item-answer-author-wrap').children('a:first'));
+                    iZhihu.QuickBlock.Users2B.push($t.children('.zm-item-answer-author-wrap').children('a:first'))
                 }
                 $users2B.each(function(i,e){
-                    iZhihu.QuickBlock.in2BlockCart($(e).next());
+                    iZhihu.QuickBlock.Users2B.push($(e).next())
                 });
+                iZhihu.QuickBlock.in2BlockCart();
             }).prependTo($quickBlock);
             $('<a>',{
                 'class':'izh-quick-block-selAll'
