@@ -40,7 +40,7 @@ utils.setCfg = function(key,value){
  * 读取存储
  */
 utils.getValue = function(key, defaultValue){
-    var v=localStorage[key];
+    var v=unsafeWindow.localStorage[key];
     if(v)
         return JSON.parse(v);
     else
@@ -51,52 +51,52 @@ utils.getValue = function(key, defaultValue){
  * 写入存储
  */
 utils.setValue = function(key, value){
-  localStorage[key] = JSON.stringify(value);
+  unsafeWindow.localStorage[key] = JSON.stringify(value);
 };
 
 /**
  * 删除存储
  */
 utils.deleteValue = function(key){
-  return delete localStorage[key];
+  return delete unsafeWindow.localStorage[key];
 };
 
 utils.transferOldCfg=function(){
-    var oldHomeLayout = localStorage['izh_HomeLayout']
-      , oldAuthorList = localStorage['izh_AuthorList']
-      , oldShowComment = localStorage['izh_ShowComment']
-      , oldQuickFavo = localStorage['izh_QuickFavo']
-      , oldAuthorRear = localStorage['izh_AuthorRear']
-      , oldHomeNoti = localStorage['izh_HomeNoti']
+    var oldHomeLayout = unsafeWindow.localStorage['izh_HomeLayout']
+      , oldAuthorList = unsafeWindow.localStorage['izh_AuthorList']
+      , oldShowComment = unsafeWindow.localStorage['izh_ShowComment']
+      , oldQuickFavo = unsafeWindow.localStorage['izh_QuickFavo']
+      , oldAuthorRear = unsafeWindow.localStorage['izh_AuthorRear']
+      , oldHomeNoti = unsafeWindow.localStorage['izh_HomeNoti']
     ;
     if(oldHomeLayout){
         izhHomeLayout=oldHomeLayout;
-        localStorage.removeItem('izh_HomeLayout');
+        unsafeWindow.localStorage.removeItem('izh_HomeLayout');
         this.setCfg('HomeLayout',izhHomeLayout);
     }
     if(oldAuthorList){
         izhAuthorList=oldAuthorList;
-        localStorage.removeItem('izh_AuthorList');
+        unsafeWindow.localStorage.removeItem('izh_AuthorList');
         this.setCfg('AuthorList',izhAuthorList);
     }
     if(oldShowComment){
         izhRightComment=oldShowComment;
-        localStorage.removeItem('izh_ShowComment');
+        unsafeWindow.localStorage.removeItem('izh_ShowComment');
         this.setCfg('ShowComment',izhRightComment);
     }
     if(oldQuickFavo){
         izhQuickFavo=oldQuickFavo;
-        localStorage.removeItem('izh_QuickFavo');
+        unsafeWindow.localStorage.removeItem('izh_QuickFavo');
         this.setCfg('QuickFavo',izhQuickFavo);
     }
     if(oldAuthorRear){
         izhAuthorRear=oldAuthorRear;
-        localStorage.removeItem('izh_AuthorRear');
+        unsafeWindow.localStorage.removeItem('izh_AuthorRear');
         this.setCfg('AuthorRear',izhAuthorRear);
     }
     if(oldHomeNoti){
         izhHomeNoti=oldHomeNoti;
-        localStorage.removeItem('izh_HomeNoti');
+        unsafeWindow.localStorage.removeItem('izh_HomeNoti');
         this.setCfg('HomeNoti',izhHomeNoti);
     }
 

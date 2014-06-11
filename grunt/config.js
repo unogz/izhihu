@@ -55,13 +55,24 @@ module.exports = function(grunt) {
                     flatten: true,
                     src: [
                         '<%= dist %>/<%= filename %>.js',
-                        'misc/crx-config/init4CRX.js',
+                        'misc/init4CRX.js',
                         'misc/crx-config/manifest.json',
                         'misc/crx-config/*.png'
                     ],
                     dest: '<%= dist %>/iZhihu for Chrome/'
                 }]
             },
+            toFirefox: {
+                files: [{
+                    expand: true,
+                    flatten: false,
+                    cwd: 'misc/xpi-dev',
+                    src: [
+                        '**'
+                    ],
+                    dest: '<%= dist %>/iZhihu for Firefox/'
+                }]
+            }
         }
         // 监控文件变化并动态执行任务
         // 如下设置是 js 文件夹的任一 js 文件有变化则执行合并
@@ -102,6 +113,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('chrome', ['default', 'updateManifest', 'copy:toChrome']);
+    grunt.registerTask('firefox', ['default', 'updateManifest', 'copy:toFirefox']);
 
     return grunt;
 };

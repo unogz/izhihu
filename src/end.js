@@ -21,8 +21,9 @@ if(firstRun>0 && document.domain=='zhihu.com'){
 setTimeout(function(){
     _FRshow();
 },1000);
- 
-if(typeof window.iZhihu4CRX === 'undefined' || !window.iZhihu4CRX){
+
+var iZhihuX = window.iZhihu4CRX || window.iZhihu4XPI
+if(typeof window.iZhihuX === 'undefined' || !window.iZhihuX){
     //helper method to auto update
     function autoUpdateFromUserscriptsDotOrg(SCRIPT) {
       try {

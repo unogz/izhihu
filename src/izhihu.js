@@ -1,6 +1,6 @@
 //console.log((new Date()).getTime());
 
-var $ = unsafeWindow.$;
+var $ = window.$;
 var _ = this._;
 var purl = window.purl||$.url;
 
@@ -11,11 +11,11 @@ var url = purl();
 var page = url.segment(1);
 
 //主入口
-$(function main(){
+window.addEventListener('load',function main(){
 	console.log('iZhihu '+version+' started.');
 	//console.log(window.iZhihu);
 	//console.log((new Date()).getTime());
-});
+},false);
 
 var pageIs={}
   , $win=$(unsafeWindow)
