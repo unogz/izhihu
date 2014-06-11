@@ -2,20 +2,22 @@
  * 首页
  */
 $(function(){
-    var $lblHomeTitle=$('#zh-home-list-title')//activity_caption
+    var $topstory=$('#is-topstory')
+      , isTopStory=$topstory&&$topstory.length
+      , propFeedType='data-type'//:'data-feedtype'
+      , $lblHomeTitle=$('#zh-home-list-title')//activity_caption
       , $btnNewActivity=$('#zh-main-feed-fresh-button')//new_activity
       , $feedList=$('.zh-general-list')//feed_list
       , $topLinkHome=$('#zh-top-link-home')
-      , $filter=$('<span>',{
-            'class':'izh-feeds-filter'
-          , html:[''
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="QUESTION_CREATE"><i class="zg-icon"></i>提问</a>'
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="QUESTION_FOLLOW"><i class="zg-icon"></i>关注</a>'
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ANSWER_CREATE"><i class="zg-icon"></i>回答</a>'
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ANSWER_VOTE_"><i class="zg-icon"></i>赞同</a>'
-              , '<a class="izh-button izh-feeds-filter-option"showFeeds="ARTICLE_,ROUNDTABLE_"data-tip="s$t$专栏、圆桌"><i class="zg-icon"></i>其他</a>'
-            ].join('')
-        })
+      , $filter=//isTopStory?
+            $('<span>',{
+                'class':'izh-feeds-filter'
+              , html:[''
+                  , '<a class="izh-button izh-feeds-filter-option"showFeeds="q"><i class="zg-icon"></i>问题</a>'
+                  , '<a class="izh-button izh-feeds-filter-option"showFeeds="a"><i class="zg-icon"></i>回答</a>'
+                  , '<a class="izh-button izh-feeds-filter-option"showFeeds="p,r"data-tip="s$t$专栏、圆桌"><i class="zg-icon"></i>其他</a>'
+                ].join('')
+            })
       , $filterInfo=$('<a>',{'class':'izh-feeds-filter-info nothing',href:'javascript:void(0);'}).on('click',function(){$filter.trigger($filter.is(':hidden')||$filter.attr('doing')=='hide'?'show':'hide');})
       , ShowFeeds=function(type,enable){
             var id="izhCSS_FilterFeed_"+type
@@ -28,7 +30,7 @@ $(function(){
                     nd=_doc.createElement('style');
                     nd.type='text/css';
                     nd.id=id;
-                    nd.appendChild(_doc.createTextNode('.feed-item[data-feedtype^="'+type+'"]{display:none}'));
+                    nd.appendChild(_doc.createTextNode('.feed-item['+propFeedType+'^="'+type+'"]{display:none}'));
                     heads[0].appendChild(nd);
                 }
                 //{ROUNDTABLE_ADD_RELATED: "roundtable",ARTICLE_VOTE_UP: "post_vote",ARTICLE_CREATE: "post_create",RECOMMENDED: "feed_recommended",QUESTION_FOLLOW: "feed_question_follow",QUESTION_CREATE: "feed_question",ANSWER_VOTE_UP: "feed_answer_vote",ANSWER_CREATE: "feed_answer_answer"};
@@ -48,43 +50,24 @@ $(function(){
         }
       , feedsColumns=function(){ // Implemented by morley, modified by unogz
             //动态的类型
-            var feedTypes = [{
-             index: 0,
-             name: '全部',
-             codeName: ''
-            }, {
-             index: 1,
-             name: '提问',
-             codeName: 'QUESTION_CREATE'
-            }, {
-             index: 2,
-             name: '关注',
-             codeName: 'QUESTION_FOLLOW'
-            }, {
-             index: 3,
-             name: '回答',
-             codeName: 'ANSWER_CREATE'
-            }, {
-             index: 4,
-             name: '赞同',
-             codeName: 'ANSWER_VOTE_UP'
-            }, {
-             index: 5,
-             name: '专栏',
-             codeName: 'ARTICLE_'
-            }, {
-            // index: 6,
-            // name: '顶贴',
-            // codeName: 'ARTICLE_VOTE_UP'
-            // }, {
-            //     index: 7,
-            //     name: '圆桌',
-            //     codeName: 'ROUNDTABLE_ADD_RELATED'
-            // }, {
-            //     index: 8,
-            //     name: '推荐内容',
-            //     codeName: 'RECOMMENDED'
-            }];
+            var feedTypes = //isTopStory?
+                [{
+                 index: 0,
+                 name: '全部',
+                 codeName: ''
+                }, {
+                 index: 1,
+                 name: '问题',
+                 codeName: 'q'
+                }, {
+                 index: 2,
+                 name: '回答',
+                 codeName: 'a'
+                }, {
+                 index: 3,
+                 name: '专栏',
+                 codeName: 'p'
+                }];
             
             //自定义 CSS 到 head
             var styles = [];
@@ -124,7 +107,7 @@ $(function(){
             function typeMatch($elem) {
              if (curfeedTypeCodeName == '') {
                  $elem.show();
-             } else if (0 <= $elem.attr('data-feedtype').indexOf(curfeedTypeCodeName)) {
+             } else if (0 <= $elem.attr(propFeedType).indexOf(curfeedTypeCodeName)) {
                  $elem.show();
              } else {
                  $elem.hide();
@@ -206,7 +189,7 @@ $(function(){
              if ($self.hasClass('feed-item')) {
                  if (hasNewFeed) {
                      $self.hide();
-                     var $target = filterBtns[getTypeIndexByCodeName($self.attr('data-feedtype'))].find('.zg-num');
+                     var $target = filterBtns[getTypeIndexByCodeName($self.attr(propFeedType))].find('.zg-num');
                      $target.html((parseInt($target.html()) || 0) + 1).removeClass('hide');
                      $targetZero.html((parseInt($targetZero.html()) || 0) + 1).removeClass('hide');
                  } else {
@@ -268,7 +251,7 @@ $(function(){
                         display:'none'
                       , textDecoration:'none'
                       , cursor:'pointer'
-                    }).insertBefore($('#feed-ver'));
+                    }).insertBefore(isTopStory?$topstory:$('#feed-ver'));
                     $lblHomeTitle.css({overflow:'hidden'})
                         .prepend($filter)
                         //.children('i:first')

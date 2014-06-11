@@ -140,7 +140,7 @@ function Comment(iZhihu) {
         if(typeof animate === 'undefined')animate=false;
         var winHeight=iZhihu.$win.height()
           , th=keepSize?parseInt($cm.attr('izh_cmHeight')):0
-          , scrollTop=document.documentElement.scrollTop+document.body.scrollTop
+          , scrollTop=(document.body.scrollTop)?document.body.scrollTop:document.documentElement.scrollTop
           , navHeight=iZhihu.$body.children().first().height()
           , bar=$('.zu-global-notify.zu-global-notify-info:visible')
           , barHeight=!bar.length?0:bar.outerHeight()
@@ -388,7 +388,7 @@ function Comment(iZhihu) {
                 $cm.closest('.zm-item-meta').find('.toggle-comment').click(function(event){
                     var $openedBy=$(this)
                       , $ac=$openedBy.closest('.zm-item-meta')
-                      , $cm=$ac.find('.zm-comment-box').css('visibility','hidden')
+                      , $cm=($ac.parent().is('.zm-item-meta.feed-meta')?$ac.parent():$ac).find('.zm-comment-box').css('visibility','hidden')
                     ;
                     if($cm.length){
                         var $item=iZhihu.getItem($cm);
@@ -479,12 +479,22 @@ function Comment(iZhihu) {
                     }
                 }
             });
-            var cmClose=function(event){
+            var cmClose=function(event,alsoScrollToViewBottom){
                     var $cm=$(this).closest('.zm-comment-box');
-            		if($(this).is('[name=closeform]')&&(!$cm.is('.empty')))return;
+                		if($(this).is('[name=closeform]')&&(!$cm.is('.empty')))return;
                     var $item=iZhihu.getItem($cm)//.attr('tabindex','-1').focus().removeAttr('tabindex')
                       , $itemMeta=$cm.closest('.zm-item-meta')
+                      , alsoScroll=this.getAttribute('izh-alsoScrollToViewBottom')||''
+                      , scrollTop=(document.body.scrollTop)?document.body.scrollTop:document.documentElement.scrollTop
                     ;
+                    if(alsoScroll!=='1'){
+                        $itemMeta.find('.toggle-comment')[0].click();
+                        setTimeout(function(){
+                            document.body.scrollTop=scrollTop;
+                            document.documentElement.scrollTop=scrollTop;
+                        },100);
+                        return;
+                    }
                     iZhihu.Comment.metaScrollToViewBottom($itemMeta,function(){
                         $itemMeta.find('.toggle-comment')[0].click();
                     },false,true);
@@ -494,6 +504,7 @@ function Comment(iZhihu) {
                   , href:'javascript:void(0);'
                   , html:'收起'
                   , click:cmClose
+                  , 'data-tip':'s$t$收起评论并跳转至所属回答'
                 })
               , $buttonsL=$('<div>',{
                 	'class':'izh-buttons-cm-L'
@@ -512,10 +523,10 @@ function Comment(iZhihu) {
                   , 'width': 15
                   , 'height': 15
                   , 'position': 'absolute'
-                  , 'right': 3
+                  , 'left': 0
                   , 'top': 0
                   , 'z-index': '10000'
-                }).attr('data-tip','s$l$收起').html('').prependTo($cm)
+                }).attr('data-tip','s$l$收起评论').html('').prependTo($cm)
                 $buttonsR.prependTo($cm);
                 if($list.children().length==0){
                     $buttonsR.hide();
@@ -523,7 +534,7 @@ function Comment(iZhihu) {
                 $btnCC.css({
                     'float':'left'
                   , 'margin-left':7
-                }).prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
+                }).attr('izh-alsoScrollToViewBottom','1').prepend('<i class="z-icon-izh-fold"/>').prependTo($buttonsL);
                 $('<a>',{
                     'class':'izh-button izh-back-top'
                   , 'data-tip':'s$l$返回顶部'

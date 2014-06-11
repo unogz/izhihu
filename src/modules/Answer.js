@@ -14,7 +14,8 @@ function Answer(iZhihu) {
   	this.processAnswer=function($a,$pp,bAuthorRear,bAuthorList){
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
-        var $meta=$a.find('.zm-item-meta')
+        var selCollapse='.meta-item[name=collapse]'
+          , $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
           , $fold=!$a.has('.zh-summary > .toggle-expand').length?null:$('<button/>',{
@@ -22,12 +23,11 @@ function Answer(iZhihu) {
               , html:'收起'
               , click:function(){
                     var $vote=$(this).closest('.zm-votebar')
-                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.entry-body')
-                      , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.next('.feed-meta').find('.meta-item[name=collapse]')
+                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.feed-item')
+                      , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.find('.zm-item-meta:first '+selCollapse)
                     ;
                     if($fold&&$fold.length){
-                        if($answer==null)$answer=$vote.closest('.entry-body');
-                        iZhihu.Answer.$Folding=$answer;
+                        iZhihu.Answer.$Folding=$vote.closest('.entry-body');
                         $fold.get(0).click();
                     }
               	}
@@ -38,13 +38,13 @@ function Answer(iZhihu) {
             $vote.append($fold).bind('DOMNodeRemoved',function(event){
                 var $vote=$(event.target);
                 if($vote.is('.zm-votebar')){
-                    iZhihu.Answer.$Fold=$vote.closest('.entry-body').next('.feed-meta').find('.meta-item[name=collapse]');
+                    iZhihu.Answer.$Fold=$vote.closest('.feed-item').find('.zm-item-meta:first '+selCollapse);
                 }
             });
         	if($author)$author.find('[name=collapse]').hide();
         	$a.find('.feed-main .entry-body [name=collapse]').hide();
         }
-        $meta.find('.meta-item[name=collapse]').click(function(){
+        $meta.find(selCollapse).click(function(){
             if(!iZhihu.Answer.$Folding)return;
             var scrollObj=window.iZhihu4CRX?document.body:document.documentElement
               , $meta=$(this).closest('.feed-meta')
@@ -98,12 +98,19 @@ function Answer(iZhihu) {
             $author=$author.children().first().children().eq(1);
             if ($pp && bAuthorList){
                 // Region: 回答目录项
-                var $ppla=$('<a>',{
+                var collapsed=$a.attr('data-collapsed')=='1'
+                  , $ppla=$('<a>',{
                             href:'#answer-'+$a.attr('data-aid')
                           , target:'_self'
                           , style:css_AuthorListItemA
                         })
-                  , $ppl=$('<li>').append($ppla).appendTo($pp);
+                  , $ppl=$('<li>').append($ppla)
+                  , $uno=iZhihu.$unoAnswers
+                if(collapsed){
+                    $ppl.appendTo($pp)
+                }else{
+                    $ppl.insertBefore($uno.$endOfLastA)
+                }
                 if($a.attr('data-isowner')=='1'){
                     iZhihu.Answer._e=$a.get(0);
                     $ppla.append('<span class="me"></span>');
@@ -112,7 +119,7 @@ function Answer(iZhihu) {
                 if($a.attr('data-isfriend')=='1'){
                     nameCSS+=' friend';
                 }
-                if($a.attr('data-collapsed')=='1'){
+                if(collapsed){
                     nameCSS+=' collapsed'
                 }
                 if(!$author.length){
@@ -134,7 +141,7 @@ function Answer(iZhihu) {
                 // Region end
                 $ppla.mouseover(function(){
                     var $frm=$(this.parentNode.parentNode.parentNode)
-                      , $uno=$frm.parent().mouseover();
+                      , $uno=iZhihu.$unoAnswers
                     $(this).addClass('sel');
                     if(iZhihu.Answer._e){
                         $uno.children('.meT').css('display',0>iZhihu.Answer._e.offsetTop-$frm.scrollTop()?'':'none');
@@ -192,7 +199,8 @@ function Answer(iZhihu) {
                     $(this).removeClass('sel');
                     var $uno=$(this.parentNode.parentNode.parentNode.parentNode);
                     $uno.next().hide();
-                }).click(function(){$(this).mouseout();$uno.css('left',9-$uno.width());});
+                }).click(function(){$(this).mouseout();
+                iZhihu.$unoAnswers.css('left',9-iZhihu.$unoAnswers.width());});
                 if(iZhihu.Answer._e==$a.get(0)){
                     iZhihu.Answer._e=$ppla.get(0);
                 }

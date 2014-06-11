@@ -1,9 +1,11 @@
-allLinks=function(name,listSel,listName){
-    this.name=name;
-    this.listSel=listSel;
-    this.listName=listName;
-    this.dlgID='izh-dlg-'+name;
+allLinks=function(_name,_listSel,_listName){
+    this.name=_name;
+    this.listSel=_listSel;
+    this.listName=_listName;
+    this.dlgID='izh-dlg-'+_name;
     this.$dlg=null;
+    var _initialTitle=_listName+'地址清单',_result=new Array(),_loadTimes=0;
+
     //初始化弹出框
     this.initDialog = function(){
       this.$dlg=$('#'+this.dlgID);
@@ -12,7 +14,7 @@ allLinks=function(name,listSel,listName){
         var dom = [
           '<div id="'+this.dlgID+'" class="modal-dialog allLinks" tabindex="0" style="display: none;width:500px">',
             '<div class="modal-dialog-title modal-dialog-title-draggable">',
-              '<span class="modal-dialog-title-text">'+this.listName+'链接清单</span>',
+              '<span class="modal-dialog-title-text">'+_initialTitle+'</span>',
               '<span class="modal-dialog-title-text izhihu-collection-info"></span>',
               '<span class="modal-dialog-title-close"></span>',
             '</div>',
@@ -35,7 +37,7 @@ allLinks=function(name,listSel,listName){
           '</div>'
         ].join('');
         
-        this.$dlg = $(dom).appendTo(document.body).attr('name',this.name).attr('listSel',this.listSel);
+        this.$dlg = $(dom).appendTo(document.body).attr('name',_name).attr('listSel',_listSel);
         if(this.$dlg.length)
             retVal=true;
 
@@ -60,114 +62,96 @@ allLinks=function(name,listSel,listName){
                 links+=e.getAttribute('href')+'\n';
             });
             $linksPost.val(links);
-            $linksTitle.val($('#zh-fav-head-title,.zm-profile-header-username').text());
+            $linksTitle.val($('#zh-fav-head-title,.zm-profile-header-main .title-section a.name').text());
             $form.submit();
         });
         
         $('.reload',this.$dlg).click(function(){
             var $d=$(this).parentsUntil('.modal-dialog').parent();
-            result=[];
-            next = '0';
-            $('.izhihu-collection-links',$d).empty();
-            var listSel=$d.attr('listSel');
-            msg=[$('.zm-item',listSel).size(), $(listSel).html(),'0'];
-            handler(msg,$d);
+            handler(1,Number(url.data.param.query['page']),$d);
         });
       }
       return retVal;
     };
     this.start=function($d){
+        if($('#zh-global-spinner:visible').length)return;
         if(!$d)$d=this.$dlg;
         if(!$d)return;
-        if($('#zh-global-spinner:visible').length)return;
-        $('#zh-global-spinner').show();
-        var msg=[0,'','0'];
-        if(!$('.izhihu-collection-links',$d).children().length
-            || next==''){
-            result=[];
-            next = '0';
-            $('.izhihu-collection-links',$d).empty();
-            var listSel=$d.attr('listSel');
-            msg=[$('.zm-item',listSel).size(), $(listSel).html(),'0'];
+        if(!$('.izhihu-collection-links',$d).children().length){
+            handler(1,Number(url.data.param.query['page']),$d);
         }
-        handler(msg,$d);
     };
-};
 
 //分析内容
 var processNode = function(content,$dlg){
-  $(content).find('.zm-item-answer').each(function(index, item){
-    var dom = $(item)
-      , parent = dom.parent()
-      , lnkTitle = $("a", dom.closest(".zm-item").children().first())
-      , hrefQuestion = url.data.attr["base"] + lnkTitle.attr("href").replace(url.data.attr["base"],'')
-    ;//console.log(dom);
+  var $qCurrent = null;
+  $('.zm-item-answer', content).each(function(index, item){
+    var $a = $(item)
+      , $q = $a.closest(".zm-item").children("h2").children("a")
+    ;
+    if($q.length){
+      $qCurrent=$q;
+    }else if($qCurrent){
+      $q=$qCurrent;
+    }else{
+      return;
+    }
+    var hrefQuestion = url.data.attr["base"] + $q.attr("href").replace(url.data.attr["base"],'');
     var obj = {
-        title: lnkTitle.text(),
-        questionUrl: hrefQuestion,
-        answerUrl: hrefQuestion + (dom.parent().is(".zm-item-fav") ? "/answer/" + dom.attr("data-atoken") : ""),
-        answerAuthor: dom.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
-        summary: dom.find(".zm-item-answer-summary").children().remove().end().text(),
-        content: dom.find(".zm-editable-content").html()
+        title: $q.text(),
+        //questionUrl: hrefQuestion,
+        answerUrl: hrefQuestion + ($a.parent().is(".zm-item-fav") ? "/answer/" + $a.attr("data-atoken") : ""),
+        answerAuthor: $a.find('.zm-item-answer-author-wrap a[href^="/people"]').text().trim(),
+        summary: $a.find(".zm-item-answer-summary").children().remove().end().text(),
+        content: $a.find(".zm-editable-content").html()
     };
-    result.push(obj);
+    _result.push(obj);
     var str = utils.formatStr('<li style="list-style-type:none"><a href="{answerUrl}" title="* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}">{answerUrl}</a></li>', obj);
     $('.izhihu-collection-links',$dlg).append(str);
-    var count=result.length;
+    var count=_result.length;
     $('.izhihu-collection-info',$dlg).html('（努力加载中...已得到记录 ' + count + ' 条）');
   });
 };
     
-//处理函数
-var handlerCollections=function(msg,$dlg){
-    next=String(msg[2]);
-    if(next=='0')
-        next=$('#zh-load-more').attr('data-next');
-    $.post(window.location, $.param({
-        offset: 0
-      , start: next
-      , _xsrf: $('input[name=_xsrf]').val()
-    }),function(r){
-      handler(r.msg,$('.modal-dialog.allLinks'));
-    });
-};
-var handlerAnswers=function(msg,$dlg){
-    var c=Number(msg[0]);
-    if(!c){
-        next='-1';
-        handler([0,'','-1'],$dlg);
-        return;
-    }
-    next = String(Number(next)+c);
-    eval('var param='+$('#zh-profile-answer-list').children().first().attr('data-init'));
-    if(param&&param.params){
-    	$.extend(param.params,{offset:Number(next)});
-        var s=url.data.attr.base+'/node/'+param.nodename;
-        $.post(s, $.param({
-            method:'next'
-          , params:JSON.stringify(param.params)
-          , _xsrf: $('input[name=_xsrf]').val()
-        }),function(r){
-          handler([r.msg.length,r.msg.join(''),r.msg.length?String(r.msg.length):'-1'],$('.modal-dialog.allLinks'));
-        });
-    }
-};
-var next = '';
-var handler = function(msg,$dlg){
-  processNode(msg[1],$dlg);
-
+var handler = function(pageWant,pageNow,$dlg){
+  if (!pageNow)pageNow=1;
   if($dlg.is(':hidden')){
+    var count=_result.length;
+    $('.izhihu-collection-info',$dlg).html('（加载被终止...已得到记录 ' + count + ' 条）');
     $('#zh-global-spinner').hide();
     return;
   }
   
-  if(next !== '-1'){
-    var funcName='handler'+$dlg.attr('name')
-      , param=null;
-    eval('if('+funcName+'){'+funcName+'(msg,$dlg)}');
-  }else{
-    $('.izhihu-collection-info',$dlg).html('（加载完成，共得到记录 ' + result.length + ' 条）');
+  if(pageWant==1){
+    $('.izhihu-collection-links',$dlg).empty();
+    $('#zh-global-spinner').show();
+    _result.length=0;
+    _loadTimes++;
+    $('.izhihu-collection-info',$dlg).html('');
+  }
+  var $pager=$(_listSel).parent().find('.zm-invite-pager')
+    , $lastPage=$pager.children('span').last().prev()
+    , totalCount=$pager.length==0?1:Number($lastPage.text())
+  ;
+  if(pageWant>totalCount){
+    $('.izhihu-collection-info',$dlg).html('（加载完成，共得到记录 ' + _result.length + ' 条）');
     $('#zh-global-spinner').hide();
     $('.selAll',$dlg).click();
+    return;
   }
+
+  var pageNext=pageWant+1;
+  if(pageWant==pageNow){
+    processNode($(_listSel).html(),$dlg);
+    handler(pageNext,pageNow,$dlg)
+  }else{
+    var _url=url.data.attr['base']+url.data.attr['path']+'?page='+pageWant;
+    $.ajax(_url,{type:'get',context:{loadTimes:_loadTimes}}).done(function(result){
+      if(this.loadTimes!=_loadTimes)return;
+      processNode(result,$dlg);
+      handler(pageNext,pageNow,$dlg)
+    });
+  }
+};
+
 };
