@@ -167,3 +167,5 @@ utils.observeDOMNodeAdded = (function(){
         }
     }
 })();
+
+utils.RegexSrcPic = /src="[\s\S]+?.jpg"/g
