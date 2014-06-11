@@ -69,7 +69,7 @@ function QuickBlock(iZhihu) {
                   var query=decodeURIComponent(this.data)
                     , params=utils.getParamInQuery(query,'params')
                   ;
-                  eval('params='+params);console.log(params);
+                  eval('params='+params);
                   var bid='fb-'+params.hash_id
                     , who=bid+','
                     , unfollowed=iZhihu.QuickBlock.Unfollowed
@@ -141,7 +141,7 @@ function QuickBlock(iZhihu) {
     };
     this.in2BlockCart = function(){
         var $e = iZhihu.QuickBlock.Users2B.shift()
-        if (typeof $e === 'undefined') return
+        if (typeof $e === 'undefined' || !$e || $e.length === 0) return
 
         var pending = iZhihu.QuickBlock.Pending
           , href = $e.attr('href')
@@ -229,7 +229,6 @@ function QuickBlock(iZhihu) {
                                   iZhihu.QuickBlock.Users2BBQ.push($(e))
                               });
                               iZhihu.QuickBlock.doUnfollow();
-                              //alert($('#izh_blockCart').find('.list.unfo .user2B').length);// Unfo
                           }else{
                               $('.list .user2B',$cartDIV).each(function(i,e){
                                   iZhihu.QuickBlock.Users2BBQ.push($(e))
@@ -298,7 +297,7 @@ function QuickBlock(iZhihu) {
         $.get('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}))
         .done(function(data, textStatus, jqXHR){
             if (data === '') return
-            var $html=$(data)
+            var $html=$(data.replace(utils.RegexSrcPic, ''))
               //, user=r.msg[0]
               , $avatarLink=$html.find('.avatar-link:first')
               , userName=$avatarLink.text()//user[0]
@@ -314,23 +313,20 @@ function QuickBlock(iZhihu) {
               , userID=href.substr(8)
               , who=','+userID+','
               , pending=iZhihu.QuickBlock.Pending
-            ;console.log(userName+':'+f_+':'+_f);
+            ;//console.log(userName+':'+f_+':'+_f);
 
             if(0==--pending.Count)$cartDIV.removeClass('pending');
 
             if(hashID==''){
-                //iZhihu.QuickBlock.in2BlockCart()
                 return; // User blocked or you blocked
             }
             if(pending.Users.indexOf(who) < 0){
-                //iZhihu.QuickBlock.in2BlockCart()
                 return; // No this user in pending
             }
             
             pending.Users = pending.Users.replace(who,',');
 
             if($cartDIV.find('.list .user2B[href="'+href+'"]').length){
-                //iZhihu.QuickBlock.in2BlockCart()
                 return; // User already in block list
             }
 
@@ -386,8 +382,6 @@ function QuickBlock(iZhihu) {
             var num2B=$cartDIV.find('.list .user2B').length;
             $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>999?'1k+':num2B);
             iZhihu.QuickBlock.resizeBlockCart($cartDIV);
-
-            //iZhihu.QuickBlock.in2BlockCart()
         }).always(function(data,textStatus,jXHR){
             iZhihu.QuickBlock.in2BlockCart()
         });
