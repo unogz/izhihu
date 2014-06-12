@@ -66,7 +66,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     flatten: false,
-                    cwd: 'misc/xpi-dev',
+                    cwd: 'misc/xpi-config',
                     src: [
                         '**'
                     ],
@@ -91,7 +91,7 @@ module.exports = function(grunt) {
 
 
     grunt.registerTask('buildnum', 'build num +1', function() {
-        var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
+        var manifest = grunt.file.readJSON('./package.json');
 
         var versions = manifest.version.split('.');
 
@@ -101,19 +101,25 @@ module.exports = function(grunt) {
 
         console.log('cur build', versions[3]);
 
-        grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
+        grunt.file.write('./package.json', JSON.stringify(manifest));
     });
 
 
     grunt.registerTask('updateManifest', 'update crx manifest', function() {
-        var manifest = grunt.file.readJSON('./misc/crx-config/manifest.json');
-        manifest.version = grunt.config('version') + '.' + manifest.version.split('.')[3];
+        var manifest = grunt.file.readJSON('./dist/iZhihu for Chrome/manifest.json');
+        manifest.version = grunt.config('version')// + '.' + manifest.version.split('.')[3];
         manifest.content_scripts[0].js = ['init4CRX.js', grunt.config('filename') + '.js'];
-        grunt.file.write('./misc/crx-config/manifest.json', JSON.stringify(manifest));
+        grunt.file.write('./dist/iZhihu for Chrome/manifest.json', JSON.stringify(manifest));
     });
 
-    grunt.registerTask('chrome', ['default', 'updateManifest', 'copy:toChrome']);
-    grunt.registerTask('firefox', ['default', 'updateManifest', 'copy:toFirefox']);
+    grunt.registerTask('updateManifestXPI', 'update xpi manifest', function() {
+        var manifest = grunt.file.readJSON('./dist/iZhihu for Firefox/package.json');
+        manifest.version = grunt.config('version');
+        grunt.file.write('./dist/iZhihu for Firefox/package.json', JSON.stringify(manifest));
+    });
+
+    grunt.registerTask('chrome', ['default', 'copy:toChrome', 'updateManifest']);
+    grunt.registerTask('firefox', ['default', 'copy:toFirefox', 'updateManifestXPI']);
 
     return grunt;
 };
