@@ -1,0 +1,15 @@
+{
+    "name":"izhihu",
+    "title":"iZhihu",
+    "id":"jid1-Q3Oc7rhwyTCWhA",
+    "description":"知乎插件",
+    "author":"钢盅郭子",
+    "license":"MPL 2.0",
+    "permissions":{
+        "cross-domain-content":[
+            "http://*.zhihu.com/",
+            "http://ilovezhihu.duapp.com/"
+        ]
+    },
+    "homepage":"http://zhuanlan.zhihu.com/izhihu"
+}
