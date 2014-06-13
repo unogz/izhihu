@@ -18,6 +18,10 @@ module.exports = function (grunt) {
             './jquery/dist/jquery.js': {
                 expose: 'jquery',
                 basedir: path.join(process.cwd(), 'bower_components')
+            },
+            './purl/purl.js': {
+                expose: 'purl',
+                basedir: path.join(process.cwd(), 'bower_components')
             }
         },
         extensions: ['.styl', '.jade'],
@@ -82,6 +86,8 @@ module.exports = function (grunt) {
                     var cnt = 0;
 
                     globals.forEach(function (key) {
+
+                        options['external'] = options['external'] || [];
 
                         Object.keys(options['globals']).forEach(function (keyName) {
                             if (key !== keyName) {

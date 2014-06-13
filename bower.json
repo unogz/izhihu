@@ -1,17 +1,18 @@
 {
-    "name": "izhihu",
-    "version": "3.0.0",
-    "authors": [
-        "Morlay <morlay@qq.com>"
-    ],
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests"
-    ],
-    "dependencies": {
-        "jquery": "~2.1.1"
-    }
+  "name": "izhihu",
+  "version": "3.0.0",
+  "authors": [
+    "Morlay <morlay@qq.com>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "purl": "~2.3.1"
+  }
 }
