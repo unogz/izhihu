@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 
 
     grunt.config('concurrent.dev', {
-        tasks: ['connect:devServer', 'watch'],
+        tasks: ['connect:corsServer', 'watch'],
         options: {
             logConcurrentOutput: true
         }
