@@ -1,0 +1,86 @@
+# Linux
+# backup files
+*~
+
+# Windows
+# thumbnails
+Thumbs.db
+
+# Mac OS X
+# metadata
+.DS_Store
+# thumbnails
+._*
+
+# Visual Studio PHP
+*.sln
+*.phpproj
+*.puo
+*.suo
+*.cache
+
+# Netbeans
+nbproject/
+catalog.xml
+nbactions.xml
+
+# Eclipse
+.settings/
+.buildpath
+.classpath
+.project
+
+# SVN
+# svn folders
+.svn/
+
+# PHPStorm
+.idea/
+.nameencodings
+.xmlmisc
+.xmlmodules
+.xmlprojectCodeStyle
+.xmlvcs.xml
+*.imlworkspace
+.xml
+
+
+# common #
+*.log
+logs/
+tmp/
+temp/
+
+# nodejs #
+node_modules/
+bower_components/
+public/gen
+sea-modules/
+dist/*.js
+
+# java #
+/plugin.xml
+web-app/WEB-INF/classes/
+.settings/
+target/
+target-eclipse/
+grails-*.zip
+*.war
+.link_to_grails_plugins/
+
+# other #
+*.swp
+.DS_Store
+
+
+
+/.gitCfg.bat
+/iZhihu for Chrome/
+
+# develop files
+build/
+public/
+dist/iZhihu for Chrome/
+
+#picasa
+.picasa.ini

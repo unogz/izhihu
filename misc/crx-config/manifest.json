@@ -1,0 +1,1 @@
+{"manifest_version":2,"converted_from_user_script":true,"name":"iZhihu","version":"2.10.14.414","description":"","permissions":["http://*.zhihu.com/","http://ilovezhihu.duapp.com/"],"content_scripts":[{"run_at":"document_end","exclude_globs":[],"include_globs":["*"],"matches":["http://www.zhihu.com/*"],"js":["init4CRX.js","izhihu.js"]}]}
