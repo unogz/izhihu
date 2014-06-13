@@ -2,6 +2,7 @@ module.exports = function (grunt) {
 
     grunt.config('path', {
         dest: 'public',
+        dist: 'dist',
         tmp: '.tmp',
         src: 'src'
     });
@@ -25,7 +26,7 @@ module.exports = function (grunt) {
     });
 
 
-    grunt.registerTask('build', ['clean:dev', 'browserify.libs', 'browserify']);
+    grunt.registerTask('build', ['clean:dev', 'browserify.libs', 'browserify', 'copy:chrome']);
 
     grunt.registerTask('default', ['build', 'concurrent:dev']);
 
