@@ -1,6 +1,6 @@
 {
     "name": "izhihu",
-    "version": "2.10.14.414",
+    "version": "2.10.15.415",
     "license": "MIT",
     "devDependencies": {
         "grunt": "*",
