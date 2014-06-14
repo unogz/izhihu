@@ -18,7 +18,7 @@ window.addEventListener('load',function main(){
 },false);
 
 var pageIs={}
-  , $win=$(unsafeWindow)
+  , $win=$(window)
   , _doc=window.document
   , $body=$(_doc.body)
   , _path=window.frameElement?window.frameElement.src.replace(/https?:\/\/www.zhihu.com/,''):url.data.attr['path']
