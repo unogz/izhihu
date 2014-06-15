@@ -1,21 +1,14 @@
-var version='2.10.15';
-var updateDate='2014-6-14';
+var version='2.10.16';
+var updateDate='2014-6-15';
 
-var bGreasemonkeyServiceDefined = false;
-
-try {
-    if (typeof Components.interfaces.gmIGreasemonkeyService === "object") {
-        bGreasemonkeyServiceDefined = true;
-    }
-}
-catch (err) {
-    //Ignore.
-}
-
-if ( typeof unsafeWindow === "undefined"  ||  ! bGreasemonkeyServiceDefined) {
+if ( typeof unsafeWindow === "undefined") {
     unsafeWindow    = ( function () {
         var dummyElem   = document.createElement('p');
         dummyElem.onclick=function(){return window;};
         return dummyElem.onclick ();
     } ) ();
 }
+
+//主入口
+$(function main(){
+

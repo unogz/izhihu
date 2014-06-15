@@ -10,13 +10,6 @@ var client = window.create();
 var url = purl();
 var page = url.segment(1);
 
-//主入口
-window.addEventListener('load',function main(){
-	console.log('iZhihu '+version+' started.');
-	//console.log(window.iZhihu);
-	//console.log((new Date()).getTime());
-},false);
-
 var pageIs={}
   , $win=$(window)
   , _doc=window.document
@@ -50,7 +43,7 @@ window.iZhihu = {
     $win:$win
   , $body:$body
   , $main:$main
-  , config:_.extend(cfgDefault, utils.getValue('izhihu',cfgDefault))
+  , config:$.extend(cfgDefault, utils.getValue('izhihu',cfgDefault))
 };
 
 var izhHomeLayout = window.iZhihu.config['HomeLayout']

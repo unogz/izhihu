@@ -25,13 +25,13 @@ var cfgDefault = {
  */
 utils.getCfg = function(key){
   if(!key)return false;
-  var cfg = _.extend(cfgDefault, this.getValue('izhihu',cfgDefault));
+  var cfg = $.extend(cfgDefault, this.getValue('izhihu',cfgDefault));
   return key ? cfg[key] : cfg;
 };
 
 utils.setCfg = function(key,value){
   if(!key)return;
-  var cfg = _.extend(cfgDefault, this.getValue('izhihu',cfgDefault));
+  var cfg = $.extend(cfgDefault, this.getValue('izhihu',cfgDefault));
   cfg[key]=value;
   this.setValue('izhihu',cfg);
 };

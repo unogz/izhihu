@@ -2,7 +2,6 @@
  * 回答页
  */
 
-$(function(){
   if(pageIs.Answer){
 
 var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
@@ -53,4 +52,3 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
         });
     }
   }
-})

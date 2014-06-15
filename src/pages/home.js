@@ -1,7 +1,6 @@
 /*
  * 首页
  */
-$(function(){
     var $topstory=$('#is-topstory')
       , isTopStory=$topstory&&$topstory.length
       , propFeedType='data-type'//:'data-feedtype'
@@ -340,4 +339,3 @@ $(function(){
         homeFeeds(window.iZhihu.config['HomeFeedsColumns']);
     }
 
-});

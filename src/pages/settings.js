@@ -1,7 +1,7 @@
 /**
  * 配置界面
  */
-$(function(){
+
   var domBtnSettings = [
     '<li>',
       '<a href="javascript:void(0);" tabindex="-1">',
@@ -84,4 +84,3 @@ $(function(){
   $('#izhRefresh').click(function(){
     location.reload()
   })
-})
