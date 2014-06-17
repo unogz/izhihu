@@ -1,7 +1,6 @@
 /**
  * 收藏页
  */
-$(function(){
   if(pageIs.Collection){
     //添加按钮
     $('#zh-list-meta-wrap')
@@ -50,4 +49,3 @@ $(function(){
     $favItems.each(function(i,e){
     });
   }
-})

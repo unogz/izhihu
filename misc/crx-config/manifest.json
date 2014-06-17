@@ -13,7 +13,7 @@
             "exclude_globs":[],
             "include_globs":["*"],
             "matches":["http://www.zhihu.com/*"],
-            "js":["init4CRX.js","izhihu.js"]
+            "js":["izhihu.js"]
         }
     ]
 }

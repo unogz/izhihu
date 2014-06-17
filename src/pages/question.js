@@ -2,7 +2,6 @@
  * 问题页
  */
 
-$(function(){
   if(pageIs.Question){
 
     var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
@@ -180,4 +179,3 @@ $(function(){
         });
     }
   }
-})

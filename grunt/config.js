@@ -19,9 +19,9 @@ module.exports = function(grunt) {
                 src: [
 
                     "src/meta.js",
-                    'src/begin.js',
                     "src/jquery.min.js",
                     "src/import/*.js",
+                    'src/begin.js',
                     "src/lib/*.js",
                     'src/izhihu.js',
                     "src/modules/*.js",
@@ -72,6 +72,18 @@ module.exports = function(grunt) {
                     ],
                     dest: '<%= dist %>/iZhihu for Firefox/'
                 }]
+            },
+            toSafari: {
+                files: [{
+                    expand: true,
+                    filter: 'isFile',
+                    flatten: true,
+                    src: [
+                        'misc/ext-config/**',
+                        '<%= dist %>/izhihu.js'
+                    ],
+                    dest: '<%= dist %>/iZhihu.safariextension/'
+                }]
             }
         }
         // 监控文件变化并动态执行任务
@@ -82,6 +94,20 @@ module.exports = function(grunt) {
             scripts: {
                 files: ['src/**/**.js'],
                 tasks: ['chrome']
+            }
+        }
+        ,
+        'string-replace': {
+            dist: {
+                files: {
+                    'dist/iZhihu.safariextension/Info.plist': 'dist/iZhihu.safariextension/Info.plist'
+                },
+                options: {
+                    replacements: [{
+                        pattern: '[version]',
+                        replacement: '<%= version %>'
+                    }]
+                }
             }
         }
     });
@@ -118,8 +144,11 @@ module.exports = function(grunt) {
         grunt.file.write('./dist/iZhihu for Firefox/package.json', JSON.stringify(manifest));
     });
 
-    grunt.registerTask('chrome', ['default', 'copy:toChrome', 'updateManifest']);
-    grunt.registerTask('firefox', ['default', 'copy:toFirefox', 'updateManifestXPI']);
+    grunt.registerTask('chrome', ['copy:toChrome', 'updateManifest']);
+    grunt.registerTask('firefox', ['copy:toFirefox', 'updateManifestXPI']);
+    grunt.registerTask('safari', ['copy:toSafari', 'string-replace']);
+
+    grunt.registerTask('buildall', ['default', 'chrome', 'firefox', 'safari'])
 
     return grunt;
 };

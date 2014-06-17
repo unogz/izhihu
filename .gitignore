@@ -83,3 +83,5 @@ dist/iZhihu for Chrome/
 #picasa
 .picasa.ini
 /dist/iZhihu for Firefox
+/dist/iZhihu.safariextension
+
