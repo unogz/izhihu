@@ -299,7 +299,6 @@ function QuickBlock(iZhihu) {
 
         $.ajax('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}), {
             type: 'GET'
-          , timeout: 300
           , user2B: $e
           , maxRetryCount: 3
           , retriedCount: 0
