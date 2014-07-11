@@ -65,9 +65,9 @@ function Answer(iZhihu) {
         });
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
-            var $voteInfo=$('.zm-item-vote-info',$a);
-            if($('[name=more]',$voteInfo).length){
-                $voteInfo.parent().bind('DOMNodeInserted',function(event){
+            var $voteMore=$('.zm-item-vote-info > .more',$a);
+            if($voteMore.length){
+                $voteMore.parent().parent().bind('DOMNodeInserted',function(event){
                     iZhihu.QuickBlock.addQuickBlock($(event.target),iZhihu.QuickBlock);
                 });
             }
