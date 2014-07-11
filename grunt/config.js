@@ -55,7 +55,6 @@ module.exports = function(grunt) {
                     flatten: true,
                     src: [
                         '<%= dist %>/<%= filename %>.js',
-                        'misc/init4CRX.js',
                         'misc/crx-config/manifest.json',
                         'misc/crx-config/*.png'
                     ],
@@ -134,7 +133,6 @@ module.exports = function(grunt) {
     grunt.registerTask('updateManifest', 'update crx manifest', function() {
         var manifest = grunt.file.readJSON('./dist/iZhihu for Chrome/manifest.json');
         manifest.version = grunt.config('version')// + '.' + manifest.version.split('.')[3];
-        manifest.content_scripts[0].js = ['init4CRX.js', grunt.config('filename') + '.js'];
         grunt.file.write('./dist/iZhihu for Chrome/manifest.json', JSON.stringify(manifest));
     });
 
