@@ -54,7 +54,7 @@ function Comment(iZhihu) {
             ,'.zm-comment-box .izh-button.on .zg-icon-comment-like{background-position:-222px -79px;}'
             ,'.zm-comment-box .izh-button .z-icon-fold{height:6px;}'
             ,''].join('\n');
-        iZhihu.$win.load(function(){
+        this.onWinLoad=function(){
             var iZhihu=window.iZhihu;
             iZhihu.$win.scroll(function(event){
                 if(iZhihu.Comment.Opening&&!iZhihu.Comment.PageNotScroll){
@@ -74,7 +74,8 @@ function Comment(iZhihu) {
             if(iZhihu.ScrollTop){
                 document.body.scrollTop=iZhihu.ScrollTop;
             }
-        });
+        }
+        this.onWinLoad()
     }
     this.processCommentButton = function($a){
         if(iZhihu.Comment.RightComment){
