@@ -20,7 +20,7 @@
 	<dict>
 		<key>Scripts</key>
 		<dict>
-			<key>Start</key>
+			<key>End</key>
 			<array>
 				<string>izhihu.js</string>
 			</array>
@@ -43,6 +43,8 @@
 			<string>Some</string>
 		</dict>
 	</dict>
+	<key>Update Manifest URL</key>
+	<string>http://izhihu.unogz.com/safari/Info.plist</string>
 	<key>Website</key>
 	<string>http://zhuanlan.zhihu.com/izhihu</string>
 </dict>

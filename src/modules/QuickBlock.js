@@ -391,7 +391,7 @@ function QuickBlock(iZhihu) {
             iZhihu.QuickBlock.in2BlockCart()
         });
     };
-    this.addQuickBlock = function($vi,quickBlock){
+    this.addQuickBlock = function($vi){
         if($vi.is('.zm-item-vote-info') && !$vi.children('a[name=more]').length){
             if($vi.attr('izh-QuickBlock')!='1'){
                 var $u=$('.voters a[href^="/people/"]',$vi);
@@ -419,6 +419,7 @@ function QuickBlock(iZhihu) {
                     'position':'absolute'
                   , 'left':width
                   , 'width':'4em'
+                  , 'right':'-4em'
                 }).click(function(){
                     if(this.getAttribute('on')=='1'){
                         $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
@@ -431,7 +432,15 @@ function QuickBlock(iZhihu) {
                         //this.setAttribute('on','1');
                     }
                 }).insertBefore($vi)
-              , $quickBlock=$('<div>',{'class':'izh-quick-block','izh_num2B':'0'}).css({'left':width}).insertBefore($vi).hide()
+              , $quickBlock=$('<div>',{
+                    'class':'izh-quick-block'
+                  , 'izh_num2B':'0'
+                }).css({
+                    'position':'absolute'
+                  , 'left':width
+                  , 'width':'4em'
+                  , 'right':'-4em'
+                }).insertAfter($btnQuickBlock).hide()
             ;
             $('<a>',{
                 'class':'izh-quick-block-pend'
@@ -450,12 +459,14 @@ function QuickBlock(iZhihu) {
                   , $t=null
                 ;
                 if($a.is('.zm-item-answer-detail')){
-                    $t=$a.children('.zm-item-rich-text').find('.zm-item-answer-author-info:first')
+                    $t=$a.find('.zm-item-answer-author-info:first').children('.zm-item-answer-author-wrap').children('a:first')
                 }else if($a.is('.answer-head')){
-                    $t=$a.parent('.zm-item-answer').children('.zm-item-answer-author-info')
+                    $t=$a.parent('.zm-item-answer').find('.zm-item-answer-author-info:first').children('.zm-item-answer-author-wrap').children('a:first')
+                }else if($a.is('.post-body')){
+                    $t=$a.find('.author-info:first').children('a.name:first')
                 }
                 if($t&&$t.length){
-                    iZhihu.QuickBlock.Users2B.push($t.children('.zm-item-answer-author-wrap').children('a:first'))
+                    iZhihu.QuickBlock.Users2B.push($t)
                 }
                 $users2B.each(function(i,e){
                     iZhihu.QuickBlock.Users2B.push($(e).next())
@@ -472,7 +483,7 @@ function QuickBlock(iZhihu) {
             }).click(function(){
                 var $quickBlock=$(this).closest('.izh-quick-block')
                   , $users=$('.zm-item-vote-info input.izh-quick-block-sel',$quickBlock.parent());
-                $users.removeAttr('checked');
+                $users.each(function(i,e){e.checked=false})
                 $quickBlock.attr('izh_num2B',0);
             }).prependTo($quickBlock);
             $('<a>',{
@@ -484,7 +495,7 @@ function QuickBlock(iZhihu) {
             }).click(function(){
                 var $quickBlock=$(this).closest('.izh-quick-block')
                 , $users=$('.zm-item-vote-info input.izh-quick-block-sel',$quickBlock.parent());
-                $users.attr('checked','checked');
+                $users.each(function(i,e){e.checked=true})
               	$quickBlock.attr('izh_num2B',$users.length);
             }).prependTo($quickBlock);
         }
@@ -499,7 +510,6 @@ function QuickBlock(iZhihu) {
           , 'data-tip':'s$l$将此人列入候审名单以待收监'
         }).click(function(){
             var $e = $(this).next()
-            console.log($e)
             iZhihu.QuickBlock.Users2B.push($e)
             iZhihu.QuickBlock.in2BlockCart();
         }).prependTo($where).hide();

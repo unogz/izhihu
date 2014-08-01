@@ -65,11 +65,14 @@ function Answer(iZhihu) {
         });
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
-            var $voteMore=$('.zm-item-vote-info > .more',$a);
+            var $voteMore=$('.zm-item-vote-info > .more',$a)
             if($voteMore.length){
                 $voteMore.parent().parent().bind('DOMNodeInserted',function(event){
-                    iZhihu.QuickBlock.addQuickBlock($(event.target),iZhihu.QuickBlock);
-                });
+                    var $vi=$(event.target).filter('.zm-item-vote-info')
+                    if (!$vi.length || $vi.attr('data-votecount')!=$vi.children().first().children().length)
+                        return
+                    iZhihu.QuickBlock.addQuickBlock($vi)
+                })
             }
             // Region end
         }

@@ -2,16 +2,16 @@
  * 配置界面
  */
 
-  var domBtnSettings = [
-    '<li>',
-      '<a href="javascript:void(0);" tabindex="-1">',
-        '<i class="zg-icon zg-icon-dd-settings izhihu-settings"></i>',
-        'iZhihu',
-      '</a>',
-    '</li>'
-  ].join('');
+    var domBtnSettings = [
+        '<li>',
+          '<a href="javascript:void(0);" tabindex="-1">',
+            '<i class="zg-icon zg-icon-dd-settings izhihu-settings"></i>',
+            'iZhihu',
+          '</a>',
+        '</li>'
+    ].join('')
 
-  var cbemptyimg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII=';
+    var cbemptyimg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII='
     var domDlgSettings = [
       '<div id="izh-dlg-settings" class="modal-dialog" tabindex="0" style="display:none;width:600px">',
         '<div class="modal-dialog-title modal-dialog-title-draggable">',
@@ -56,31 +56,39 @@
           '</div>',
         '</div>',
       '</div>'
-    ].join('');
-        
-  $(domBtnSettings).insertBefore($('ul#top-nav-profile-dropdown li:last'))
-  .click(function(){
-    console.log(this);
-    $('.modal-dialog-bg').show();
-    $('input.t_rtjdchk','#izh-dlg-settings').each(function(i,e){
-        if(utils.getCfg($(e).attr('name')))
-            $(e).attr('checked','checked');
-    });
-    $('#izh-dlg-settings').css({'z-index':'89','position':'fixed','top': ($win.height() - $('#izh-dlg-settings').height()) / 2, 'left': ($win.width() - $('#izh-dlg-settings').width()) / 2}).fadeIn('slow');
-  });
-  var $dlg=$(domDlgSettings).appendTo(_doc.body);
-  $dlg.drags({handler:'.modal-dialog-title-draggable'});
-  $('.modal-dialog-title-close',$dlg).click(function(){
-      $('.modal-dialog-bg').hide();
-      $('#izh-dlg-settings').first().hide();
-  });
-  $('input.t_rtjdchk',$dlg).checkbox({cls:'t_jchkbox',empty:cbemptyimg});
-  $('input.t_rtjdchk',$dlg).click(function(){
-      var key=$(this).attr('name')
-        , value=!this.checked;
-      console.log(key+' = '+value);
-      utils.setCfg(key,value);
-  });
-  $('#izhRefresh').click(function(){
-    location.reload()
-  })
+    ].join('')
+
+    $(domBtnSettings).click(function(){
+        var $settings = $('#izh-dlg-settings')
+        $('.modal-dialog-bg').show()
+        $('input.t_rtjdchk','#izh-dlg-settings').each(function(i,e){
+            if(utils.getCfg($(e).attr('name')))
+                $(e).attr('checked','checked')
+        })
+        $settings.css({
+            'z-index':'89'
+          , 'position':'fixed'
+          , 'top': ($win.height() - $settings.height()) / 2
+          , 'left': ($win.width() - $settings.width()) / 2
+        }).fadeIn('slow')
+    }).insertBefore($('ul#top-nav-profile-dropdown li:last'))
+
+    var $dlg=$(domDlgSettings).appendTo(_doc.body)
+    $dlg.drags({handler:'.modal-dialog-title-draggable'})
+    $('.modal-dialog-title-close',$dlg).click(function(){
+        $('.modal-dialog-bg').hide()
+        $('#izh-dlg-settings').first().hide()
+    })
+    $('input.t_rtjdchk',$dlg).each(function(i,e){
+        var $chk=$(e).checkbox({cls:'t_jchkbox',empty:cbemptyimg})
+          , key=$chk.attr('name')
+        $chk.click(function(){
+            var $item=$chk.next('.t_jchkbox')
+              , value=!$item.hasClass('t_jchkbox-checked')
+            console.log(key+' = '+value)
+            utils.setCfg(key,value)
+        })
+    })
+    $('#izhRefresh').click(function(){
+        location.reload()
+    })
