@@ -1,5 +1,5 @@
-var version='2.10.18';
-var updateDate='2014-7-27';
+var version='2.10.19';
+var updateDate='2014-8-1';
 
 if ( typeof unsafeWindow === "undefined") {
     unsafeWindow    = ( function () {
@@ -10,5 +10,5 @@ if ( typeof unsafeWindow === "undefined") {
 }
 
 //主入口
-$(function main(){
+//$(function main(){
 

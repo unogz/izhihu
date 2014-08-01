@@ -17,10 +17,6 @@ module.exports = function(grunt) {
                     // banner: '<%= meta.modules %>\n'
                 },
                 src: [
-
-                    "src/meta.js",
-                    "src/jquery.min.js",
-                    "src/import/*.js",
                     'src/begin.js',
                     "src/lib/*.js",
                     'src/izhihu.js',
@@ -29,6 +25,13 @@ module.exports = function(grunt) {
                     "src/end.js"
                 ], //src filled in by build task
                 dest: '<%= dist %>/<%= filename %>.js'
+            },
+            dist: {
+                src: [
+                    "src/meta.js",
+                    "<%= dist %>/<%= filename %>.js"
+                ], //src filled in by build task
+                dest: '<%= dist %>/<%= filename %>.userscript.js'
             }
         }
         // 压缩 js 文件
@@ -56,7 +59,8 @@ module.exports = function(grunt) {
                     src: [
                         '<%= dist %>/<%= filename %>.js',
                         'misc/crx-config/manifest.json',
-                        'misc/crx-config/*.png'
+                        'misc/crx-config/*.png',
+                        'import/*'
                     ],
                     dest: '<%= dist %>/iZhihu for Chrome/'
                 }]
@@ -79,7 +83,8 @@ module.exports = function(grunt) {
                     flatten: true,
                     src: [
                         'misc/ext-config/**',
-                        '<%= dist %>/izhihu.js'
+                        '<%= dist %>/izhihu.js',
+                        'import/*'
                     ],
                     dest: '<%= dist %>/iZhihu.safariextension/'
                 }]

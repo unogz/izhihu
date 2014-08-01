@@ -26,4 +26,4 @@ setTimeout(function(){
   console.log('iZhihu '+version+' started.');
   //console.log(window.iZhihu);
   //console.log((new Date()).getTime());
-});
+//});
