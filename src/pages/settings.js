@@ -85,7 +85,6 @@
         $chk.click(function(){
             var $item=$chk.next('.t_jchkbox')
               , value=!$item.hasClass('t_jchkbox-checked')
-            console.log(key+' = '+value)
             utils.setCfg(key,value)
         })
     })

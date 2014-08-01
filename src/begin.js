@@ -10,5 +10,5 @@ if ( typeof unsafeWindow === "undefined") {
 }
 
 //主入口
-$(function main(){
+//$(function main(){
 

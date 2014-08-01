@@ -20,6 +20,48 @@
 	<dict>
 		<key>Scripts</key>
 		<dict>
+			<key>Start</key>
+			<array>
+				<string>jquery-1.8.2.min.js</string>
+			</array>
+		</dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>jquery.checkbox.min.js</string>
+			</array>
+		</dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>clientutils.js</string>
+			</array>
+		</dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>drag.js</string>
+			</array>
+		</dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>purl.js</string>
+			</array>
+		</dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>underscore-min.js</string>
+			</array>
+		</dict>
+		<key>Scripts</key>
+		<dict>
 			<key>End</key>
 			<array>
 				<string>izhihu.js</string>
