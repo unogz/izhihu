@@ -26,7 +26,7 @@ module.exports = function(grunt) {
                 ], //src filled in by build task
                 dest: '<%= dist %>/<%= filename %>.js'
             },
-            dist: {
+            distUserscript: {
                 src: [
                     "src/meta.js",
                     "<%= dist %>/<%= filename %>.js"
