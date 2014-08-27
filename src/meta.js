@@ -15,6 +15,7 @@
 // @require      http://cdn.staticfile.org/jqueryui/1.10.4/jquery-ui.min.js
 // @require      http://cdn.staticfile.org/purl/2.3.1/purl.min.js
 // @require      http://cdn.staticfile.org/underscore.js/1.6.0/underscore-min.js
+// @grant        GM_xmlHttpRequest
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @grant        GM_getResourceURL
