@@ -26,7 +26,7 @@
             		'<tr><td colspan="6"align="left"><b>功能开关</b>（更改后设置将立刻保存，但只有当页面再次打开时才会生效)</td></tr>',
             	'</thead>',
             	'<tbody>',
-                '<tr style="display:none"><td colspan="4"align="left"title="">在首页直接浏览常去话题</td><td width="1px"align="right"></td><td width="1px"align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" /></td></tr>',
+                '<tr style="display:none"><td colspan="4"align="left"title="">在首页直接浏览常去话题</td><td width="1px"align="right"></td><td width="1px"align="right"><label><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeTopics" name="HomeTopics" />aaa</label></td></tr>',
                 '<tr><td colspan="4"align="left"title="">改变网页样式外观</td><td align="right"><i class="icon icon-help"data-tip="s$t$* 首页隐藏大头像<br/>* 缩进投票按钮（问题/回答页）<br/>* 按钮图标动画 "></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeLayout" name="HomeLayout" /></td></tr>',
                 '<tr><td colspan="4"align="left"title="">调整首页「新动态」提醒按钮</td><td align="right"><i class="icon icon-help"data-tip="s$t$挪到 Timeline 右上角<br/>与标题「最新动态」平行"></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeNoti" name="HomeNoti" /></td></tr>',
                 '<tr><td colspan="4"align="left"title="">开启「首页分栏」</td><td align="right"><i class="icon icon-help"data-tip="s$t$将首页动态分类单独显示：<br/>问题、回答、专栏"></i></td><td align="right"><input type="checkbox" class="t_rtjdchk" id="iZhihu_setHomeFeedsColumns" name="HomeFeedsColumns" /></td></tr>',
@@ -74,13 +74,17 @@
     }).insertBefore($('ul#top-nav-profile-dropdown li:last'))
 
     var $dlg=$(domDlgSettings).appendTo(_doc.body)
-    $dlg.drags({handler:'.modal-dialog-title-draggable'})
+    //$dlg.drags({handler:'.modal-dialog-title-draggable'})
+    $dlg.draggable({handle: '.modal-dialog-title-draggable'})
     $('.modal-dialog-title-close',$dlg).click(function(){
         $('.modal-dialog-bg').hide()
         $('#izh-dlg-settings').first().hide()
     })
     $('input.t_rtjdchk',$dlg).each(function(i,e){
-        var $chk=$(e).checkbox({cls:'t_jchkbox',empty:cbemptyimg})
+        var $chk=$(e).iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                increaseArea: '20%' // optional
+            })//.checkbox({cls:'t_jchkbox',empty:cbemptyimg})
           , key=$chk.attr('name')
         $chk.click(function(){
             var $item=$chk.next('.t_jchkbox')
