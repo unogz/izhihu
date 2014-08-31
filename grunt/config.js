@@ -71,9 +71,18 @@ module.exports = function(grunt) {
                     flatten: false,
                     cwd: 'misc/xpi-config',
                     src: [
-                        '**'
+                        '**',
                     ],
                     dest: '<%= dist %>/iZhihu for Firefox/'
+                }],
+                files: [{
+                    expand: true,
+                    filter: 'isFile',
+                    flatten: true,
+                    src: [
+                        'import/*'
+                    ],
+                    dest: '<%= dist %>/iZhihu for Firefox/data/'
                 }]
             },
             toSafari: {

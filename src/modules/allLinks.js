@@ -48,7 +48,6 @@ allLinks=function(_name,_listSel,_listName){
         });
 
         //拖动
-        //this.$dlg.drags({handler:'.modal-dialog-title-draggable'});
         this.$dlg.draggable({handle: '.modal-dialog-title-draggable'})
         
         $('.save',this.$dlg).click(function(){
