@@ -9,14 +9,19 @@
       , $feedList=$('.zh-general-list')//feed_list
       , $topLinkHome=$('#zh-top-link-home')
       , $filter=//isTopStory?
-            $('<span>',{
-                'class':'izh-feeds-filter'
-              , html:[''
-                  , '<a class="izh-button izh-feeds-filter-option"showFeeds="q"><i class="zg-icon"></i>问题</a>'
-                  , '<a class="izh-button izh-feeds-filter-option"showFeeds="a"><i class="zg-icon"></i>回答</a>'
-                  , '<a class="izh-button izh-feeds-filter-option"showFeeds="p,r"data-tip="s$t$专栏、圆桌"><i class="zg-icon"></i>其他</a>'
-                ].join('')
-            })
+            $('<span>', { 'class':'izh-feeds-filter' })
+                .append($('<a>', { 'class': 'izh-button izh-feeds-filter-option', 'showFeeds': 'q' })
+                    .append($('<i>', { 'class': 'zg-icon' }))
+                    .append('问题')
+                )
+                .append($('<a>', { 'class': 'izh-button izh-feeds-filter-option', 'showFeeds': 'a' })
+                    .append($('<i>', { 'class': 'zg-icon' }))
+                    .append('回答')
+                )
+                .append($('<a>', { 'class': 'izh-button izh-feeds-filter-option', 'showFeeds': 'p,r', 'data-tip': 's$t$专栏、圆桌' })
+                    .append($('<i>', { 'class': 'zg-icon' }))
+                    .append('其他')
+                )
       , $filterInfo=$('<a>',{'class':'izh-feeds-filter-info nothing',href:'javascript:void(0);'}).on('click',function(){$filter.trigger($filter.is(':hidden')||$filter.attr('doing')=='hide'?'show':'hide');})
       , ShowFeeds=function(type,enable){
             var id="izhCSS_FilterFeed_"+type

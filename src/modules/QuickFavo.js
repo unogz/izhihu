@@ -55,10 +55,7 @@ function QuickFavo(iZhihu) {
                            :pageIs.Answer?'.zm-item-answer'
                            :''
                       , $a=$(sel+'[data-aid='+aid+']')
-                      , $v=$a.children('.izh_fav').html([
-                            '<div class="title"title="以下为最近选择的收藏夹">快速收藏</div>'
-                          //, '<div class="pinned"></div><div class="normal"></div>'
-                        ].join(''))
+                      , $v=$a.children('.izh_fav').empty().append($('<div>',{'class':'title',title:'以下为最近选择的收藏夹',html:'快速收藏'}))
                     ;
                     if(''==sel)return;
                     var favAll=result.msg[0]
