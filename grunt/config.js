@@ -65,7 +65,7 @@ module.exports = function(grunt) {
                     dest: '<%= dist %>/iZhihu for Chrome/'
                 }]
             },
-            toFirefox: {
+            toFirefox1: {
                 files: [{
                     expand: true,
                     flatten: false,
@@ -74,7 +74,9 @@ module.exports = function(grunt) {
                         '**',
                     ],
                     dest: '<%= dist %>/iZhihu for Firefox/'
-                }],
+                }]
+            },
+            toFirefox2: {
                 files: [{
                     expand: true,
                     filter: 'isFile',
@@ -157,7 +159,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('chrome', ['copy:toChrome', 'updateManifest']);
-    grunt.registerTask('firefox', ['copy:toFirefox', 'updateManifestXPI']);
+    grunt.registerTask('firefox', ['copy:toFirefox1', 'copy:toFirefox2', 'updateManifestXPI']);
     grunt.registerTask('safari', ['copy:toSafari', 'string-replace']);
 
     grunt.registerTask('buildall', ['default', 'chrome', 'firefox', 'safari'])
