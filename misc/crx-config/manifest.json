@@ -13,7 +13,7 @@
             "exclude_globs":[],
             "include_globs":["*"],
             "matches":["http://www.zhihu.com/*"],
-            "js":["jquery-1.8.2.min.js","jquery.checkbox.min.js","clientutils.js","drag.js","purl.js","underscore-min.js","izhihu.js"]
+            "js":["jquery-1.8.2.min.js","jquery-ui.min.js","icheck.min.js","purl.js","underscore-min.js","izhihu.js"]
         }
     ]
 }

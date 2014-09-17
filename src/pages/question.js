@@ -53,12 +53,12 @@
     ;
 
     window.iZhihu.$unoAnswers = $uno
-
+/*
     //答案按时间排序
     if(utils.getCfg('answer_orderByTime')){
       client.click('.zh-answers-filter-popup div[data-key=added_time]');
     }
-    
+*/    
     var $questionWrap=$('#zh-question-meta-wrap');
     $questionWrap.children('.panel-container').bind('DOMNodeInserted',function(event){
         window.iZhihu.Comment.processComment($(event.target));
