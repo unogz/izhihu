@@ -11,6 +11,10 @@ function Answer(iZhihu) {
     this.ppWidth=0;
     this.ppHeight=400;
 
+    this.css = 
+        ['.zm-votebar .izh-button.fold{margin:5px 0px 0px;display:block;color:#698EBF;height:24px;line-height:24px;width:38px;border-radius:3px;border:0px none;cursor:pointer;background:none repeat scroll 0% 0% #EFF6FA;font-weight:font-weight;position:relative;}'
+        ,''].join('\n');
+
   	this.processAnswer=function($a,$pp,bAuthorRear,bAuthorList){
         if(!$a||!$a.length)return;
         if($a.attr('izh_processed')=='1')return;
@@ -19,7 +23,7 @@ function Answer(iZhihu) {
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
           , $fold=!$a.has('.zh-summary > .toggle-expand').length?null:$('<button/>',{
-                'class':'down izh-button fold'
+                'class':'izh-button fold'
               , html:'收起'
               , click:function(){
                     var $vote=$(this).closest('.zm-votebar')
