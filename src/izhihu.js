@@ -235,6 +235,8 @@ if(pageIs.Home||pageIs.Question||pageIs.Answer){
     css_comment = window.iZhihu.Comment.css;
 }
 
+css += window.iZhihu.Answer.css;
+
 if(window.iZhihu.QuickFavo){
     css += window.iZhihu.QuickFavo.css;
 }
