@@ -1,6 +1,6 @@
 # iZhihu 我爱知乎
 
-## 项目介绍
+## 它是什么
 
 **What we do:**
 
@@ -17,16 +17,36 @@
 - 因为那由知乎自己来做效果会更好,另一方不希望本插件被滥用。
 
 
-## 安装说明
+## 如何安装
 
-- Chrome 推荐使用扩展:「[Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)」
+**使用浏览器扩展**
+
+- iZhihu for Chrome：[https://chrome.google.com/webstore/detail/izhihu/omcldpfdihfogiklcdlopeokkedbhjop](https://chrome.google.com/webstore/detail/izhihu/omcldpfdihfogiklcdlopeokkedbhjop) 
+- iZhihu for Firefox：[https://addons.mozilla.org/zh-CN/firefox/addon/izhihu/](https://addons.mozilla.org/zh-CN/firefox/addon/izhihu/) 
+- iZhihu for Safari：[http://izhihu.unogz.com/safari/iZhihu.safariextz](http://izhihu.unogz.com/safari/iZhihu.safariextz) 
+
+**使用油猴脚本**
+
+- Chrome 推荐使用扩展：「[Tampermonkey](https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)」
 - Firefox 推荐使用扩展：「[Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)」
-- 安装 iZhihu 脚本: [http://userscripts.org/scripts/show/126619](http://userscripts.org/scripts/show/126619)
+- iZhihu 脚本：[https://greasyfork.org/scripts/350-izhihu](https://greasyfork.org/scripts/350-izhihu) 
 
-## 反馈地址
+## 更新动态
 
-- 知乎专栏: [http://zhuanlan.zhihu.com/izhihu](http://zhuanlan.zhihu.com/izhihu)
-- github: [https://github.com/unogz/izhihu](https://github.com/unogz/izhihu)
+- 知乎专栏：[http://zhuanlan.zhihu.com/izhihu](http://zhuanlan.zhihu.com/izhihu)
+- 代码仓库：[https://github.com/unogz/izhihu](https://github.com/unogz/izhihu)
+
+## How to build
+
+- 安装 Node.js：[http://nodejs.org/](http://nodejs.org/)
+- 安装 Grunt：在命令行（终端）运行 `npm install -g grunt-cli`（ Grunt 入门：[http://www.gruntjs.net/docs/getting-started/](http://www.gruntjs.net/docs/getting-started/)）
+- 安装依赖库：
+	1. 将命令行（终端）的当前目录转到项目的根目录下
+	2. 执行 `npm install` 命令安装项目依赖的库
+- build：
+	1. 将命令行（终端）的当前目录转到项目的根目录下
+	2. 执行 `grunt buildall`（更多配置请查看 grunt/config.js ）
+	3. 生成内容位于 dist 目录下
 
 ## 关于我们
 
