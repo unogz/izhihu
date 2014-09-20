@@ -12,14 +12,14 @@ function SearchingList(iZhihu) {
     if (!this.$topSearch.length) return
 
     this.SearchEngineOutsideList = {
-        'google': {icon:'http://www.baidu.com/favicon.ico',url:'http://www.baidu.com/s?wd={0}'}
-      , 'baidu': {icon:'https://www.google.com/favicon.ico',url:'https://www.google.com/?q=site:zhihu.com%20{0}#q=site:zhihu.com+{0}'}
+        'google': {icon:'https://www.google.com/favicon.ico',url:'https://www.google.com/?q=site:zhihu.com%20{0}#q=site:zhihu.com+{0}'}
+      , 'baidu': {icon:'http://www.baidu.com/favicon.ico',url:'http://www.baidu.com/s?wd={0}'}
     }
 
     utils.observeDOMNodeAdded(this.$topSearch[0],function(event){
         var _a = event.addedNodes || []
         if (!_a.length) return
-        utils.observeDOMNodeAdded(_a[0],function(event){
+        utils.observeDOMNodeAdded(_a[0],function(event){console.log(iZhihu.config['SearchEngineOutside'])
             var _a = event.addedNodes || [null]
               , $item = $(_a[0])
               , seoKey = iZhihu.config['SearchEngineOutside'] || 'baidu'
