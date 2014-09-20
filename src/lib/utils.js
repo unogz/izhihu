@@ -157,7 +157,6 @@ utils.observeDOMNodeAdded = (function(){
             // define a new observer
             var obs = new MutationObserver(function(mutations, observer){
                 mutations.forEach(function(mutation) {
-                    console.log(mutation.type);
                     callback(mutation);
                   });    
             });

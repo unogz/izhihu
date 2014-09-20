@@ -16,6 +16,11 @@
                     if(value)
                         $(e).iCheck('check')
                 })
+                $('select.izh-select', '#izh-dlg-settings').each(function(i, e){
+                    var key = e.getAttribute('name')
+                      , value = utils.getCfg(key)
+                    e.value = value
+                })
                 $settings.css({
                     'z-index':'89'
                   , 'position':'fixed'
@@ -132,6 +137,20 @@
                                     )
                                     .append($('<td>', { align: 'right'})
                                         .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setAuthorList", name: "AuthorList" }))
+                                    )
+                                )
+                                .append($('<tr>', {})
+                                    .append($('<td>', { colspan: 4, align: 'left', html: '选择「外部搜索引擎」' }))
+                                    .append($('<td>', { align: 'right'})
+                                        .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$你懂的"}))
+                                    )
+                                    .append($('<td>', { align: 'right'})
+                                        .append($('<select>', { type: "checkbox", 'class': "izh-select", id: "iZhihu_setSearchEngineOutside", name: "SearchEngineOutside", change: function(){
+                                            utils.setCfg('SearchEngineOutside', this.value)
+                                        } })
+                                            .append($('<option>', { html:'Google', value:'google' }))
+                                            .append($('<option>', { html:'百度', value:'baidu' }))
+                                        )
                                     )
                                 )
                             )

@@ -55,8 +55,6 @@ var izhHomeLayout = window.iZhihu.config['HomeLayout']
   , izhQuickBlock = window.iZhihu.config['QuickBlock']
 ;
 
-window.iZhihu.config['SearchingList'] = true
-
 utils.transferOldCfg();
 
 $body.attr({
