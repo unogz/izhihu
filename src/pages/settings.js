@@ -10,16 +10,16 @@
             ).click(function(){
                 var $settings = $('#izh-dlg-settings')
                 $('.modal-dialog-bg').show()
-                $('input.izh-check', '#izh-dlg-settings').each(function(i, e){
+                $('.izh-option', '#izh-dlg-settings').each(function(i, e){
                     var key = e.getAttribute('name')
                       , value = utils.getCfg(key)
-                    if(value)
-                        $(e).iCheck('check')
-                })
-                $('select.izh-select', '#izh-dlg-settings').each(function(i, e){
-                    var key = e.getAttribute('name')
-                      , value = utils.getCfg(key)
-                    e.value = value
+                      , $e = $(e)
+                    if ($e.is('input:checkbox')) {
+                        if(value)
+                            $(e).iCheck('check')
+                    } else if ($e.is('select')) {
+                        e.value = value
+                    }
                 })
                 $settings.css({
                     'z-index':'89'
@@ -56,7 +56,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': ""}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setHomeTopics", name: "HomeTopics" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setHomeTopics", name: "HomeTopics" }))
                                     )
                                 )
 */
@@ -66,7 +66,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$* 首页隐藏大头像<br/>* 缩进投票按钮（问题/回答页）<br/>* 按钮图标动画 "}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setHomeLayout", name: "HomeLayout" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setHomeLayout", name: "HomeLayout" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -75,7 +75,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$挪到 Timeline 右上角<br/>与标题「最新动态」平行"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setHomeNoti", name: "HomeNoti" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setHomeNoti", name: "HomeNoti" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -84,7 +84,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$将首页动态分类单独显示：<br/>问题、回答、专栏"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setHomeFeedsColumns", name: "HomeFeedsColumns" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setHomeFeedsColumns", name: "HomeFeedsColumns" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -93,7 +93,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': ""}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setAuthorRear", name: "AuthorRear" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setAuthorRear", name: "AuthorRear" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -102,14 +102,14 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$在页面右侧浮动显示打开的评论列表<br/>在首页、问题、回答页中生效"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setRightComment", name: "ShowComment" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setRightComment", name: "ShowComment" }))
                                     )
                                     .append($('<td>', { width: 1, nowrap: 'nowrap', align: 'left', html: '关闭时自动卷屏至对应条目' }))
                                     .append($('<td>', { align: 'right'})
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$仅对右舷评论生效"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setRightComment_AutoScrollPageWhenClosing", name: "RightComment_AutoScrollPageWhenClosing" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setRightComment_AutoScrollPageWhenClosing", name: "RightComment_AutoScrollPageWhenClosing" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -118,7 +118,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$在赞同列表、评论列表中使用"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setQuickBlock", name: "QuickBlock" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setQuickBlock", name: "QuickBlock" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -127,7 +127,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$鼠标移上「收藏」按钮时显示"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setQuickFavo", name: "QuickFavo" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setQuickFavo", name: "QuickFavo" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -136,7 +136,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$在问题页面左侧掩藏，鼠标移上时展开<br/>并在右侧即时显示回答预览"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<input>', { type: "checkbox", 'class': "izh-check", id: "iZhihu_setAuthorList", name: "AuthorList" }))
+                                        .append($('<input>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setAuthorList", name: "AuthorList" }))
                                     )
                                 )
                                 .append($('<tr>', {})
@@ -145,9 +145,7 @@
                                         .append($('<i>', { 'class': 'icon icon-help', 'data-tip': "s$t$你懂的"}))
                                     )
                                     .append($('<td>', { align: 'right'})
-                                        .append($('<select>', { type: "checkbox", 'class': "izh-select", id: "iZhihu_setSearchEngineOutside", name: "SearchEngineOutside", change: function(){
-                                            utils.setCfg('SearchEngineOutside', this.value)
-                                        } })
+                                        .append($('<select>', { type: "checkbox", 'class': "izh-option", id: "iZhihu_setSearchEngineOutside", name: "SearchEngineOutside"})
                                             .append($('<option>', { html:'Google', value:'google' }))
                                             .append($('<option>', { html:'百度', value:'baidu' }))
                                         )
@@ -180,16 +178,18 @@
                 )
             ).appendTo(_doc.body).draggable({handle: '.modal-dialog-title-draggable'})
 
-    $('input.izh-check', $dlgSettings).each(function(i, e){
+    $('.izh-option', $dlgSettings).each(function(i, e){
         var key = e.getAttribute('name')
-          , $chk = $(e).iCheck({
+          , $chk = $(e).filter('input:checkbox').iCheck({
                 checkboxClass: 'icheckbox_square-blue'
               , increaseArea: '20%' // optional
+            }).bind('ifChanged', function(event){
+                var value = this.checked
+                utils.setCfg(key, value)
             })
-        $chk.bind('ifChanged', function(event){
-            var value = this.checked
-            utils.setCfg(key, value)
-        })
+          , $sel = $(e).filter('select').bind('change', function() {
+                utils.setCfg(key, this.value)
+            })
     })
     $('#izhRefresh').click(function(){
         location.reload()
