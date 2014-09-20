@@ -1,7 +1,7 @@
 /*
  * 首页
  */
-    var $topstory=$('#is-topstory')
+    var $topstory=$('#is-topstory2')
       , isTopStory=$topstory&&$topstory.length
       , propFeedType='data-type'//:'data-feedtype'
       , $lblHomeTitle=$('#zh-home-list-title')//activity_caption
