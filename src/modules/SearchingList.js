@@ -13,7 +13,7 @@ function SearchingList(iZhihu) {
 
     this.SearchEngineOutsideList = {
         'google': {icon:'https://www.google.com/favicon.ico',url:'https://www.google.com/?q=site:zhihu.com%20{0}#q=site:zhihu.com+{0}'}
-      , 'baidu': {icon:'http://www.baidu.com/favicon.ico',url:'http://www.baidu.com/s?wd={0}'}
+      , 'baidu': {icon:'http://www.baidu.com/favicon.ico',url:'http://www.baidu.com/s?wd=site:zhihu.com%20{0}'}
     }
 
     utils.observeDOMNodeAdded(this.$topSearch[0],function(event){
