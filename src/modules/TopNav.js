@@ -1,0 +1,56 @@
+/**
+ * @class TopNav
+ */
+function TopNav(iZhihu) {
+    if ( typeof iZhihu === 'undefined' || !iZhihu) {
+        return null
+    }
+    iZhihu.TopNav = this
+    
+    this.$topNav = $('body > .zu-top:first')
+        .on('mouseover', function(event){
+            this.style.top = '0'
+            this.setAttribute('izh-mouseover', '1')
+            $('#izhCSS_NotiNum').remove()
+        })
+        .on('mouseout', function(event){
+            this.setAttribute('izh-mouseover', '0')
+            iZhihu.TopNav.funcFold()
+        })
+    if (!this.$topNav.length) return
+
+    this.topNavHeight = this.$topNav.height() - 5
+
+    this.funcFold = function(event){
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0
+          , height = iZhihu.TopNav.topNavHeight
+          , $topNav = iZhihu.TopNav.$topNav
+          , isMouseOver = '1' === ($topNav.attr('izh-mouseover') || '')
+          , $head = $('head:first')
+          , $cssNotiNum = $('#izhCSS_NotiNum')
+        if (scrollTop === 0) {
+            $topNav.css({top:0})
+        } else if (!isMouseOver) {
+            if (scrollTop < height) {
+                $topNav.css({top:-scrollTop})
+            } else {
+                $topNav.css({top:-height})
+            }
+            if (scrollTop > 20) {
+                if (!$cssNotiNum.length) {
+                    $('<style>', {
+                        id: 'izhCSS_NotiNum'
+                      , type: 'text/css'
+                      , html: '#zh-top-nav-count,#zh-top-nav-new-pm{position:absolute;top:40px;border-radius:0 !important}.top-nav-profile .zu-top-nav-userinfo{overflow:visible !important}'
+                    }).appendTo('head:first')
+                }
+                return
+            }
+        }
+        $cssNotiNum.remove()
+    }
+
+    iZhihu.$win.scroll(this.funcFold)
+
+    return this
+}
