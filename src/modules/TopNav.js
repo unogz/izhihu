@@ -23,18 +23,21 @@ function TopNav(iZhihu) {
 
     this.funcFold = function(event){
         var scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0
-          , height = iZhihu.TopNav.topNavHeight
-          , $topNav = iZhihu.TopNav.$topNav
-          , isMouseOver = '1' === ($topNav.attr('izh-mouseover') || '')
+          , _self = iZhihu.TopNav
+          , isMouseOver = '1' === (_self.$topNav.attr('izh-mouseover') || '')
           , $head = $('head:first')
           , $cssNotiNum = $('#izhCSS_NotiNum')
+          , $floatBar = $('body > .goog-scrollfloater')
         if (scrollTop === 0) {
-            $topNav.css({top:0})
+            _self.$topNav.css({top:0})
+            $floatBar.css({marginTop:0})
         } else if (!isMouseOver) {
-            if (scrollTop < height) {
-                $topNav.css({top:-scrollTop})
+            if (scrollTop < _self.topNavHeight) {
+                _self.$topNav.css({top:-scrollTop})
+                $floatBar.css({marginTop:-scrollTop})
             } else {
-                $topNav.css({top:-height})
+                _self.$topNav.css({top:-_self.topNavHeight})
+                $floatBar.css({marginTop:-_self.topNavHeight})
             }
             if (scrollTop > 20) {
                 if (!$cssNotiNum.length) {
