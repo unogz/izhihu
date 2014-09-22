@@ -27,17 +27,16 @@ function TopNav(iZhihu) {
           , isMouseOver = '1' === (_self.$topNav.attr('izh-mouseover') || '')
           , $head = $('head:first')
           , $cssNotiNum = $('#izhCSS_NotiNum')
-          , $floatBar = $('body > .goog-scrollfloater')
+          , $floatingBar = $('body > .goog-scrollfloater-floating')
         if (scrollTop === 0) {
             _self.$topNav.css({top:0})
-            $floatBar.css({marginTop:0})
         } else if (!isMouseOver) {
             if (scrollTop < _self.topNavHeight) {
                 _self.$topNav.css({top:-scrollTop})
-                $floatBar.css({marginTop:-scrollTop})
+                $floatingBar.css({marginTop:-scrollTop})
             } else {
                 _self.$topNav.css({top:-_self.topNavHeight})
-                $floatBar.css({marginTop:-_self.topNavHeight})
+                $floatingBar.css({marginTop:-_self.topNavHeight})
             }
             if (scrollTop > 20) {
                 if (!$cssNotiNum.length) {
@@ -54,6 +53,12 @@ function TopNav(iZhihu) {
     }
 
     iZhihu.$win.scroll(this.funcFold)
+
+    utils.observeDOMNodeAdded(document.body,function(event){
+        $.each(event.removedNodes, function(i, e){
+            var $floatingBar = $(e).filter('.goog-scrollfloater').css({marginTop:''})
+        })
+    })
 
     return this
 }
