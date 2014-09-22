@@ -55,6 +55,7 @@ function TopNav(iZhihu) {
     iZhihu.$win.scroll(this.funcFold)
 
     utils.observeDOMNodeAdded(document.body,function(event){
+        iZhihu.TopNav.funcFold()
         $.each(event.removedNodes, function(i, e){
             var $floatingBar = $(e).filter('.goog-scrollfloater').css({marginTop:''})
         })
