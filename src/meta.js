@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.11.0
+// @version      2.12.0
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
