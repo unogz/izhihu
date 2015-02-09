@@ -163,7 +163,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('buildall', ['default', 'chrome', 'firefox', 'safari'])
 
-    grunt.registerTask('test', '', function(){
+    grunt.registerTask('test', '', function(){// using this task to test code for grunt
         console.log(grunt.config('version'))
     })
 
