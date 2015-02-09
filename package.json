@@ -1,17 +1,1 @@
-{
-    "name": "izhihu",
-    "version": "2.12.0",
-    "buildNum": "512",
-    "license": "MIT",
-    "devDependencies": {
-        "grunt": "*",
-
-        "grunt-contrib-concat": "*",
-        "grunt-contrib-uglify": "*",
-
-        "grunt-contrib-watch": "*",
-        "grunt-contrib-copy": "*",
-        "grunt-contrib-clean": "*",
-        "grunt-string-replace": "*"
-    }
-}
+{"name":"izhihu","version":"2.12.0","buildNum":"512","license":"MIT","devDependencies":{"grunt":"*","grunt-contrib-concat":"*","grunt-contrib-uglify":"*","grunt-contrib-watch":"*","grunt-contrib-copy":"*","grunt-contrib-clean":"*","grunt-string-replace":"*"}}
