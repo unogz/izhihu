@@ -30,7 +30,10 @@ function QuickFavo(iZhihu) {
     this.addQuickFavo = function($v,$a){
         if($v.length){
             if($a.children('.izh_fav').length<=0){
-                $('<div class="izh_fav">'+htmlLoading+'</div>').bind('mouseover',function(){
+                $('<div>', {
+                    'class': 'izh_fav'
+                  , html: htmlLoading
+                }).bind('mouseover',function(){
                     $(this).show().parent().find('.meta-item[name=favo]').addClass('on');
                 }).bind('mouseout',function(){
                     $(this).hide().parent().find('.meta-item[name=favo]').removeClass('on');

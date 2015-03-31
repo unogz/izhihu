@@ -85,7 +85,7 @@
             $pp.appendTo($frm);
             $ppB.appendTo($uno);
             //uno.appendChild(ppI);
-            $uno.$endOfLastA=$('<li class="endOfLastA">').appendTo($pp)
+            $uno.$endOfLastA=$('<li>').addClass('endOfLastA').appendTo($pp)
         }
         $listAnswers.each(function(i,e){
             window.iZhihu.Answer.processAnswer($(e),$pp
@@ -94,8 +94,17 @@
         });
         if($reply.children('.zu-answer-form-disabled-wrap').is(':hidden')){
             var $ppla=$('<a>',{href:'#draft',target:'_self'})
-                .append('<table class="plus"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>')
-                .append('<span class="name func">-new-</span>')
+                .append($('<table>', { 'class': 'plus' })
+                    .append($('<tr>')
+                            .append($('<td>'))
+                            .append($('<td>'))
+                        )
+                    .append($('<tr>')
+                            .append($('<td>'))
+                            .append($('<td>'))
+                        )
+                    )
+                .append($('<span>', { 'class': 'name func', html: '-new-' }))
               , $ppl=$('<li>')
                 .append($ppla)
                 .appendTo($pp)

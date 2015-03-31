@@ -17,7 +17,7 @@ var pageIs={}
   , _path=window.frameElement?window.frameElement.src.replace(/https?:\/\/www.zhihu.com/,''):url.data.attr['path']
   , css=''
   , $h=$('head')
-  , $s=$('<style type="text/css"></style>')
+  , $s=$('<style>', { 'type': 'text/css' })
   , iPathAnswers=_path.indexOf('/answers')
   , iPathCollection=_path.indexOf('/collection')
 ;
@@ -266,7 +266,18 @@ if (heads.length > 0) {
 }
 
 if(!$('.modal-dialog-bg').length){
-    $body.append('<div id="izh-dlg-bg" class="modal-dialog-bg" style="z-index:85;opacity:0.5;position:fixed;top:0;bottom:0;left:0;right:0;display:none;"></div>');
+    $body.append(
+        $('<div', { id: 'izh-dlg-bg', 'class': 'modal-dialog-bg' }).css({
+            'z-index': 85
+          , 'opacity': 0.5
+          , 'position': 'fixed'
+          , 'top': 0
+          , 'bottom': 0
+          , 'left': 0
+          , 'right': 0
+          , 'display': 'none'
+        })
+    );
 }
 
 window.iZhihu.getItem=function($c){

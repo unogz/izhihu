@@ -120,7 +120,7 @@ function Answer(iZhihu) {
                 }
                 if($a.attr('data-isowner')=='1'){
                     iZhihu.Answer._e=$a.get(0);
-                    $ppla.append('<span class="me"></span>');
+                    $ppla.append($('<span>', { 'class': 'me' }));
                 }
                 var nameCSS='name';
                 if($a.attr('data-isfriend')=='1'){

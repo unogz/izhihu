@@ -32,8 +32,10 @@ allLinks = function(_name, _listSel, _listName) {
             content: $a.find(".zm-editable-content").html()
         };
         _result.push(obj);
-        var str = utils.formatStr('<li style="list-style-type:none"><a href="{answerUrl}" title="* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}">{answerUrl}</a></li>', obj);
-        $('.izhihu-collection-links',$dlg).append(str);
+        var strTitle = utils.formatStr('* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}', obj)
+          , strURL = utils.formatStr('{answerUrl}', obj)
+          , $li = $('<li>').append($('<a>', { href: strURL, title: strTitle, 'html': strURL })).css({ 'list-style-type': 'none' })
+        $('.izhihu-collection-links',$dlg).append($li);
         var count=_result.length;
         $('.izhihu-collection-info',$dlg).html('（努力加载中...已得到记录 ' + count + ' 条）');
       });
