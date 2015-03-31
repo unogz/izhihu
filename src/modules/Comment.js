@@ -222,7 +222,9 @@ function Comment(iZhihu) {
                                      :$ac.height()+parseInt($ac.css('padding-bottom'))+parseInt($n.css('padding-top'))
                 ;
                 if(!$ac.find('.izh_tape_a,.izh_tape_b').length)
-                    $('<div class="izh_tape_a"></div><div class="izh_tape_b"></div>').appendTo($ac);
+                    $ac
+                        .append($('<div>', { 'class': 'izh_tape_a' }))
+                        .append($('<div>', { 'class': 'izh_tape_b' }))
                 if(!$cm)$cm=$ac.find('.zm-comment-box');
                 if($cm.length){
                     if(!$cm.attr('tabindex')){

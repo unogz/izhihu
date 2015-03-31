@@ -8,7 +8,17 @@ if(firstRun>0 && document.domain=='zhihu.com'){
         tboxleft = accitem1.offset().left;
     }
     if(tboxleft>0){
-        $('<div id="iZhihu_tbox" class="t_frshow"><div class="t_txtshow t_tbox">感谢使用 <b>iZhihu</b><br />您可通过菜单【iZhihu】对功能进行设置<br /><s><i></i></s></div></div>').appendTo('body.zhi').hide();
+        $('<div>', { id: 'iZhihu_tbox', 'class': 't_frshow' }).appendTo('body.zhi').hide()
+            .append($('<div>', { 'class': 't_txtshow t_tbox' })
+                .append('感谢使用')
+                .append($('<b>', { html: 'iZhihu' }))
+                .append($('<br />'))
+                .append('您可通过菜单【iZhihu】对功能进行设置')
+                .append($('<br />'))
+                .append($('<s>')
+                    .append($('<i>'))
+                )
+            );
         $('#iZhihu_tbox').css('left',tboxleft-100).show().mouseenter(function(){
             utils.setValue('izh_fr','0');
             //_Menu();

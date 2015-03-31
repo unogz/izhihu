@@ -90,10 +90,10 @@
             
             while (i--) {
              filterBtns.push(
-                 $('<span class="za-filter"/>')
+                 $('<span>').addClass('za-filter')
                  .attr('typeIndex', feedTypes[i].index)
                  .html(feedTypes[i].name)
-                 .append($('<span class="zg-num"/>').addClass('hide'))
+                 .append($('<span>', { 'class': 'zg-num' }).addClass('hide'))
                  .on('click', toggleFeedType)
              );
             }
