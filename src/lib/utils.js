@@ -18,6 +18,7 @@ var cfgDefault = {
   , 'Noti7':true
   , 'HomeFeedsColumns':false
   , 'RightComment_AutoScrollPageWhenClosing':true
+  , 'TopNavAutoFold':false
 };
   
 /**

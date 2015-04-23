@@ -100,11 +100,10 @@
             
             filterBtns.reverse();
             filterBtns[0].addClass('active');
-            var curfeedTypeCodeName = '';
+            var curfeedTypeCodeName = ''
+              , titleNew = $zhHomeListTitle.html().replace('最新动态', '')
             
-            $zhHomeListTitle.html(
-             $zhHomeListTitle.html().replace('最新动态', '')
-            ).find('i').eq(0).after(filterBtns).remove();
+            $zhHomeListTitle.empty().append(titleNew).find('i').eq(0).after(filterBtns).remove();
             
             var $targetZero = filterBtns[0].find('.zg-num');
             
