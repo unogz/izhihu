@@ -32,7 +32,7 @@ module.exports = function(grunt) {
                     "src/meta.js",
                     "<%= dist %>/<%= filename %>.js"
                 ], //src filled in by build task
-                dest: '<%= dist %>/<%= filename %>.userscript.js'
+                dest: '<%= dist %>/<%= filename %>.user.js'
             }
         }
         // 压缩 js 文件
