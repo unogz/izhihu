@@ -163,7 +163,7 @@ function Answer(iZhihu) {
                       , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
                       , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
                       , div=$(sel,ctx)
-                      , htm=div.html()
+                      //, htm=div.html()
                       , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
                     ;
                     if(!prv.length){
@@ -178,7 +178,7 @@ function Answer(iZhihu) {
                         ;
                     }
                     if(prv.attr('data-aid')!=aid){
-                        prv.attr('data-aid',aid).html(htm).find('a').attr('onclick','return false;');
+                        prv.attr('data-aid',aid).empty().append(div.clone().children()).find('a').attr('onclick','return false;');
                         if($('span.me',this).length)
                             prv.find('a.zu-edit-button').remove();
                         if(!nam.hasClass('noname'))

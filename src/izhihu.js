@@ -53,6 +53,7 @@ var izhHomeLayout = window.iZhihu.config['HomeLayout']
   , izhAuthorRear = window.iZhihu.config['AuthorRear']
   , izhHomeNoti = window.iZhihu.config['HomeNoti']
   , izhQuickBlock = window.iZhihu.config['QuickBlock']
+  , izhTopNavAutoFold = window.iZhihu.config['TopNavAutoFold']
 ;
 
 utils.transferOldCfg();
@@ -65,6 +66,7 @@ $body.attr({
   , 'izhAuthorRear' : izhAuthorRear?'1':''
   , 'izhHomeNoti' : izhHomeNoti?'1':''
   , 'izhQuickBlock' : izhQuickBlock?'1':''
+  , 'izhTopNavAutoFold' : izhTopNavAutoFold?'1':''
 });
 
 var _QuickBlock = new QuickBlock(window.iZhihu)

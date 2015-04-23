@@ -2,7 +2,7 @@
  * @class TopNav
  */
 function TopNav(iZhihu) {
-    if ( typeof iZhihu === 'undefined' || !iZhihu) {
+    if ( typeof iZhihu === 'undefined' || !iZhihu || !iZhihu.config['TopNavAutoFold']) {
         return null
     }
     iZhihu.TopNav = this
