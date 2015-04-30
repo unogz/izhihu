@@ -24,7 +24,6 @@ function Answer(iZhihu) {
           , $favo=$a.find('.meta-item[name=favo]')
           , $fold=!$a.has('.zh-summary > .toggle-expand').length?null:$('<button/>',{
                 'class':'izh-button fold'
-              , html:'收起'
               , click:function(){
                     var $vote=$(this).closest('.zm-votebar')
                       , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.feed-item')
@@ -35,7 +34,7 @@ function Answer(iZhihu) {
                         $fold.get(0).click();
                     }
               	}
-            })
+            }).text('收起')
           , $vote=$a.find('.zm-votebar')
         ;
         if($vote.length){
@@ -69,15 +68,26 @@ function Answer(iZhihu) {
         });
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
-            var $voteMore=$('.zm-item-vote-info > .more',$a)
-            if($voteMore.length){
-                $voteMore.parent().parent().bind('DOMNodeInserted',function(event){
-                    var $vi=$(event.target).filter('.zm-item-vote-info')
-                    if (!$vi.length || $vi.attr('data-votecount')!=$vi.children().first().children().length)
-                        return
-                    iZhihu.QuickBlock.addQuickBlock($vi)
-                })
-            }
+            var $voteInfo=$('.zm-item-vote-info',$a)
+            if($voteInfo.length)
+            {
+	            var $voteMore=$voteInfo.children('.more')
+	              , $voters=$voteInfo.children('.voters')
+	            if($voteMore.length){
+	                $voteMore.parent().parent().bind('DOMNodeInserted',function(event){
+	                    var $vi=$(event.target).filter('.zm-item-vote-info')// to get vote-info again because $voteInfo outside replaced by the completed list after more clicked
+	                    if (!$vi.length || $vi.attr('data-votecount')!=$vi.children().first().children().length)
+	                        return
+	                    iZhihu.QuickBlock.addQuickBlock($vi)
+	                })
+	            }else if($voters.length){
+	            	var s=$voteInfo.attr('data-votecount')+'个也不能忍，果断撕'
+	            	$('<a>',{href:'javascript:;'}).text(s).bind('click',function(event){
+	                    iZhihu.QuickBlock.addQuickBlock($voteInfo)
+	                    $(event.target).remove()
+	            	}).appendTo($voteInfo)
+	            }
+        	}
             // Region end
         }
         if($author.length){//relocatePersonInfo
@@ -134,9 +144,8 @@ function Answer(iZhihu) {
                 }
                 $('<span>',{
                     'class':nameCSS
-                  , html:!$author.length?'匿名用户':$author.html()
                   , style:css_AuthorListItemA_name
-                }).appendTo($ppla);
+                }).text(!$author.length?'匿名用户':$author.text()).appendTo($ppla);
                 if ($ppl.width()>iZhihu.Answer.ppWidth)
                     iZhihu.Answer.ppWidth=$ppl.width();
                 // Region end
@@ -163,7 +172,6 @@ function Answer(iZhihu) {
                       , sel='.zm-item-answer[data-aid='+aid+'] > .zm-item-rich-text'
                       , ctx=nam.is('.collapsed')?'#zh-question-collapsed-wrap':'#zh-question-answer-wrap'
                       , div=$(sel,ctx)
-                      //, htm=div.html()
                       , cmt=$('.zm-item-meta > .zu-question-answer-meta-comment',div.parent())
                     ;
                     if(!prv.length){
@@ -185,7 +193,7 @@ function Answer(iZhihu) {
                             $('img.zm-list-avatar',div.parent()).clone().appendTo(prv);
                         var t=cmt.text(),i=t.indexOf('条评论');
                         if(cmt.length&&i>0)
-                            $('<span>',{'class':'comment',html:t.substring(0,i)}).prepend(cmt.children('i').clone()).appendTo(prv);
+                            $('<span>',{'class':'comment'}).text(t.substring(0,i)).prepend(cmt.children('i').clone()).appendTo(prv);
                     }
                     var th=div.height()+33
                       , maxTop=$uno.position().top+12

@@ -42,7 +42,7 @@
         }
       , refreshFilterInfo=function(){
             var count=$feedList.children('.feed-item:hidden').length
-              , info='&nbsp;>过滤选项<'
+              , info=' >过滤选项<'
             ;
             if(count){
                 info='（'+count+'条动态被隐藏）';
@@ -50,7 +50,7 @@
             }else{
                 $filterInfo.addClass('nothing');
             }   
-            $filterInfo.html(info);
+            $filterInfo.text(info);
         }
       , feedsColumns=function(){ // Implemented by morley, modified by unogz
             //动态的类型
@@ -80,7 +80,7 @@
             styles.push('.za-filter.active{color:#259;}');
             styles.push('.za-filter>.zg-num.hide{display:none;}');
             
-            $('<style/>').html(styles.join('')).appendTo('head');
+            $('<style/>').text(styles.join('')).appendTo('head');
             
             var $zhHomeListTitle = $lblHomeTitle;
             
@@ -92,7 +92,7 @@
              filterBtns.push(
                  $('<span>').addClass('za-filter')
                  .attr('typeIndex', feedTypes[i].index)
-                 .html(feedTypes[i].name)
+                 .text(feedTypes[i].name)
                  .append($('<span>', { 'class': 'zg-num' }).addClass('hide'))
                  .on('click', toggleFeedType)
              );
@@ -129,16 +129,16 @@
              $clicked.addClass('active');
             
              if ($clicked.attr('typeIndex') == 0) {
-                 $('.zg-num', '.za-filter').html('').addClass('hide');
+                 $('.zg-num', '.za-filter').text('').addClass('hide');
              } else {
-                 var totalUnread = (parseInt($targetZero.html()) || 0) - (parseInt($clickedNum.html()) || 0);
+                 var totalUnread = (parseInt($targetZero.text()) || 0) - (parseInt($clickedNum.text()) || 0);
                  if (totalUnread != 0) {
-                     $targetZero.html(totalUnread);
+                     $targetZero.text(totalUnread);
                  } else {
-                     $targetZero.html('').addClass('hide');
+                     $targetZero.text('').addClass('hide');
                  }
             
-                 $clickedNum.html('').addClass('hide');
+                 $clickedNum.text('').addClass('hide');
              }
              curfeedTypeCodeName = feedTypes[$clicked.attr('typeIndex')].codeName;
              // 信息流过滤
@@ -162,13 +162,13 @@
             var hasNewFeed = false;
             //create an observer instance
             var observer = new MutationObserver(function(mutations) {
-             if ( !! parseInt($btnNewActivity.html())) {
+             if ( !! parseInt($btnNewActivity.text())) {
                  mutations.forEach(function(mutation) {
                      if (mutation.type === 'childList') {
                          console.log('Has New Feed');
                          // 有新推送则触发之
                          hasNewFeed = true;
-                         $btnNewActivity.html('');
+                         $btnNewActivity.text('');
                          $.when($btnNewActivity[0].click()).done(function() {
                              setTimeout(function() {
                                  hasNewFeed = false;
@@ -193,8 +193,8 @@
                  if (hasNewFeed) {
                      $self.hide();
                      var $target = filterBtns[getTypeIndexByCodeName($self.attr(propFeedType))].find('.zg-num');
-                     $target.html((parseInt($target.html()) || 0) + 1).removeClass('hide');
-                     $targetZero.html((parseInt($targetZero.html()) || 0) + 1).removeClass('hide');
+                     $target.text((parseInt($target.text()) || 0) + 1).removeClass('hide');
+                     $targetZero.text((parseInt($targetZero.text()) || 0) + 1).removeClass('hide');
                  } else {
                      typeMatch($self);
                  }
@@ -324,7 +324,8 @@
     }
 
     if (pageIs.Home){
-        if (izhHomeNoti
+    	var bHomeFeedsColumns=window.iZhihu.config['HomeFeedsColumns']
+        if (izhHomeNoti&&!bHomeFeedsColumns
          && $lblHomeTitle.length
          && $btnNewActivity.length
         ){
@@ -340,6 +341,6 @@
               , 'line-height':'22px'
             }).appendTo($lblHomeTitle);
         }
-        homeFeeds(window.iZhihu.config['HomeFeedsColumns']);
+        homeFeeds(bHomeFeedsColumns);
     }
 

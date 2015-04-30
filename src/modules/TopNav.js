@@ -43,8 +43,7 @@ function TopNav(iZhihu) {
                     $('<style>', {
                         id: 'izhCSS_NotiNum'
                       , type: 'text/css'
-                      , html: '#zh-top-nav-count,#zh-top-nav-new-pm{position:absolute;top:40px;border-radius:0 !important}.top-nav-profile .zu-top-nav-userinfo{overflow:visible !important}'
-                    }).appendTo('head:first')
+                    }).appendTo('head:first').text('#zh-top-nav-count,#zh-top-nav-new-pm{position:absolute;top:40px;border-radius:0 !important}.top-nav-profile .zu-top-nav-userinfo{overflow:visible !important}')
                 }
                 return
             }

@@ -34,10 +34,10 @@ allLinks = function(_name, _listSel, _listName) {
         _result.push(obj);
         var strTitle = utils.formatStr('* 《{title}》&#13;* {answerAuthor}：&#13;* {summary}', obj)
           , strURL = utils.formatStr('{answerUrl}', obj)
-          , $li = $('<li>').append($('<a>', { href: strURL, title: strTitle, 'html': strURL })).css({ 'list-style-type': 'none' })
+          , $li = $('<li>').append($('<a>', { href: strURL, title: strTitle }).text(strURL)).css({ 'list-style-type': 'none' })
         $('.izhihu-collection-links',$dlg).append($li);
         var count=_result.length;
-        $('.izhihu-collection-info',$dlg).html('（努力加载中...已得到记录 ' + count + ' 条）');
+        $('.izhihu-collection-info',$dlg).text('（努力加载中...已得到记录 ' + count + ' 条）');
       });
     };
         
@@ -45,7 +45,7 @@ allLinks = function(_name, _listSel, _listName) {
       if (!pageNow)pageNow=1;
       if($dlg.is(':hidden')){
         var count=_result.length;
-        $('.izhihu-collection-info',$dlg).html('（加载被终止...已得到记录 ' + count + ' 条）');
+        $('.izhihu-collection-info',$dlg).text('（加载被终止...已得到记录 ' + count + ' 条）');
         $('#zh-global-spinner').hide();
         return;
       }
@@ -55,14 +55,14 @@ allLinks = function(_name, _listSel, _listName) {
         $('#zh-global-spinner').show();
         _result.length=0;
         _loadTimes++;
-        $('.izhihu-collection-info',$dlg).html('');
+        $('.izhihu-collection-info',$dlg).text('');
       }
       var $pager=$(_listSel).parent().find('.zm-invite-pager')
         , $lastPage=$pager.children('span').last().prev()
         , totalCount=$pager.length==0?1:Number($lastPage.text())
       ;
       if(pageWant>totalCount){
-        $('.izhihu-collection-info',$dlg).html('（加载完成，共得到记录 ' + _result.length + ' 条）');
+        $('.izhihu-collection-info',$dlg).text('（加载完成，共得到记录 ' + _result.length + ' 条）');
         $('#zh-global-spinner').hide();
         $('.selAll',$dlg).click();
         return;
@@ -89,7 +89,7 @@ allLinks = function(_name, _listSel, _listName) {
         if(!retVal){
             this.$dlg = $('<div>', { id: this.dlgID, 'class': 'modal-dialog allLinks', tabindex: '0', style: 'display: none;width:500px', name: _name, 'listSel': _listSel })
                 .append($('<div>', { 'class': 'modal-dialog-title modal-dialog-title-draggable' })
-                    .append($('<span>', { 'class': 'modal-dialog-title-text', html: _initialTitle }))
+                    .append($('<span>', { 'class': 'modal-dialog-title-text' }).text(_initialTitle))
                     .append($('<span>', { 'class': 'modal-dialog-title-text izhihu-collection-info' }))
                     .append($('<span>', {
                         'class': 'modal-dialog-title-close'
@@ -114,17 +114,15 @@ allLinks = function(_name, _listSel, _listName) {
                                 .append($('<a>', {
                                     'class': 'zg-btn-blue reload'
                                   , href: 'javascript:void(0);'
-                                  , html: '重新获取'
                                   , click: function() {
                                         var $d = $(this).closest('.modal-dialog')
                                         handler(1, Number(url.data.param.query['page']), $d)
                                     }
-                                }))
+                                }).text('重新获取'))
                             )
                             .append($('<a>', {
                                 'class': 'zg-btn-blue save'
                               , href: 'javascript:void(0);'
-                              , html: '保存'
                               , click: function() {
                                     var $dlg = $(this).closest('.modal-dialog-content')
                                       , $links = $dlg.find('.izhihu-collection-links')
@@ -140,7 +138,7 @@ allLinks = function(_name, _listSel, _listName) {
                                     $linksTitle.val($('#zh-fav-head-title,.zm-profile-header-main .title-section a.name').text())
                                     $form.submit()
                                 }
-                            }))
+                            }).text('保存'))
                         )
                     )
                 ).appendTo(document.body)

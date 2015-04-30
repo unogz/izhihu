@@ -32,7 +32,6 @@ function Noti7(iZhihu) {
         iZhihu.Noti7.$footer.append(
             $('<a>',{
                 'class':'izh-filter-read'
-              , html:'隐藏已读'
               , href:'javascript:void(0);'
               , 'unreadOnly':''
               , click:function(){
@@ -58,7 +57,7 @@ function Noti7(iZhihu) {
                     }
                 }
               
-            })
+            }).text('隐藏已读')
         );
     };
 
