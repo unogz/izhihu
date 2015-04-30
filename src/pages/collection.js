@@ -4,8 +4,8 @@
   if(pageIs.Collection){
     //添加按钮
     $('#zh-list-meta-wrap')
-      .append($('<span>', { 'class': 'zg-bull', html: '•' }))
-      .append($('<a>', { href: 'javascript:;', id: 'getAllLinks', html: '地址清单' }));
+      .append($('<span>', { 'class': 'zg-bull' }).text('•'))
+      .append($('<a>', { href: 'javascript:;', id: 'getAllLinks' }).text('地址清单'));
 
     var btn = $('#getAllLinks');
     var result = [];
@@ -25,8 +25,8 @@
   if(pageIs.Answers){
     //添加按钮
     $('.zm-profile-section-name')
-      .append($('<span>', { 'class': 'zg-bull', html: '•' }))
-      .append($('<a>', { href: 'javascript:;', id: 'getAllLinks', html: '地址清单' }));
+      .append($('<span>', { 'class': 'zg-bull' }).text('•'))
+      .append($('<a>', { href: 'javascript:;', id: 'getAllLinks' }).text('地址清单'));
 
     var btn = $('#getAllLinks');
     var result = [];

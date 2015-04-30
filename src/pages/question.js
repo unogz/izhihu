@@ -15,18 +15,18 @@
     if($lblQuestionMeta.length){
         var s=new Array()
           , $a=$('<a>')
-          , $c=$('<span>',{'class':'zg-bull',html:'•'})
+          , $c=$('<span>',{'class':'zg-bull'}).text('•')
           , $p=$lblQuestionMeta.children('.zm-meta-panel').children('a.meta-item:last')
           , $m=$('.zu-answer-form-disabled-wrap:visible > a','#zh-question-answer-form-wrap')
         ;
         if($m.length){
             s.push($m.attr('href'));
-            $a.html('我的回答');
+            $a.text('我的回答');
         }else if($reply.length){
             var id='new_answer'
               , $b=$('<a>',{name:id}).before($reply.children().first());
             s.push('#draft');
-            $a.html('我要回答');
+            $a.text('我要回答');
         }
         $c.insertAfter($p);
         $a.attr('href',s.join('')).attr('target','_self')
@@ -104,7 +104,7 @@
                             .append($('<td>'))
                         )
                     )
-                .append($('<span>', { 'class': 'name func', html: '-new-' }))
+                .append($('<span>', { 'class': 'name func' }).text('-new-'))
               , $ppl=$('<li>')
                 .append($ppla)
                 .appendTo($pp)

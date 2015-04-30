@@ -505,10 +505,9 @@ function Comment(iZhihu) {
               , $btnCC=$('<a>',{
                     'class':'zu-question-answer-meta-comment izh-button-cc'
                   , href:'javascript:void(0);'
-                  , html:'收起'
                   , click:cmClose
                   , 'data-tip':'s$t$收起评论并跳转至所属回答'
-                })
+                }).text('收起')
               , $buttonsL=$('<div>',{
                 	'class':'izh-buttons-cm-L'
                 }).prependTo($cm)
@@ -529,7 +528,7 @@ function Comment(iZhihu) {
                   , 'left': 0
                   , 'top': 0
                   , 'z-index': '10000'
-                }).attr('data-tip','s$l$收起评论').html('').prependTo($cm)
+                }).attr('data-tip','s$l$收起评论').text('').prependTo($cm)
                 $buttonsR.prependTo($cm);
                 if($list.children().length==0){
                     $buttonsR.hide();

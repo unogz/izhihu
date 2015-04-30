@@ -44,10 +44,11 @@ function QuickFavo(iZhihu) {
                   , $op=$(this).offsetParent()
                   , bottom1=parseInt($op.css('margin-bottom'))
                   , bottom2=parseInt($a.css('padding-bottom'))
+                  , pos=$(this).position()
                 ;
                 $a.children('.izh_fav').css({
-                    'bottom':(isNaN(bottom1)?0:bottom1)+(isNaN(bottom2)?0:bottom2)+$op.height()-$(this).position().top
-                  , 'left':$(this).position().left
+                    'bottom':(isNaN(bottom1)?0:bottom1)+(isNaN(bottom2)?0:bottom2)+$op.height()-pos.top
+                  , 'left':pos.left+$m.position().left
                 }).show();
                 $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:aid}),function(result,status,xhr){
                     var aid=this.url.substr(this.url.indexOf('answer_id=')+10)
@@ -117,7 +118,7 @@ function QuickFavo(iZhihu) {
                                         inc=1;
                                     }
                                     if(inc!=0){
-                                        $vi.children('span').html(parseInt($vi.children('span').html())+inc);
+                                        $vi.children('span').text(parseInt($vi.children('span').text())+inc);
                                     }
                                     $vi.children(':first').attr('class','z-icon-collect');
                                 });
@@ -218,10 +219,10 @@ function QuickFavo(iZhihu) {
                             this.checked=!this.checked;
                             funcPin(this);
                             if(this.checked){
-                                $(this).children('span').html('取消置顶');
+                                $(this).children('span').text('取消置顶');
                                 $(this).children('i').addClass('zm-item-top-btn-cancel');
                             }else{
-                                $(this).children('span').html('置顶');
+                                $(this).children('span').text('置顶');
                                 $(this).children('i').removeClass('zm-item-top-btn-cancel');
                             }
                             if(event.preventDefault)
