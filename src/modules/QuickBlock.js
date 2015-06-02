@@ -283,32 +283,36 @@ function QuickBlock(iZhihu) {
 
         return $cartDIV
     }
-    this.in2BlockCart = function(url){
-        var $e = iZhihu.QuickBlock.Users2B.shift()
+    this.in2BlockCart = function(url,retriedCount){
+        var $e = iZhihu.QuickBlock.Users2B.shift() || null
           , $cartDIV = iZhihu.QuickBlock.getCartDIV()
 
         $cartDIV.addClass('pending');
+        if(typeof retriedCount == 'undefined')
+            retriedCount = 0
 
-        if (typeof $e === 'undefined' || !$e || $e.length === 0){
+        console.log(retriedCount)
+        if (!$e || $e.length === 0){
             if((url||'')==''){
                 $cartDIV.removeClass('pending')
-                return
-            }
-            $.ajax(url,{
-                type:'GET'
-              , maxRetryCount: 3
-              , retriedCount: 0
-            }).done(function(data, textStatus, jqXHR){
-                $.each(data.payload,function(i,e){
-                    iZhihu.QuickBlock.addUser2B(e)
+            }else{
+                $.ajax(['http://www.zhihu.com',url].join(''),{
+                    type:'GET'
+                  , maxRetryCount: 3
+                }).done(function(data, textStatus, jqXHR){
+                    $.each(data.payload,function(i,e){
+                        iZhihu.QuickBlock.addUser2B(e)
+                    })
+                    iZhihu.QuickBlock.in2BlockCart(data.paging.next)
+                }).fail(function(data,textStatus,jXHR){
+                    if (++retriedCount < this.maxRetryCount){
+                        iZhihu.QuickBlock.in2BlockCart(url,retriedCount)
+                    }else{
+                        $cartDIV.removeClass('pending')
+                    }
                 })
-                iZhihu.QuickBlock.in2BlockCart(data.paging.next)
-            }).fail(function(data,textStatus,jXHR){
-                if (++this.retriedCount < this.maxRetryCount){
-                    iZhihu.QuickBlock.in2BlockCart(url)
-                }else{
-                }
-            })
+            }
+            return
         }
 
         var href = $e.attr('href')
@@ -324,18 +328,17 @@ function QuickBlock(iZhihu) {
             type: 'GET'
           , user2B: $e
           , maxRetryCount: 3
-          , retriedCount: 0
         }).done(function(data, textStatus, jqXHR){
             iZhihu.QuickBlock.addUser2B(data)
             iZhihu.QuickBlock.in2BlockCart(url)
         }).fail(function(data,textStatus,jXHR){
-            if (++this.retriedCount < this.maxRetryCount){
+            if (++retriedCount < this.maxRetryCount){
                 iZhihu.QuickBlock.Users2B.unshift(this.user2B)
+                iZhihu.QuickBlock.in2BlockCart(url,retriedCount)
             }else{
             }
         }).always(function(data,textStatus,jXHR){
             $('#izh_blockCart').removeClass('pending');
-            //iZhihu.QuickBlock.in2BlockCart(url)
         });
     };
     this.addUser2B=function(data){
@@ -424,7 +427,7 @@ function QuickBlock(iZhihu) {
             if($voters.length){
                 var s=['，',$voteInfo.attr('data-votecount'),'个也不能忍，果断撕'].join('')
                   , aid=$a.attr('data-aid')||$a.children('[itemprop="ZReactor"]').attr('data-id')
-                  , url=['http://www.zhihu.com/',$a.attr('data-type')=='p'?'post':'answer','/',aid,'/voters_profile'].join('')
+                  , url=['/',$a.attr('data-type')=='p'?'post':'answer','/',aid,'/voters_profile'].join('')
                 $('<a>',{href:'javascript:;'}).text(s).bind('click',function(event){
                     var $t=$a.find('.author-info > a.name,.zm-item-answer-author-info > .zm-item-answer-author-wrap > a:first')
                     if($t&&$t.length){
