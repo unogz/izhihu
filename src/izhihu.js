@@ -297,3 +297,9 @@ window.iZhihu.getItem=function($c){
     }
     return $item;
 };
+
+utils.observeDOMNodeAdded(document.body,function(event){
+	if(izhTopNavAutoFold){
+		window.iZhihu.TopNav.onNodeAdded(event)
+	}
+})
