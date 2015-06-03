@@ -101,9 +101,13 @@
             filterBtns.reverse();
             filterBtns[0].addClass('active');
             var curfeedTypeCodeName = ''
-              , titleNew = $zhHomeListTitle.html().replace('最新动态', '')
-            
-            $zhHomeListTitle.empty().append(titleNew).find('i').eq(0).after(filterBtns).remove();
+              , contentsNew = []
+            $zhHomeListTitle.contents().each(function(i,e){
+                if(e!=null&&(e.nodeValue||'').indexOf('最新动态')<0){
+                    contentsNew.push(e)
+                }
+            })
+            $zhHomeListTitle.empty().append(contentsNew).find('i').eq(0).after(filterBtns).remove();
             
             var $targetZero = filterBtns[0].find('.zg-num');
             
