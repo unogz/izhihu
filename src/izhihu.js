@@ -28,6 +28,7 @@ pageIs.Answers=0<iPathAnswers&&_path.substr(iPathAnswers)=='/answers';
 pageIs.Collection=0==iPathCollection;
 pageIs.Debuts=0==_path.indexOf('/debuts/');
 pageIs.MyCollection=0==_path.indexOf('/collections/mine');
+pageIs.SettingsFilter=0==_path.indexOf('/settings/filter')
 
 var i=0
   , $user=$('.zu-top-nav-userinfo')//user_avater
