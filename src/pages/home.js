@@ -100,16 +100,14 @@
             
             filterBtns.reverse();
             filterBtns[0].addClass('active');
-            var curfeedTypeCodeName = ''
-              , contentsNew = []
-            $zhHomeListTitle.contents().each(function(i,e){
-                if(e!=null&&(e.nodeValue||'').indexOf('最新动态')<0){
-                    contentsNew.push(e)
-                }
-            })
-            $zhHomeListTitle.empty().append(contentsNew).find('i').eq(0).after(filterBtns).remove();
+
+            $zhHomeListTitle.contents().filter(function(i,e){
+                return (e!=null&&(e.nodeValue||'').indexOf('最新动态')>=0)
+            }).remove()
+            $zhHomeListTitle.find('i').eq(0).after(filterBtns).remove();
             
-            var $targetZero = filterBtns[0].find('.zg-num');
+            var $targetZero = filterBtns[0].find('.zg-num')
+              , curfeedTypeCodeName = ''
             
             function typeMatch($elem) {
              if (curfeedTypeCodeName == '') {
