@@ -94,7 +94,7 @@ function Answer(iZhihu) {
                     $author.insertBefore($meta);
                 }
             }
-            $author=$author.children().first().children().eq(1);
+            $author=$author.children().eq(1);
             if ($pp && bAuthorList){
                 // Region: 回答目录项
                 var collapsed=$a.attr('data-collapsed')=='1'
