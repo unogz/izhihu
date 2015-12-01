@@ -1,7 +1,7 @@
 {
     "name":"izhihu",
     "title":"iZhihu",
-    "id":"jid1-Q3Oc7rhwyTCWhA",
+    "id":"jid1-Q3Oc7rhwyTCWhA@jetpack",
     "description":"知乎插件",
     "author":"钢盅郭子",
     "license":"MPL 2.0",
@@ -11,5 +11,13 @@
             "http://ilovezhihu.duapp.com/"
         ]
     },
+    "main": "lib/main.js",
+    "engines": {
+        "firefox": ">=38.0a1",
+        "fennec": ">=38.0a1"
+    },
+    "keywords": [
+        "jetpack"
+    ],
     "homepage":"http://zhuanlan.zhihu.com/izhihu"
 }
