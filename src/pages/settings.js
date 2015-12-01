@@ -21,7 +21,7 @@
                     }
                 })
                 $settings.css({
-                    'z-index':'89'
+                    'z-index':'99'
                   , 'position':'fixed'
                   , 'top': ($win.height() - $settings.height()) / 2
                   , 'left': ($win.width() - $settings.width()) / 2

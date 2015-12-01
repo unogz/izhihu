@@ -260,7 +260,7 @@ if (heads.length > 0) {
 if(!$('.modal-dialog-bg').length){
     $body.append(
         $('<div', { id: 'izh-dlg-bg', 'class': 'modal-dialog-bg' }).css({
-            'z-index': 85
+            'z-index': 95
           , 'opacity': 0.5
           , 'position': 'fixed'
           , 'top': 0
