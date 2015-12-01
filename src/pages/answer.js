@@ -20,12 +20,12 @@ var $lblQuestionMeta=$('#zh-question-meta-wrap')//question_meta
               , 'position': 'relative'
               , 'top': -25
               , 'margin-left': -32
-            }).prependTo('#zh-single-question').hide();
+            }).prependTo('body>.zu-main:first').hide();
         }   
     }
 
     //process each answer
-    var $listAnswers=$('.zm-item-answer,.feed-item','#zh-single-answer-page');
+    var $listAnswers=$('.zm-item-answer,.feed-item','#zh-question-answer-wrap');
     if($listAnswers&&$listAnswers.length){
         $listAnswers.each(function(i,e){
             window.iZhihu.Answer.processAnswer($(e),null

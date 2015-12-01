@@ -22,50 +22,8 @@ function Answer(iZhihu) {
           , $meta=$a.find('.zm-item-meta')
           , $author=$a.find('.zm-item-answer-author-info')
           , $favo=$a.find('.meta-item[name=favo]')
-          , $fold=!$a.has('.zh-summary > .toggle-expand').length?null:$('<button/>',{
-                'class':'izh-button fold'
-              , click:function(){
-                    var $vote=$(this).closest('.zm-votebar')
-                      , $answer=$vote.is('.goog-scrollfloater-floating')?null:$vote.closest('.feed-item')
-                      , $fold=$answer==null?iZhihu.Answer.$Fold:$answer.find('.zm-item-meta:first '+selCollapse)
-                    ;
-                    if($fold&&$fold.length){
-                        iZhihu.Answer.$Folding=$vote.closest('.entry-body');
-                        $fold.get(0).click();
-                    }
-              	}
-            }).text('收起')
           , $vote=$a.find('.zm-votebar')
         ;
-        if($vote.length){
-            $vote.append($fold).bind('DOMNodeRemoved',function(event){
-                var $vote=$(event.target);
-                if($vote.is('.zm-votebar')){
-                    iZhihu.Answer.$Fold=$vote.closest('.feed-item').find('.zm-item-meta:first '+selCollapse);
-                }
-            });
-        	if($author)$author.find('[name=collapse]').hide();
-        	$a.find('.feed-main .entry-body [name=collapse]').hide();
-        }
-        $meta.find(selCollapse).click(function(){
-            if(!iZhihu.Answer.$Folding)return;
-            var scrollObj=window.iZhihu4CRX?document.body:document.documentElement
-              , $meta=$(this).closest('.feed-meta')
-              , $answer=$meta.prev()
-              , scrollTop=iZhihu.Answer.$Folding.children('.zm-votebar').length?scrollObj.scrollTop
-                      :($answer.closest('.feed-item').offset().top-iZhihu.$body.children().first().height())
-            ;
-        	scrollTop+=$answer.outerHeight();
-            var $summary=$answer.find('.zh-summary').show()
-              , offset=0;
-            scrollTop-=$summary.outerHeight();
-            $summary.hide();
-            if(!$answer.find('.zm-item-vote-info.empty').length)
-                offset=1;
-            if($answer.prev().is(':hidden'))offset+=2;
-            $(scrollObj).scrollTop(scrollTop+offset);
-            iZhihu.Answer.$Folding=null;
-        });
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
             iZhihu.QuickBlock.addQuickBlock($a)
@@ -94,7 +52,7 @@ function Answer(iZhihu) {
                     $author.insertBefore($meta);
                 }
             }
-            $author=$author.children().eq(1);
+            $author=$author.children().first().children().eq(1);
             if ($pp && bAuthorList){
                 // Region: 回答目录项
                 var collapsed=$a.attr('data-collapsed')=='1'

@@ -2,7 +2,6 @@
  * 配置界面
  */
 
-    var cbemptyimg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII='
     var $btnSettings = $('<li>')
             .append($('<a>', { href: 'javascript:void(0);', tabindex: '-1' })
                 .append($('<i>', { 'class': 'zg-icon zg-icon-dd-settings izhihu-settings' }))

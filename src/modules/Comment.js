@@ -518,7 +518,7 @@ function Comment(iZhihu) {
             if(iZhihu.Comment.RightComment){
                 $cm.children('.zm-comment-form').find('[name=closeform]').click(cmClose);
                 $btnCC.clone(true).css({
-                    'background-image': 'url("/static/img/sprites-1.8.2.png")'
+                    'background-image': 'url("/static/img/sprites-1.9.2.png")'
                   , 'background-position': '-261px -62px'
                   , 'background-repeat': 'no-repeat'
                   , 'display': 'inline-block'

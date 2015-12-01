@@ -40,7 +40,7 @@
         izhAuthorList=false;
         $body.attr('izhAuthorList','0');
     }
-    console.log((new Date()).getTime());
+    //console.log((new Date()).getTime());
     
     var $lblAnswersCount=$('#zh-question-answer-num')//answers_count
       , $uno=$('<div>',{'class':'uno',style:'float:left'})//izh_AuthorsList
@@ -72,7 +72,7 @@
               , 'position': 'relative'
               , 'top': -25
               , 'margin-left': -32
-            }).prependTo('#zh-single-question').hide();
+            }).prependTo('body>.zu-main:first').hide();
         }   
     }
 
@@ -177,7 +177,7 @@
             );
         }
     });
-    console.log((new Date()).getTime());
+    //console.log((new Date()).getTime());
 
     var $cm=$('.zm-comment-box',$questionWrap);
     if($cm.length && $cm.is(':visible')){
