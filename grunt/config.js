@@ -114,7 +114,7 @@ module.exports = function(grunt) {
         }
         ,
         'string-replace': {
-            dist: {
+            dist_safari: {
                 files: {
                     'dist/iZhihu.safariextension/Info.plist': 'dist/iZhihu.safariextension/Info.plist'
                 },
@@ -122,6 +122,21 @@ module.exports = function(grunt) {
                     replacements: [{
                         pattern: '[version]',
                         replacement: '<%= version %>'
+                    }]
+                }
+            }
+            ,
+            dist_chrome: {
+                files: {
+                    'dist/iZhihu for Chrome/blue.css': 'dist/iZhihu for Chrome/blue.css'
+                },
+                options: {
+                    replacements: [{
+                        pattern: 'url(blue.png)',
+                        replacement: 'url("chrome-extension://__MSG_@@extension_id__/blue.png")'
+                    },{
+                        pattern: 'url(blue@2x.png)',
+                        replacement: 'url("chrome-extension://__MSG_@@extension_id__/blue@2x.png")'
                     }]
                 }
             }
@@ -157,7 +172,7 @@ module.exports = function(grunt) {
         grunt.file.write('./dist/iZhihu for Firefox/package.json', JSON.stringify(manifest));
     });
 
-    grunt.registerTask('chrome', ['copy:toChrome', 'updateManifest']);
+    grunt.registerTask('chrome', ['copy:toChrome', 'updateManifest', 'string-replace']);
     grunt.registerTask('firefox', ['copy:toFirefox1', 'copy:toFirefox2', 'updateManifestXPI']);
     grunt.registerTask('safari', ['copy:toSafari', 'string-replace']);
 
