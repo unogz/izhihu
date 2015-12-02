@@ -19,8 +19,8 @@
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @grant        GM_getResourceURL
-// @icon         http://izhihu.unogz.com/logo.png
-// @copyright    2013+, @钢盅郭子 @刘勇 @罗大睿
+// @icon         https://raw.githubusercontent.com/unogz/izhihu/develop/misc/xpi-config/icon64.png
+// @copyright    2015+, @钢盅郭子 @刘勇 @墨磊
 // ==/UserScript==
 
 var jqUI_CssSrc = GM_getResourceText("jqUI_CSS")
