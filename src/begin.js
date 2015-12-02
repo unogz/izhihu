@@ -1,5 +1,5 @@
-var version='2.11.0';
-var updateDate='2014-9-20';
+var version='2.12.0';
+var updateDate='2015-2-9';
 
 if ( typeof unsafeWindow === "undefined") {
     unsafeWindow    = ( function () {

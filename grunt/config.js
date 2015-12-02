@@ -1,12 +1,13 @@
 module.exports = function(grunt) {
+    var pkg = grunt.file.readJSON('package.json')
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json') //
+        version: [ pkg.version, pkg.buildNum ].join('.') //
         ,
-        version: '<%= pkg.version %>' //
+        buildNum: parseInt(pkg.buildNum)
         ,
         dist: 'dist' //
         ,
-        filename: '<%= pkg.name %>' //
+        filename: pkg.name //
 
         // 合并 js 文件
         // 文档 https://github.com/gruntjs/grunt-contrib-concat
@@ -134,13 +135,11 @@ module.exports = function(grunt) {
     grunt.registerTask('buildnum', 'build num +1', function() {
         var manifest = grunt.file.readJSON('./package.json');
 
-        var versions = manifest.version.split('.');
+        var buildNum = grunt.config('buildNum') + 1;//parseInt(manifest.buildNum) + 1;
 
-        versions[3] = parseInt(versions[3]) + 1;
+        manifest.buildNum = [ buildNum ].join();
 
-        manifest.version = versions.join('.');
-
-        console.log('cur build', versions[3]);
+        console.log('cur build', [ manifest.versions, buildNum ].join('.'));
 
         grunt.file.write('./package.json', JSON.stringify(manifest));
     });
@@ -163,6 +162,10 @@ module.exports = function(grunt) {
     grunt.registerTask('safari', ['copy:toSafari', 'string-replace']);
 
     grunt.registerTask('buildall', ['default', 'chrome', 'firefox', 'safari'])
+
+    grunt.registerTask('test', '', function(){// using this task to test code for grunt
+        console.log(grunt.config('version'))
+    })
 
     return grunt;
 };
