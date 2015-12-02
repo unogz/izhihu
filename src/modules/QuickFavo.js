@@ -92,7 +92,7 @@ function QuickFavo(iZhihu) {
                               , href:'javascript:;'
                               , aid:aid
                               , fid:fID
-                            }).append(fName).click(function(){
+                            }).text(fName).click(function(){
                                 var u='http://www.zhihu.com/collection/'
                                   , $f=$(this)
                                   , $i=$f.children(':first')
@@ -123,7 +123,7 @@ function QuickFavo(iZhihu) {
                                     $vi.children(':first').attr('class','z-icon-collect');
                                 });
                             }).prepend($('<i/>',{'class':'z-icon-collect'}))
-                              .append($('<span/>').append(e[3]));
+                              .append($('<span/>').text(e[3]));
                         $f.appendTo($v/*.children(pinned?'.pinned':'.normal')*/);
                     };
                     $.each(favSel,function(i,e){
