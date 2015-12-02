@@ -1,1 +1,1 @@
-{"name":"izhihu","version":"2.13.0","buildNum":"531","license":"MIT","devDependencies":{"grunt":"*","grunt-contrib-concat":"*","grunt-contrib-uglify":"*","grunt-contrib-watch":"*","grunt-contrib-copy":"*","grunt-contrib-clean":"*","grunt-string-replace":"*"}}
+{"name":"izhihu","version":"2.13.1","buildNum":"532","license":"MIT","devDependencies":{"grunt":"*","grunt-contrib-concat":"*","grunt-contrib-uglify":"*","grunt-contrib-watch":"*","grunt-contrib-copy":"*","grunt-contrib-clean":"*","grunt-string-replace":"*"}}
