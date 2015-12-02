@@ -542,40 +542,44 @@ function Comment(iZhihu) {
                     'class':'izh-button izh-back-top'
                   , 'data-tip':'s$l$返回顶部'
                   , href:'javascript:void(0);'
-                  , html:'<i class="zg-icon z-icon-fold"></i>'
                   , click:function(){
                         $(this.parentNode).nextAll('.zm-comment-list').scrollTop(0);
                     }
-                }).add('<a>',{
-                    'class':'izh-button izh-show-good'
-                  , 'data-tip':'s$l$人气妙评'
-                  , href:'javascript:void(0);'
-                  , html:'<i class="zg-icon zg-icon-comment-like"></i>'
-                  , click:function(){
-                       var $e=$(this)
-                         , $c=$e.closest('.zm-comment-box')
-                         , $l=$c.find('.zm-comment-list')
-                         , $n=$l.find('.zm-item-comment').has('span.like-num.nil')
-                       ;
-                       if($e.hasClass('on')){
-                           $e.attr('scrollTop_showgood',$l[0].scrollTop);
-                           $n.show();
-                           iZhihu.Comment.box($c,false,false);
-                           $e.removeClass('on');
-                           var scrollTop = parseInt($e.attr('scrollTop'));
-                           if(!isNaN(scrollTop))
-                               $l.scrollTop(scrollTop);
-                       }else{
-                           $e.attr('scrollTop',$l[0].scrollTop);
-                           $n.hide();
-                           iZhihu.Comment.box($c,false,false);
-                           $e.addClass('on');
-                           var scrollTop = parseInt($e.attr('scrollTop_showgood'));
-                           if(!isNaN(scrollTop))
-                               $l.scrollTop(scrollTop);
-                       }
-                    }
-                }).css({
+                }).append(
+                    $('<i>', { 'class': 'zg-icon z-icon-fold' })
+                ).add(
+                    $('<a>',{
+                        'class':'izh-button izh-show-good'
+                      , 'data-tip':'s$l$人气妙评'
+                      , href:'javascript:void(0);'
+                      , click:function(){
+                           var $e=$(this)
+                             , $c=$e.closest('.zm-comment-box')
+                             , $l=$c.find('.zm-comment-list')
+                             , $n=$l.find('.zm-item-comment').has('span.like-num.nil')
+                           ;
+                           if($e.hasClass('on')){
+                               $e.attr('scrollTop_showgood',$l[0].scrollTop);
+                               $n.show();
+                               iZhihu.Comment.box($c,false,false);
+                               $e.removeClass('on');
+                               var scrollTop = parseInt($e.attr('scrollTop'));
+                               if(!isNaN(scrollTop))
+                                   $l.scrollTop(scrollTop);
+                           }else{
+                               $e.attr('scrollTop',$l[0].scrollTop);
+                               $n.hide();
+                               iZhihu.Comment.box($c,false,false);
+                               $e.addClass('on');
+                               var scrollTop = parseInt($e.attr('scrollTop_showgood'));
+                               if(!isNaN(scrollTop))
+                                   $l.scrollTop(scrollTop);
+                           }
+                        }
+                    }).append(
+                        $('<i>', { 'class': 'zg-icon zg-icon-comment-like' })
+                    )
+                ).css({
                     'float':'right'
                 }).appendTo($buttonsR);
 

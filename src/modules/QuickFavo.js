@@ -7,10 +7,6 @@ function QuickFavo(iZhihu) {
     }
     iZhihu.QuickFavo = this;
     
-    var htmlSpinner = '<i class="spinner-gray"></i>'
-      , htmlLoading = htmlSpinner + '&nbsp;加载中...&nbsp;'
-    ;
-    
     this.DefaultCount = 4;
     this.PinnedList = iZhihu.config['QuickFavoPinned'];
     this.css = 
@@ -30,14 +26,16 @@ function QuickFavo(iZhihu) {
     this.addQuickFavo = function($v,$a){
         if($v.length){
             if($a.children('.izh_fav').length<=0){
-                $('<div>', {
-                    'class': 'izh_fav'
-                  , html: htmlLoading
-                }).bind('mouseover',function(){
-                    $(this).show().parent().find('.meta-item[name=favo]').addClass('on');
-                }).bind('mouseout',function(){
-                    $(this).hide().parent().find('.meta-item[name=favo]').removeClass('on');
-                }).appendTo($a);
+                $('<div>', { 'class': 'izh_fav' })
+                	.append($('<i>', { 'class': 'spinner-gray' }))
+                	.append('&nbsp;加载中...&nbsp;')
+                	.bind('mouseover', function(){
+	                    $(this).show().parent().find('.meta-item[name=favo]').addClass('on');
+                	})
+                	.bind('mouseout', function(){
+	                    $(this).hide().parent().find('.meta-item[name=favo]').removeClass('on');
+	                })
+	            .appendTo($a);
             }
             $v.bind('mouseenter',function(){
                 var $a=iZhihu.getItem($(this))
@@ -58,7 +56,7 @@ function QuickFavo(iZhihu) {
                            :pageIs.Answer?'.zm-item-answer'
                            :''
                       , $a=$(sel+'[data-aid='+aid+']')
-                      , $v=$a.children('.izh_fav').empty().append($('<div>',{'class':'title',title:'以下为最近选择的收藏夹',html:'快速收藏'}))
+                      , $v=$a.children('.izh_fav').empty().append($('<div>',{'class':'title',title:'以下为最近选择的收藏夹'}).append('快速收藏'))
                     ;
                     if(''==sel)return;
                     var favAll=result.msg[0]
@@ -93,8 +91,7 @@ function QuickFavo(iZhihu) {
                               , href:'javascript:;'
                               , aid:aid
                               , fid:fID
-                              , html:fName
-                            }).click(function(){
+                            }).append(fName).click(function(){
                                 var u='http://www.zhihu.com/collection/'
                                   , $f=$(this)
                                   , $i=$f.children(':first')
@@ -125,7 +122,7 @@ function QuickFavo(iZhihu) {
                                     $vi.children(':first').attr('class','z-icon-collect');
                                 });
                             }).prepend($('<i/>',{'class':'z-icon-collect'}))
-                              .append($('<span/>',{html:e[3]}));
+                              .append($('<span/>').append(e[3]));
                         $f.appendTo($v/*.children(pinned?'.pinned':'.normal')*/);
                     };
                     $.each(favSel,function(i,e){
@@ -213,7 +210,7 @@ function QuickFavo(iZhihu) {
                               , 'class':'izh-Pin4QuickFavo'
                               , 'lid':lid
                               , 'data-tip':'s$b$保持在「快速收藏」菜单顶部显示'
-                            }).append($('<span/>',{html:'置顶'}).add('<i/>',{'class':'zm-item-top-btn'}))
+                            }).append($('<span/>').append('置顶').add('<i/>',{'class':'zm-item-top-btn'}))
                               .appendTo($('.zg-gray',e)).attr('index',i)
                         ;
                         e.setAttribute('index',i);
