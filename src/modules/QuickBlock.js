@@ -162,7 +162,7 @@ function QuickBlock(iZhihu) {
 
         var $cartDIV=$('#izh_blockCart');
         if(!$cartDIV.length){
-            $cartDIV=$('<div id="izh_blockCart"class="izh_blockCart">').css({
+            $cartDIV=$('<div>', { id: 'izh_blockCart', 'class': 'izh_blockCart' }).css({
                 'top':iZhihu.$main.offset().top
             }).append(
                 $('<div>',{
