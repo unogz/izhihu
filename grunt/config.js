@@ -114,7 +114,7 @@ module.exports = function(grunt) {
         }
         ,
         'string-replace': {
-            dist_safari: {
+            distSafari: {
                 files: {
                     'dist/iZhihu.safariextension/Info.plist': 'dist/iZhihu.safariextension/Info.plist'
                 },
@@ -126,7 +126,7 @@ module.exports = function(grunt) {
                 }
             }
             ,
-            dist_chrome: {
+            distChrome: {
                 files: {
                     'dist/iZhihu for Chrome/blue.css': 'dist/iZhihu for Chrome/blue.css'
                 },
@@ -160,21 +160,21 @@ module.exports = function(grunt) {
     });
 
 
-    grunt.registerTask('updateManifest', 'update crx manifest', function() {
+    grunt.registerTask('manifestCRX', 'update crx manifest', function() {
         var manifest = grunt.file.readJSON('./dist/iZhihu for Chrome/manifest.json');
         manifest.version = grunt.config('version')// + '.' + manifest.version.split('.')[3];
         grunt.file.write('./dist/iZhihu for Chrome/manifest.json', JSON.stringify(manifest));
     });
 
-    grunt.registerTask('updateManifestXPI', 'update xpi manifest', function() {
+    grunt.registerTask('manifestXPI', 'update xpi manifest', function() {
         var manifest = grunt.file.readJSON('./dist/iZhihu for Firefox/package.json');
         manifest.version = grunt.config('version');
         grunt.file.write('./dist/iZhihu for Firefox/package.json', JSON.stringify(manifest));
     });
 
-    grunt.registerTask('chrome', ['copy:toChrome', 'updateManifest', 'string-replace']);
-    grunt.registerTask('firefox', ['copy:toFirefox1', 'copy:toFirefox2', 'updateManifestXPI']);
-    grunt.registerTask('safari', ['copy:toSafari', 'string-replace']);
+    grunt.registerTask('chrome', ['copy:toChrome', 'manifestCRX', 'string-replace:distChrome']);
+    grunt.registerTask('firefox', ['copy:toFirefox1', 'copy:toFirefox2', 'manifestXPI']);
+    grunt.registerTask('safari', ['copy:toSafari', 'string-replace:distSafari']);
 
     grunt.registerTask('buildall', ['default', 'chrome', 'firefox', 'safari'])
 
