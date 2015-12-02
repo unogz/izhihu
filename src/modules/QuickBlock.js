@@ -151,15 +151,7 @@ function QuickBlock(iZhihu) {
             $cartDIV.css({'height':'','bottom':0});
         }
     };
-    this.in2BlockCart = function(){
-        var $e = iZhihu.QuickBlock.Users2B.shift()
-        if (typeof $e === 'undefined' || !$e || $e.length === 0) return
-
-        var href = $e.attr('href')
-          , username = href.split('/').pop()
-          , who = username+','
-        ;
-
+    this.getCartDIV=function(){
         var $cartDIV=$('#izh_blockCart');
         if(!$cartDIV.length){
             $cartDIV=$('<div>', { id: 'izh_blockCart', 'class': 'izh_blockCart' }).css({
@@ -179,7 +171,7 @@ function QuickBlock(iZhihu) {
                           $cartDIV.css('bottom','').find('.list').empty();
                           $(this.parentNode).attr('izh_num2B','0');
                           $cartDIV.css('height','');
-                      	}
+                        }
                     }).text('大赦').css({
                         'display':'block'
                       , 'position':'absolute'
@@ -252,13 +244,13 @@ function QuickBlock(iZhihu) {
                       , click:function(){
                           var $cartDIV=$('#izh_blockCart');
                           if($cartDIV.attr('mini')!='1'){
-                        	  $cartDIV.find('.frame').hide();
-                        	  $cartDIV.css({'height':'','bottom':''});
-                        	  $cartDIV.attr('mini','1');
+                              $cartDIV.find('.frame').hide();
+                              $cartDIV.css({'height':'','bottom':''});
+                              $cartDIV.attr('mini','1');
                           }else{
-                        	  $cartDIV.find('.frame').show();
-                        	  iZhihu.QuickBlock.resizeBlockCart($cartDIV);
-                        	  $cartDIV.attr('mini','0');
+                              $cartDIV.find('.frame').show();
+                              iZhihu.QuickBlock.resizeBlockCart($cartDIV);
+                              $cartDIV.attr('mini','0');
                           }
                       }
                     }).css({
@@ -288,207 +280,162 @@ function QuickBlock(iZhihu) {
                 )
             ).appendTo(iZhihu.$body);
         }
+
+        return $cartDIV
+    }
+    this.in2BlockCart = function(url,retriedCount){
+        var $e = iZhihu.QuickBlock.Users2B.shift() || null
+          , $cartDIV = iZhihu.QuickBlock.getCartDIV()
+
+        $cartDIV.addClass('pending');
+        if(typeof retriedCount == 'undefined')
+            retriedCount = 0
+
+        console.log(retriedCount)
+        if (!$e || $e.length === 0){
+            if((url||'')==''){
+                $cartDIV.removeClass('pending')
+            }else{
+                $.ajax(['http://www.zhihu.com',url].join(''),{
+                    type:'GET'
+                  , maxRetryCount: 3
+                }).done(function(data, textStatus, jqXHR){
+                    $.each(data.payload,function(i,e){
+                        iZhihu.QuickBlock.addUser2B(e)
+                    })
+                    iZhihu.QuickBlock.in2BlockCart(data.paging.next)
+                }).fail(function(data,textStatus,jXHR){
+                    if (++retriedCount < this.maxRetryCount){
+                        iZhihu.QuickBlock.in2BlockCart(url,retriedCount)
+                    }else{
+                        $cartDIV.removeClass('pending')
+                    }
+                })
+            }
+            return
+        }
+
+        var href = $e.attr('href')
+          , username = href.split('/').pop()
+          , who = username+','
+        ;
+
         if($cartDIV.find('.user2B[href="'+href+'"]').length){
             return;
         }
-
-        $cartDIV.addClass('pending');
 
         $.ajax('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}), {
             type: 'GET'
           , user2B: $e
           , maxRetryCount: 3
-          , retriedCount: 0
         }).done(function(data, textStatus, jqXHR){
-            if (data === '') return
-            var $html=$(data.replace(utils.RegexSrcPic, ''))
-              //, user=r.msg[0]
-              , $avatarLink=$html.find('.avatar-link:first')
-              , userName=$avatarLink.text()//user[0]
-              //, userID=user[1]
-              , $btnFollow=$html.find('button[data-follow]')
-              , hashID=!$btnFollow.length?'':$btnFollow.attr('data-id')//.substr(3)//user[3]
-              , f_=$btnFollow.length&&$btnFollow.is('.zg-btn-unfollow')//r.msg[3]
-              , _f=$btnFollow.length&&$btnFollow.is('[data-followme=1]')//r.msg[4]
-              , cssF=_f||f_?'zg-icon rel ':''
-              , $cartDIV=$('#izh_blockCart')
-              , $cart=$cartDIV.find('.list')
-              , href=$avatarLink.attr('href')//'/people/'+userID
-              , userID=href.substr(8)
-              , who=','+userID+','
-            ;//console.log(userName+':'+f_+':'+_f);
-
-            if(hashID==''){
-                return; // User blocked or you blocked
-            }
-            
-            if($cartDIV.find('.list .user2B[href="'+href+'"]').length){
-                return; // User already in block list
-            }
-
-            var $user2B=$('<div>',{
-                	'class':'user2B'+(f_&&$cartDIV.find('.do .unfo:checked').length?' unfo':'')
-                  , 'href':href
-                  , 'uid':hashID
-                })
-                .append(
-                    $('<a>',{
-                        'class':'button del'
-                      , href:'javascript:void(0);'
-                      , click:function(){
-                          	var $user=$(this).closest('.user2B')
-                          	  , $cartDIV=$('#izh_blockCart')
-                          	;
-                            $user.remove();
-                            var num2B=$cartDIV.find('.list .user2B').length;
-                            $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>999?'1k+':num2B);
-                            if(num2B)
-                                iZhihu.QuickBlock.resizeBlockCart($cartDIV);
-                            else
-                                $cartDIV.css('height','');
-                        }
-                    }).text('赦')
-                ).append(
-	                $('<i>',{
-	                    'class':'say'
-	                  , 'data-tip':'p$t$'+userID
-	                }).text('冤枉')
-                ).append($('<i>',{'class':'say_1'})
-                ).append($('<i>',{'class':'say_2'})
-                ).append($('<i>',{'class':cssF})
-                ).append(
-                    $('<a>',{
-                        'class':'name'
-                      , href:href
-                      , target:'_blank'
-                    }).text(userName)
-                ).show()
-            ;
-            if(f_&&_f){
-                $cart.eq(0).append($user2B);
-            }else if(f_){
-                $cart.eq(1).append($user2B);
-            }else if(_f){
-                $cart.eq(2).append($user2B);
-            }else{
-                $cart.eq(3).append($user2B);
-            }
-            var num2B=$cartDIV.find('.list .user2B').length;
-            $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>9999?'10k+':num2B);
-            iZhihu.QuickBlock.resizeBlockCart($cartDIV);
+            iZhihu.QuickBlock.addUser2B(data)
+            iZhihu.QuickBlock.in2BlockCart(url)
         }).fail(function(data,textStatus,jXHR){
-            if (++this.retriedCount < this.maxRetryCount){
+            if (++retriedCount < this.maxRetryCount){
                 iZhihu.QuickBlock.Users2B.unshift(this.user2B)
+                iZhihu.QuickBlock.in2BlockCart(url,retriedCount)
             }else{
             }
         }).always(function(data,textStatus,jXHR){
             $('#izh_blockCart').removeClass('pending');
-            iZhihu.QuickBlock.in2BlockCart()
         });
     };
-    this.addQuickBlock = function($vi){
-        if($vi.is('.zm-item-vote-info') && !$vi.children('a[name=more]').length){
-            if($vi.attr('izh-QuickBlock')!='1'){
-                var $u=$('.voters > span > a[class^="zg-link"]',$vi);
-                $u.each(function(i,e){
-                    $('<input>',{'class':'izh-quick-block-sel',type:'checkbox'}).css({
-                    }).insertBefore(e).hide().click(function(){
-                        var $vi=$(this).closest('.zm-item-vote-info')
-                          , $quickBlock=$vi.parent().find('.izh-quick-block')
-                          , $users=$('input.izh-quick-block-sel:checked',$vi)
-                        ;
-                      	$quickBlock.attr('izh_num2B',$users.length);
-                    });
-                });
-                $vi.attr('izh-QuickBlock','1');
-            }
-            if($vi.parent().children('a.izh-quick-block-switch').length)
-                return;
-            var width=$vi.closest('[data-aid]').width()
-              , $btnQuickBlock=$('<a>',{
-                    'class':'izh-quick-block-switch'
+    this.addUser2B=function(data){
+        if (data === '') return
+        var $html=$(data.replace(utils.RegexSrcPic, ''))
+          , isZHPC=$html.is('.zh-profile-card')
+          , $avatarLink=isZHPC?$html.find('.avatar-link:first'):$html.find('.zm-item-link-avatar:first')
+          , href=$avatarLink.attr('href')
+        if((href||'')=='')return
+
+        var userID=href.substr(8)
+          , userName=isZHPC?$avatarLink.text():$avatarLink.attr('title')
+          , $btnFollow=$html.find('button[data-follow]')
+          , hashID=!$btnFollow.length?'':$btnFollow.attr('data-id')
+          , f_=$btnFollow.length&&$btnFollow.is('.zg-btn-unfollow')
+          , _f=$btnFollow.length&&$btnFollow.is('[data-followme=1]')
+          , cssF=_f||f_?'zg-icon rel ':''
+          , $cartDIV=iZhihu.QuickBlock.getCartDIV()
+          , $cart=$cartDIV.find('.list')
+          , who=','+userID+','
+        ;
+
+        if(hashID==''){
+            return; // User blocked or you blocked
+        }
+        
+        if($cartDIV.find('.list .user2B[href="'+href+'"]').length){
+            return; // User already in block list
+        }
+
+        var $user2B=$('<div>',{
+                'class':'user2B'+(f_&&$cartDIV.find('.do .unfo:checked').length?' unfo':'')
+              , 'href':href
+              , 'uid':hashID
+            })
+            .append(
+                $('<a>',{
+                    'class':'button del'
                   , href:'javascript:void(0);'
-                  , 'data-tip':'s$t$开始从赞同列表中选择屏蔽对象'
-                }).text('快速屏蔽').css({
-                    'position':'absolute'
-                  , 'left':width
-                  , 'width':'4em'
-                  , 'right':'-4em'
-                }).click(function(){
-                    if(this.getAttribute('on')=='1'){
-                        $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).hide();
-                        $(this).attr({'data-tip':'s$t$开始从赞同列表中选择屏蔽对象','on':'0'}).nextAll('.izh-quick-block').hide();
-                        //this.setAttribute('on','0');
+                  , click:function(){
+                        var $user=$(this).closest('.user2B')
+                          , $cartDIV=$('#izh_blockCart')
+                        ;
+                        $user.remove();
+                        var num2B=$cartDIV.find('.list .user2B').length;
+                        $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>999?'1k+':num2B);
+                        if(num2B)
+                            iZhihu.QuickBlock.resizeBlockCart($cartDIV);
+                        else
+                            $cartDIV.css('height','');
                     }
-                    else{
-                        $('.zm-item-vote-info input.izh-quick-block-sel',this.parentNode).show();
-                        $(this).attr({'data-tip':'s$t$结束从赞同列表中选择屏蔽对象','on':'1'}).nextAll('.izh-quick-block').show();
-                        //this.setAttribute('on','1');
+                }).text('赦')
+            ).append(
+                $('<i>',{
+                    'class':'say'
+                  , 'data-tip':'p$t$'+userID
+                }).text('冤枉')
+            ).append($('<i>',{'class':'say_1'})
+            ).append($('<i>',{'class':'say_2'})
+            ).append($('<i>',{'class':cssF})
+            ).append(
+                $('<a>',{
+                    'class':'name'
+                  , href:href
+                  , target:'_blank'
+                }).text(userName)
+            ).show()
+        ;
+        if(f_&&_f){
+            $cart.eq(0).append($user2B);
+        }else if(f_){
+            $cart.eq(1).append($user2B);
+        }else if(_f){
+            $cart.eq(2).append($user2B);
+        }else{
+            $cart.eq(3).append($user2B);
+        }
+        var num2B=$cartDIV.find('.list .user2B').length;
+        $cartDIV.children('.do').attr('izh_num2B',num2B==0?'0':num2B>9999?'10k+':num2B);
+        iZhihu.QuickBlock.resizeBlockCart($cartDIV);
+    }
+    this.addQuickBlock = function($a){
+        var $voteInfo=$('.zm-item-vote-info',$a)
+        if($voteInfo.length){
+            var $voters=$voteInfo.children('.voters')
+            if($voters.length){
+                var s=['，',$voteInfo.attr('data-votecount'),'个也不能忍，果断撕'].join('')
+                  , aid=$a.attr('data-aid')||$a.children('[itemprop="ZReactor"]').attr('data-id')
+                  , url=['/',$a.attr('data-type')=='p'?'post':'answer','/',aid,'/voters_profile'].join('')
+                $('<a>',{href:'javascript:;'}).text(s).bind('click',function(event){
+                    var $t=$a.find('.author-info > a.name,.zm-item-answer-author-info > .zm-item-answer-author-wrap > a:first')
+                    if($t&&$t.length){
+                        iZhihu.QuickBlock.Users2B.push($t)
                     }
-                }).insertBefore($vi)
-              , $quickBlock=$('<div>',{
-                    'class':'izh-quick-block'
-                  , 'izh_num2B':'0'
-                }).css({
-                    'position':'absolute'
-                  , 'left':width
-                  , 'width':'4em'
-                  , 'right':'-4em'
-                }).insertAfter($btnQuickBlock).hide()
-            ;
-            $('<a>',{
-                'class':'izh-quick-block-pend'
-              , href:'javascript:void(0);'
-              , 'data-tip':'s$b$将所选之人列入候审名单以待收监<br/>包括答主'
-            }).text('候审').css({//$.extend(css_QuickBlock,{
-                'margin-top':'1em'
-              , 'font-size':'200%'
-              , 'width':'2em'
-            }).click(function(){
-                var $pend=$(this)
-                  , $quickBlock=$pend.closest('.izh-quick-block')
-                  , $users2B=$('.zm-item-vote-info input.izh-quick-block-sel:checked',$quickBlock.parent())
-                  , $a=$quickBlock.parent()
-                  , $t=null
-                ;
-                if($a.is('.zm-item-answer-detail')){
-                    $t=$a.find('.zm-item-answer-author-info:first').children('.zm-item-answer-author-wrap').children('a:first')
-                }else if($a.is('.answer-head')){
-                    $t=$a.parent('.zm-item-answer').find('.zm-item-answer-author-info:first').children('.zm-item-answer-author-wrap').children('a:first')
-                }else if($a.is('.post-body')){
-                    $t=$a.find('.author-info:first').children('a.name:first')
-                }
-                if($t&&$t.length){
-                    iZhihu.QuickBlock.Users2B.push($t)
-                }
-                $users2B.each(function(i,e){
-                    iZhihu.QuickBlock.Users2B.push($(e).next())
-                });
-                iZhihu.QuickBlock.in2BlockCart();
-            }).prependTo($quickBlock);
-            $('<a>',{
-                'class':'izh-quick-block-selAll'
-              , href:'javascript:void(0);'
-              , 'data-tip':'s$r$无一选中'
-            }).text('无').css({
-                'margin-left':'3em'
-            }).click(function(){
-                var $quickBlock=$(this).closest('.izh-quick-block')
-                  , $users=$('.zm-item-vote-info input.izh-quick-block-sel',$quickBlock.parent());
-                $users.each(function(i,e){e.checked=false})
-                $quickBlock.attr('izh_num2B',0);
-            }).prependTo($quickBlock);
-            $('<a>',{
-                'class':'izh-quick-block-notAll'
-              , href:'javascript:void(0);'
-              , 'data-tip':'s$l$全部选中'
-            }).text('全').css({
-            }).click(function(){
-                var $quickBlock=$(this).closest('.izh-quick-block')
-                , $users=$('.zm-item-vote-info input.izh-quick-block-sel',$quickBlock.parent());
-                $users.each(function(i,e){e.checked=true})
-              	$quickBlock.attr('izh_num2B',$users.length);
-            }).prependTo($quickBlock);
+                    iZhihu.QuickBlock.in2BlockCart(url)
+                }).appendTo($voteInfo)
+            }
         }
     };
     this.addQuickBlockInOneComment = function($cmItem){

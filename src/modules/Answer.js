@@ -68,26 +68,8 @@ function Answer(iZhihu) {
         });
         if(iZhihu.QuickBlock){
             // Region: 快速屏蔽
-            var $voteInfo=$('.zm-item-vote-info',$a)
-            if($voteInfo.length)
-            {
-	            var $voteMore=$voteInfo.children('.more')
-	              , $voters=$voteInfo.children('.voters')
-	            if($voteMore.length){
-	                $voteMore.parent().parent().bind('DOMNodeInserted',function(event){
-	                    var $vi=$(event.target).filter('.zm-item-vote-info')// to get vote-info again because $voteInfo outside replaced by the completed list after more clicked
-	                    if (!$vi.length || $vi.attr('data-votecount')!=$vi.children().first().children().length)
-	                        return
-	                    iZhihu.QuickBlock.addQuickBlock($vi)
-	                })
-	            }else if($voters.length){
-	            	var s=$voteInfo.attr('data-votecount')+'个也不能忍，果断撕'
-	            	$('<a>',{href:'javascript:;'}).text(s).bind('click',function(event){
-	                    iZhihu.QuickBlock.addQuickBlock($voteInfo)
-	                    $(event.target).remove()
-	            	}).appendTo($voteInfo)
-	            }
-        	}
+            iZhihu.QuickBlock.addQuickBlock($a)
+
             // Region end
         }
         if($author.length){//relocatePersonInfo
