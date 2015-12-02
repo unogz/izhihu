@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         iZhihu
 // @namespace    https://github.com/unogz/izhihu
-// @version      2.12.5
+// @version      2.13
 // @description  知乎插件
 // @match        http://www.zhihu.com/*
 // @include      http://www.zhihu.com/*
+// @match        https://www.zhihu.com/*
+// @include      https://www.zhihu.com/*
 // @require      http://cdn.staticfile.org/jquery/1.8.2/jquery.min.js
 // @require      http://cdn.staticfile.org/iCheck/1.0.1/icheck.min.js
 // @resource     jqUI_CSS http://cdn.staticfile.org/iCheck/1.0.1/skins/square/blue.css

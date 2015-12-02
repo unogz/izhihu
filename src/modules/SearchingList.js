@@ -7,7 +7,7 @@ function SearchingList(iZhihu) {
     }
     iZhihu.SearchingList = this
     
-    this.$topSearch = $('#zh-top-search')
+    this.$topSearch = $('#zh-top-search-form')
     this.$topSearchInput = $('#zh-top-search-form > input#q')
     if (!this.$topSearch.length) return
 
@@ -29,8 +29,8 @@ function SearchingList(iZhihu) {
             if ($item.is('.ac-row[role=option]')){
                 var $a = $item.children('a')
                   , href = $a.attr('href')
-                  , css = 'float:right;'
-                  , $aNew = $('<a>', {class:'zg-icon zg-icon-sidenav-debuts',style:css,href:href,target:'_blank',click:function(event){
+                  , css = 'float:right;background-position:-284px -2px;'
+                  , $aNew = $('<a>', {class:'zg-icon',style:css,href:href,target:'_blank',click:function(event){
                         event.stopPropagation()
                     }})
                 if (href.indexOf('/search?') === 0) {

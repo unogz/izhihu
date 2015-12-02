@@ -5,6 +5,7 @@
     "description":"",
     "permissions":[
         "http://*.zhihu.com/",
+        "https://*.zhihu.com/",
         "http://ilovezhihu.duapp.com/"
     ],
     "content_scripts":[
@@ -12,9 +13,10 @@
             "run_at":"document_end",
             "exclude_globs":[],
             "include_globs":["*"],
-            "matches":["http://www.zhihu.com/*"],
+            "matches":["http://www.zhihu.com/*","https://www.zhihu.com/*"],
             "css": ["blue.css"],
             "js":["jquery-1.8.2.min.js","jquery-ui.min.js","icheck.min.js","purl.js","underscore-min.js","izhihu.js"]
         }
-    ]
+    ],
+    "web_accessible_resources": ["/*.png","/*.css","*.js"]
 }
