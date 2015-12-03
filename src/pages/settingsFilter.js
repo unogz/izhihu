@@ -34,7 +34,7 @@ if (pageIs.SettingsFilter){
       , funcUnblock=function(){
             if(all.length==0){return}
             var e=all.shift()
-            $.post('http://www.zhihu.com/settings/unblockuser', $.param({
+            $.post('/settings/unblockuser', $.param({
                 _xsrf: $('input[name=_xsrf]').val()
               , uid: e.getAttribute('data-id')
             })).done(function(result){

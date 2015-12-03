@@ -50,7 +50,7 @@ function QuickFavo(iZhihu) {
                     'bottom':(isNaN(bottom1)?0:bottom1)+(isNaN(bottom2)?0:bottom2)+$op.height()-pos.top
                   , 'left':pos.left+$m.position().left
                 }).show();
-                $.getJSON('http://www.zhihu.com/collections/json',$.param({answer_id:aid}),function(result,status,xhr){
+                $.getJSON('/collections/json',$.param({answer_id:aid}),function(result,status,xhr){
                     var aid=this.url.substr(this.url.indexOf('answer_id=')+10)
                       , sel=pageIs.Question?'.zm-item-answer'
                            :pageIs.Home?'.feed-item'
@@ -93,7 +93,7 @@ function QuickFavo(iZhihu) {
                               , aid:aid
                               , fid:fID
                             }).text(fName).click(function(){
-                                var u='http://www.zhihu.com/collection/'
+                                var u='/collection/'
                                   , $f=$(this)
                                   , $i=$f.children(':first')
                                 ;

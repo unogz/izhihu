@@ -50,10 +50,12 @@ function QuickBlock(iZhihu) {
     this.unblockAll = function(){
         $('.blocked-users > .item-card').each(function(i,e){
             var uid=$(e).attr('data-id');
-            $.post('http://www.zhihu.com/settings/unblockuser',$.param({
+            $.post('/settings/unblockuser',$.param({
                 _xsrf:$('input[name=_xsrf]').val()
               , uid:uid
-            }),function(r){console.log(r);});
+            }),function(r){
+            	//console.log(r);
+            });
         });
 	  };
 	  this.doUnfollow = function(){
@@ -61,7 +63,7 @@ function QuickBlock(iZhihu) {
         if(typeof $e === 'undefined') return
 
         var uid=$e.attr('uid');
-        $.post('http://www.zhihu.com/node/MemberFollowBaseV2'
+        $.post('/node/MemberFollowBaseV2'
           , $.param({
                 method:'unfollow_member'
               , params:JSON.stringify({'hash_id':uid})
@@ -107,11 +109,11 @@ function QuickBlock(iZhihu) {
         $cartDIV.addClass('blocking');
         blocking.Users += who;
         blocking.Count ++;
-        $.post('http://www.zhihu.com'+href+'/block',$.param({
+        $.post(href+'/block',$.param({
             action:'add'
           , _xsrf:$('input[name=_xsrf]').val() 
         }),function(r){
-            var href=this.url.replace('http://www.zhihu.com','').replace('/block','')
+            var href=this.url.replace('/block','')
               , userID=href.split('/').pop()
               , who=','+userID+','
               , blocking=iZhihu.QuickBlock.Blocking
@@ -291,12 +293,12 @@ function QuickBlock(iZhihu) {
         if(typeof retriedCount == 'undefined')
             retriedCount = 0
 
-        console.log(retriedCount)
+        //console.log(retriedCount)
         if (!$e || $e.length === 0){
             if((url||'')==''){
                 $cartDIV.removeClass('pending')
             }else{
-                $.ajax(['http://www.zhihu.com',url].join(''),{
+                $.ajax(['',url].join(''),{
                     type:'GET'
                   , maxRetryCount: 3
                 }).done(function(data, textStatus, jqXHR){
@@ -324,7 +326,7 @@ function QuickBlock(iZhihu) {
             return;
         }
 
-        $.ajax('http://www.zhihu.com/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}), {
+        $.ajax('/node/MemberProfileCardV2?'+$.param({params:JSON.stringify({'url_token':username})}), {
             type: 'GET'
           , user2B: $e
           , maxRetryCount: 3
@@ -429,7 +431,7 @@ function QuickBlock(iZhihu) {
                   , aid=$a.attr('data-aid')||$a.children('[itemprop="ZReactor"]').attr('data-id')
                   , url=['/',$a.attr('data-type')=='p'?'post':'answer','/',aid,'/voters_profile'].join('')
                 $('<a>',{href:'javascript:;'}).text(s).bind('click',function(event){
-                    var $t=$a.find('.author-info > a.name,.zm-item-answer-author-info > .zm-item-answer-author-wrap > a:first')
+                    var $t=$a.find('.author-info > a.name,.zm-item-answer-author-info > a.author-link')
                     if($t&&$t.length){
                         iZhihu.QuickBlock.Users2B.push($t)
                     }
