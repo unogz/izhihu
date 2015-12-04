@@ -24,6 +24,4 @@
 // ==/UserScript==
 
 var jqUI_CssSrc = GM_getResourceText("jqUI_CSS")
-  , imgURL = GM_getResourceURL('ui-bg_icheck-skin_square_blue')
-  , imgURL2x = GM_getResourceURL('ui-bg_icheck-skin_square_blue2x')
-GM_addStyle (jqUI_CssSrc.replace('blue.png', imgURL).replace('blue@2x.png', imgURL2x));
+GM_addStyle (jqUI_CssSrc.replace('url(blue', 'url(http://cdn.staticfile.org/iCheck/1.0.1/skins/square/blue'));
