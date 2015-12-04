@@ -83,6 +83,7 @@ module.exports = function(grunt) {
                     filter: 'isFile',
                     flatten: true,
                     src: [
+                        '<%= dist %>/<%= filename %>.js',
                         'import/*'
                     ],
                     dest: '<%= dist %>/iZhihu for Firefox/data/'
