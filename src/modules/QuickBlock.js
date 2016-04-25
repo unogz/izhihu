@@ -430,7 +430,7 @@ function QuickBlock(iZhihu) {
                 var s=['，',$voteInfo.attr('data-votecount'),'个也不能忍，果断撕'].join('')
                   , aid=$a.attr('data-aid')||$a.children('[itemprop="ZReactor"]').attr('data-id')
                   , url=['/',$a.attr('data-type')=='p'?'post':'answer','/',aid,'/voters_profile'].join('')
-                $('<a>',{href:'javascript:;'}).text(s).bind('click',function(event){
+                $('<a>',{href:'javascript:;','class':'text'}).text(s).bind('click',function(event){
                     var $t=$a.find('.author-info > a.name,.zm-item-answer-author-info > a.author-link')
                     if($t&&$t.length){
                         iZhihu.QuickBlock.Users2B.push($t)
